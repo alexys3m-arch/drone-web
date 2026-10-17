@@ -2,6 +2,9 @@
   "name": "portfolio-am-sito",
   "private": true,
   "version": "1.0.0",
+  "scripts": {
+    "test": "node --test \"test/*.test.js\""
+  },
   "dependencies": {
     "@vercel/kv": "^2.0.0"
   }

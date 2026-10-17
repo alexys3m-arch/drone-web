@@ -2,9 +2,20 @@
   "redirects": [
     {
       "source": "/:path((?!api/).*)",
-      "has": [{ "type": "host", "value": "quotazero.vercel.app" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "quotazero.vercel.app"
+        }
+      ],
       "destination": "https://quotazerodrone.it/:path",
       "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/assets/images/:file(favicon-[^/]+\\.png|apple-touch-icon\\.png|brand-[^/]+\\.png)",
+      "destination": "/assets/brand/:file"
     }
   ]
 }

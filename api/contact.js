@@ -1,15 +1,11 @@
+// Funzione Vercel: riceve il modulo di contatto. Traduce HTTP nel caso d'uso e ritorno.
+// La logica sta in src/contatto (dominio, applicazione, infrastruttura).
 const { kv } = require('@vercel/kv');
+const { inviaRichiestaDiContatto, ESITO } = require('../src/contatto/applicazione/invia-richiesta-di-contatto');
+const { creaArchivioKv } = require('../src/contatto/infrastruttura/archivio-kv');
+const { creaNotificaResend } = require('../src/contatto/infrastruttura/notifica-resend');
 
-const LIMITS = { nome: 120, email: 160, telefono: 40, tipo: 80, messaggio: 4000 };
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function clean(value, max) {
-  return String(value == null ? '' : value).trim().slice(0, max);
-}
-
-function escapeHtml(text) {
-  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
+const DESTINATARIO_PREDEFINITO = 'alexys3m@gmail.com';
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -17,73 +13,23 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'method not allowed' });
   }
 
-  const body = req.body || {};
-  if (body.website) return res.status(200).json({ ok: true });
+  const esito = await inviaRichiestaDiContatto({
+    dati: req.body || {},
+    archivio: creaArchivioKv(kv),
+    notifica: creaNotificaResend({
+      apiKey: process.env.RESEND_API_KEY,
+      destinatario: process.env.CONTACT_TO || DESTINATARIO_PREDEFINITO,
+    }),
+  });
 
-  // il modulo ha un solo campo "contatto" (telefono o email); i vecchi campi restano supportati
-  const contatto = clean(body.contatto, LIMITS.email);
-  const contattoIsEmail = EMAIL_RE.test(contatto);
-  const lead = {
-    nome: clean(body.nome, LIMITS.nome),
-    email: clean(body.email, LIMITS.email) || (contattoIsEmail ? contatto : ''),
-    telefono: clean(body.telefono, LIMITS.telefono) || (contatto && !contattoIsEmail ? contatto.slice(0, LIMITS.telefono) : ''),
-    tipo: clean(body.tipo, LIMITS.tipo),
-    messaggio: clean(body.messaggio, LIMITS.messaggio),
-    at: new Date().toISOString(),
-  };
-
-  const hasEmail = EMAIL_RE.test(lead.email);
-  const hasPhone = lead.telefono.replace(/\D/g, '').length >= 6;
-  if (!lead.nome || (!hasEmail && !hasPhone)) {
-    return res.status(400).json({ error: 'invalid' });
-  }
-
-  try {
-    await kv.lpush('leads', JSON.stringify(lead));
-    await kv.ltrim('leads', 0, 499);
-  } catch (e) {
-    console.error('lead backup failed', e);
-  }
-
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.error('RESEND_API_KEY is not set');
-    return res.status(500).json({ error: 'mail not configured' });
-  }
-
-  const rows = [
-    ['Nome', lead.nome],
-    ['Email', lead.email || '-'],
-    ['Telefono', lead.telefono || '-'],
-    ['Tipo di progetto', lead.tipo || '-'],
-    ['Messaggio', lead.messaggio || '-'],
-  ];
-  const html = '<table cellpadding="6" style="font-family:sans-serif;font-size:14px">' +
-    rows.map(([k, v]) => '<tr><td style="color:#666;vertical-align:top"><b>' + k + '</b></td><td style="white-space:pre-wrap">' + escapeHtml(v) + '</td></tr>').join('') +
-    '</table>';
-  const text = rows.map(([k, v]) => k + ': ' + v).join('\n');
-
-  try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: { Authorization: 'Bearer ' + apiKey, 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        from: 'Quota Zero <onboarding@resend.dev>',
-        to: [process.env.CONTACT_TO || 'alexys3m@gmail.com'],
-        ...(hasEmail ? { reply_to: lead.email } : {}),
-        subject: 'Nuova richiesta dal sito — ' + (lead.tipo || 'Progetto'),
-        html,
-        text,
-      }),
-    });
-    if (!response.ok) {
-      console.error('resend failed', response.status, await response.text());
+  switch (esito) {
+    case ESITO.NON_VALIDA:
+      return res.status(400).json({ error: 'invalid' });
+    case ESITO.NOTIFICA_NON_CONFIGURATA:
+      return res.status(500).json({ error: 'mail not configured' });
+    case ESITO.INVIO_FALLITO:
       return res.status(502).json({ error: 'send failed' });
-    }
-  } catch (e) {
-    console.error('resend request error', e);
-    return res.status(502).json({ error: 'send failed' });
+    default: // BOT (finge di aver funzionato) e INVIATA
+      return res.status(200).json({ ok: true });
   }
-
-  return res.status(200).json({ ok: true });
 };

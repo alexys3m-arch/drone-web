@@ -2,7 +2,7 @@
 <html lang="it"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="assets/js/runtime-1.js"></script>
+<script src="assets/js/runtime/runtime-1.js"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
@@ -15,9 +15,9 @@ if(/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname)){window['ga-disa
 gtag('js',new Date());
 gtag('config','AW-18494564224');
 </script>
-<script src="assets/js/consent.js" defer></script>
-<script src="assets/js/form-prefill.js" defer></script>
-<script src="assets/js/altimeter.js" defer></script>
+<script src="assets/js/consenso/consent.js" defer></script>
+<script src="assets/js/contatto/form-prefill.js" defer></script>
+<script src="assets/js/presentazione/altimeter.js" defer></script>
 
 </head>
 <body>
@@ -42,7 +42,7 @@ gtag('config','AW-18494564224');
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin="">
 <link rel="preload" href="assets/fonts/syne-latin.woff2" as="font" type="font/woff2" crossorigin="">
-<link rel="preload" href="assets/video/hero-poster.jpg" as="image">
+<link rel="preload" href="assets/home/hero-poster.jpg" as="image">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Quota Zero — Riprese con drone a Roma","url":"https://quotazerodrone.it/","image":"https://quotazerodrone.it/assets/images/brand-icon-wide.png","logo":"https://quotazerodrone.it/assets/images/favicon-192.png","description":"Riprese con drone a Roma e nel Lazio: video e foto aeree per eventi, aziende, immobili, agriturismi e contenuti social.","founder":{"@type":"Person","name":"Alessio Mazzetti"},"areaServed":[{"@type":"City","name":"Roma"},{"@type":"AdministrativeArea","name":"Lazio"}],"serviceType":["Riprese aeree con drone","Fotografia aerea","Video per aziende","Riprese per eventi","Riprese per immobili e strutture ricettive"],"sameAs":["https://www.youtube.com/@Ale_mazzetti"]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Alessio Mazzetti","url":"https://quotazerodrone.it/","sameAs":["https://www.youtube.com/@Ale_mazzetti"],"jobTitle":"Drone Pilot & Aerial Filmmaker","address":{"@type":"PostalAddress","addressLocality":"Roma","addressCountry":"IT"},"description":"Riprese aeree, fotografia e video con drone per immobili, aziende, eventi e contenuti social.","knowsAbout":["Riprese aeree","Fotografia con drone","Video making","Color grading"]}</script>
 <style>/* cyrillic-ext */
@@ -370,7 +370,7 @@ gtag('config','AW-18494564224');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 </style>
-<script src="assets/js/runtime-2.js"></script>
+<script src="assets/js/runtime/runtime-2.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
 <script type="module">
@@ -515,7 +515,7 @@ a.qz-flexc{display:inline-flex;align-items:center}
 
   <header style="position:fixed;top:0;left:0;right:0;z-index:50;transition:background .5s ease, border-color .5s ease, backdrop-filter .5s ease;background:{{ navBg }};backdrop-filter:{{ navBlur }};-webkit-backdrop-filter:{{ navBlur }};border-bottom:1px solid {{ navBorder }}">
     <nav style="max-width:1500px;margin:0 auto;height:{{ navH }};padding:0 clamp(20px,3vw,40px);display:flex;align-items:center;justify-content:space-between;gap:24px;transition:height .4s ease">
-      <a class="qz-tap" href="#top" aria-label="Quota Zero" style="display:flex;align-items:center;white-space:nowrap"><img src="assets/images/brand-wordmark.png" alt="Quota Zero" style="height:26px;width:auto;display:block"></a>
+      <a class="qz-tap" href="#top" aria-label="Quota Zero" style="display:flex;align-items:center;white-space:nowrap"><img src="assets/brand/brand-wordmark.png" alt="Quota Zero" style="height:26px;width:auto;display:block"></a>
       <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;align-items:center;gap:clamp(24px,3vw,48px)">
           <div style="display:flex;gap:clamp(18px,2.4vw,40px);white-space:nowrap;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,243,240,.72)">
@@ -764,7 +764,7 @@ a.qz-flexc{display:inline-flex;align-items:center}
         <div style="position:absolute;inset:0;z-index:1;perspective:1600px">
           {{ aboutCardEl }}
         </div>
-        <img src="assets/images/brand-icon.png" alt="" style="position:absolute;bottom:18px;right:18px;z-index:2;width:34px;height:34px;opacity:.9;pointer-events:none">
+        <img src="assets/brand/brand-icon.png" alt="" style="position:absolute;bottom:18px;right:18px;z-index:2;width:34px;height:34px;opacity:.9;pointer-events:none">
       </div>
       <div style="display:flex;flex-direction:column;gap:26px;max-width:560px">
         <div data-reveal="" style="font:600 12px/1 'Manrope',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:rgba(244,243,240,.6)">Chi sono</div>
@@ -896,7 +896,7 @@ a.qz-flexc{display:inline-flex;align-items:center}
 
   <footer style="border-top:1px solid rgba(255,255,255,.11);padding:32px clamp(20px,3vw,40px) {{ footerPad }};max-width:1500px;margin:0 auto">
     <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;font:600 11px/1 'Manrope',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,243,240,.55)">
-      <span style="display:flex;align-items:center"><img src="assets/images/brand-wordmark.png" alt="Quota Zero" style="height:18px;width:auto;display:block"></span>
+      <span style="display:flex;align-items:center"><img src="assets/brand/brand-wordmark.png" alt="Quota Zero" style="height:18px;width:auto;display:block"></span>
       <span>Riprese aeree &amp; fotografia con drone · Roma</span>
       <span style="display:flex;flex-wrap:wrap;gap:6px 22px"><a class="qz-tap qz-flexc" href="https://www.youtube.com/@Ale_mazzetti" target="_blank" rel="noopener noreferrer" style="color:inherit">YouTube</a><a class="qz-tap qz-flexc" href="privacy.html" style="color:inherit">Privacy &amp; cookie</a><a class="qz-tap qz-flexc" href="#cookie-settings" style="color:inherit">Gestisci cookie</a><span>© 2026</span></span>
     </div>
@@ -946,17 +946,17 @@ const BUNNY_CDN = 'https://vz-0c0a8faa-9e0.b-cdn.net';
 // count), so grid-auto-flow:dense always tiles them with no leftover gaps.
 const WORKS = [
   // row-group A (row:8) — 8 + 4 = 12
-  { t:'Baia turchese', cat:'Fotografia Aerea · Video', place:'Fotografia Aerea', video:true, dur:'0:09', shape:'wide', col:8, row:8, src:'1aefb782-ca14-4b48-89c5-5cc82158c654', poster:'assets/work/barchettasite-poster.jpg' },
-  { t:'Ritratto sulla spiaggia', cat:'Social Content · Video', place:'Social Content', video:true, dur:'0:10', shape:'vert', col:4, row:8, src:'807bc22c-5b5f-490f-9a5f-9f556ab690aa', poster:'assets/work/focasite-poster.jpg' },
+  { t:'Baia turchese', cat:'Fotografia Aerea · Video', place:'Fotografia Aerea', video:true, dur:'0:09', shape:'wide', col:8, row:8, src:'1aefb782-ca14-4b48-89c5-5cc82158c654', poster:'assets/portfolio/baia-turchese-poster.jpg' },
+  { t:'Ritratto sulla spiaggia', cat:'Social Content · Video', place:'Social Content', video:true, dur:'0:10', shape:'vert', col:4, row:8, src:'807bc22c-5b5f-490f-9a5f-9f556ab690aa', poster:'assets/portfolio/ritratto-spiaggia-poster.jpg' },
   // row-group B (row:5) — 4 + 4 + 4 = 12
-  { t:'Gommone in mare aperto', cat:'Video Drone · Video', place:'Video Drone', video:true, dur:'0:11', shape:'wide', col:4, row:5, src:'6f0051e3-53f5-4925-9bf6-39da2172a01c', poster:'assets/work/Gommonesito-poster.jpg' },
-  { t:'Catamarano all’ancora', cat:'Video Drone · Video', place:'Video Drone', video:true, dur:'0:10', shape:'wide', col:4, row:5, src:'057649d7-ea00-40aa-962b-bbd2f3cf08cd', poster:'assets/work/katamaranosite-poster.jpg' },
-  { t:'Corsa sulla spiaggia al tramonto', cat:'Eventi · Video', place:'Eventi', video:true, dur:'0:09', shape:'wide', col:4, row:5, src:'e719f204-0e9e-432e-8d74-b10e7491baa2', poster:'assets/work/corsasite-poster.jpg' },
+  { t:'Gommone in mare aperto', cat:'Video Drone · Video', place:'Video Drone', video:true, dur:'0:11', shape:'wide', col:4, row:5, src:'6f0051e3-53f5-4925-9bf6-39da2172a01c', poster:'assets/portfolio/gommone-mare-aperto-poster.jpg' },
+  { t:'Catamarano all’ancora', cat:'Video Drone · Video', place:'Video Drone', video:true, dur:'0:10', shape:'wide', col:4, row:5, src:'057649d7-ea00-40aa-962b-bbd2f3cf08cd', poster:'assets/portfolio/catamarano-ancora-poster.jpg' },
+  { t:'Corsa sulla spiaggia al tramonto', cat:'Eventi · Video', place:'Eventi', video:true, dur:'0:09', shape:'wide', col:4, row:5, src:'e719f204-0e9e-432e-8d74-b10e7491baa2', poster:'assets/portfolio/corsa-tramonto-poster.jpg' },
   // row-group C (row:6) — 6 + 6 = 12
-  { t:'Sede aziendale e area logistica', cat:'Aziende & Attività · Video', place:'Aziende & Attività', video:true, dur:'0:15', shape:'wide', col:6, row:6, src:'30fee487-8334-44ce-9269-874f2bef6b5e', poster:'assets/work/Furgonesite-poster.jpg' },
-  { t:'Struttura commerciale con impianto solare', cat:'Aziende & Attività · Video', place:'Aziende & Attività', video:true, dur:'0:14', shape:'wide', col:6, row:6, src:'afb6a3e9-793d-4150-8c97-ed95f0b96594', poster:'assets/work/Magazzinosite-poster.jpg' },
+  { t:'Sede aziendale e area logistica', cat:'Aziende & Attività · Video', place:'Aziende & Attività', video:true, dur:'0:15', shape:'wide', col:6, row:6, src:'30fee487-8334-44ce-9269-874f2bef6b5e', poster:'assets/portfolio/sede-aziendale-logistica-poster.jpg' },
+  { t:'Struttura commerciale con impianto solare', cat:'Aziende & Attività · Video', place:'Aziende & Attività', video:true, dur:'0:14', shape:'wide', col:6, row:6, src:'afb6a3e9-793d-4150-8c97-ed95f0b96594', poster:'assets/portfolio/struttura-impianto-solare-poster.jpg' },
   // row-group D (row:8) — 8 centrato (colonne 3-10)
-  { t:'Serata evento', cat:'Eventi · Video', place:'Eventi', video:true, dur:'0:26', shape:'wide', col:8, row:8, start:3, src:'6231945d-bb20-41f8-9b2d-0b6c37eacde4', poster:'assets/work/serata-evento-poster.jpg' },
+  { t:'Serata evento', cat:'Eventi · Video', place:'Eventi', video:true, dur:'0:26', shape:'wide', col:8, row:8, start:3, src:'6231945d-bb20-41f8-9b2d-0b6c37eacde4', poster:'assets/portfolio/serata-evento-poster.jpg' },
 ].map((w, i) => ({ ...w, slot: 'work-' + (i + 1) }));
 const SERVICES = [
   { t:'Riprese aeree', d:'Video professionali realizzati con drone, montati e color-gradati.' },
@@ -2068,7 +2068,7 @@ class Component extends DCLogic {
       showSticky: (p.stickyCta ?? true) && mobile && pastHero && !menu && lb == null,
       footerPad: mobile ? '96px' : '32px',
 
-      heroVideoEl: heroSrc ? this.video(heroSrc, { key: heroSrc, autoPlay: true, preload: 'auto', poster: 'assets/video/hero-poster.jpg' }) : null,
+      heroVideoEl: heroSrc ? this.video(heroSrc, { key: heroSrc, autoPlay: true, preload: 'auto', poster: 'assets/home/hero-poster.jpg' }) : null,
       scrollLine: React.createElement('span', { style: { position: 'relative', width: 1, height: 'clamp(28px,6vh,56px)', flexShrink: 0, background: 'rgba(244,243,240,.2)', overflow: 'hidden', display: 'block' } },
         React.createElement('span', { style: { position: 'absolute', inset: 0, background: '#f4f3f0', animation: 'scrollDrop 2.2s cubic-bezier(.6,0,.3,1) infinite' } })),
 
@@ -2156,8 +2156,8 @@ class Component extends DCLogic {
       ),
       aboutCardEl: React.createElement(AutoFlipCard, {
         intervalMs: 4000,
-        front: React.createElement('img', { src: 'assets/images/about-portrait.webp', alt: 'Alessio Mazzetti', loading: 'lazy', decoding: 'async', style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' } }),
-        back: React.createElement('img', { src: 'assets/images/about-portrait-back.webp', alt: 'Alessio Mazzetti, visore alzato', loading: 'lazy', decoding: 'async', style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' } }),
+        front: React.createElement('img', { src: 'assets/home/about-portrait.webp', alt: 'Alessio Mazzetti', loading: 'lazy', decoding: 'async', style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' } }),
+        back: React.createElement('img', { src: 'assets/home/about-portrait-back.webp', alt: 'Alessio Mazzetti, visore alzato', loading: 'lazy', decoding: 'async', style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' } }),
       }),
 
       notSent: !sent, sent, sending, sendError,

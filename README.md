@@ -1,22 +1,33 @@
 ﻿# Quota Zero: sito di Alessio Mazzetti
 
-Sito di riprese con drone a Roma: https://quotazerodrone.it
+Riprese con drone a Roma: https://quotazerodrone.it
 
-- Pagina unica in index.html (componenti x-dc con ssets/js/runtime-*.js).
-- pi/contact.js (modulo di contatto, invia con Resend) e pi/like.js (Mi piace, KV).
-- Variabili d'ambiente (solo su Vercel, mai nel codice): RESEND_API_KEY, KV_REST_API_URL, KV_REST_API_TOKEN.
-- Video su Bunny Stream (non nel repository).
+Pagina unica con modulo di contatto a step, griglia dei lavori con Mi piace e banner del consenso. Pubblicato su Vercel (progetto `quota.zero`).
 
-## Pubblicare
+## Dove sta cosa
 
-Ad ogni push su `main`, GitHub Actions (`.github/workflows/deploy.yml`) pubblica il sito in produzione sul progetto Vercel `quota.zero`, poi controlla che quotazerodrone.it risponda. Si può rilanciare a mano da Actions ("Run workflow").
+| Cartella | Contenuto |
+|---|---|
+| `public/` | Tutto ciò che viene servito: pagine, immagini, font, script. |
+| `api/` | Le due funzioni Vercel: `contact.js` (modulo) e `like.js` (Mi piace). |
+| `src/` | La logica delle funzioni, divisa per contesto e in livelli: `dominio`, `applicazione`, `infrastruttura`. |
+| `test/` | Test automatici (`npm test`). |
+| `docs/` | Linguaggio del dominio, mappa dei contesti, decisioni, operatività. |
+| `.github/workflows/` | Pubblicazione automatica. |
 
-Segreti del repository necessari: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`. Senza il token il deploy viene saltato con un avviso.
+## Per orientarsi
 
-Pubblicazione manuale (alternativa), da questa cartella:
+1. [Linguaggio del dominio](docs/linguaggio-del-dominio.md): i termini usati nel progetto.
+2. [Mappa dei contesti](docs/mappa-dei-contesti.md): Contatto, Portfolio, Consenso e misurazione, Presenza online.
+3. [Decisioni](docs/decisioni.md): cosa non va cambiato e perché.
+4. [Operatività](docs/operativita.md): provare, pubblicare, aggiungere un lavoro.
+
+## Comandi
 
 ```
-npx --yes vercel@latest deploy --prod --yes
+npm test      # test automatici
 ```
 
-Non usare "Redeploy" dalla dashboard e non ricreare il progetto: il dominio non deve cambiare.
+Ad ogni push su `main`, GitHub Actions esegue i test, pubblica in produzione e controlla che il sito risponda. Si può rilanciare a mano da Actions ("Run workflow"). Segreti necessari nel repository: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`. Le chiavi del sito (Resend, KV) stanno solo su Vercel, mai nel codice.
+
+Non usare "Redeploy" dalla dashboard di Vercel e non ricreare il progetto: il dominio non deve cambiare.

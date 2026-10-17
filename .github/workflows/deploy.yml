@@ -43,6 +43,10 @@ jobs:
         with:
           node-version: 22
 
+      - name: Test automatici
+        if: steps.check.outputs.ok == 'true'
+        run: npm test
+
       - name: Deploy in produzione
         if: steps.check.outputs.ok == 'true'
         run: npx --yes vercel@64.5.0 deploy --prod --yes --token "$VERCEL_TOKEN"
