@@ -497,18 +497,37 @@ input,textarea{caret-color:#c9a227}
 .qz-section h2{margin:0;font:500 clamp(34px,4.5vw,60px)/1.08 'Syne',sans-serif;letter-spacing:-.03em;text-wrap:balance}
 .qz-section-intro{display:grid;grid-template-columns:1.1fr 1fr;align-items:end;gap:32px;margin-bottom:40px}
 .qz-section-intro>p,.qz-audiences p,.qz-delivery p,.qz-process-list p,.qz-about__copy,.qz-coverage p{margin:0;max-width:65ch;font:400 16px/1.7 'Manrope',sans-serif;color:var(--qz-muted)}
-.qz-audiences{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:24px 0;border-top:1px solid var(--qz-rule);margin-bottom:24px}
+.qz-audiences{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-top:24px;border-top:1px solid var(--qz-rule);margin-top:32px}
 .qz-audiences strong{display:block;font-size:16px;font-weight:600;color:#f4f3f0;margin-bottom:6px}
 .qz-audiences p{font-size:14px}
 .qz-filterbar{display:flex;flex-wrap:wrap;gap:8px}
 .filter-chip{min-height:48px;padding:12px 20px;border:1px solid;border-radius:4px;font:600 14px/1.3 'Manrope',sans-serif;cursor:pointer;transition:background .25s,color .25s,border-color .25s}
 .filter-chip:hover{border-color:#c9a227!important}
+.qz-work .qz-section-intro{display:block;max-width:65ch}
+.qz-work .qz-section-intro>p{margin-top:20px}
 .qz-work-status{margin:18px 0 24px;color:var(--qz-muted);font-size:13px;font-variant-numeric:tabular-nums}
-.qz-work-caption{display:flex;flex-direction:column;align-items:flex-start;gap:6px;cursor:default}
-.qz-work-title{font:500 clamp(17px,1.6vw,21px)/1.25 'Syne',sans-serif;letter-spacing:-.02em}
-.qz-work-context{font-size:13px;line-height:1.5;color:var(--qz-muted);max-width:60ch}
+.qz-work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:44px 24px}
+.qz-work-item{min-width:0;margin:0}
+.qz-work-item--portrait{grid-row:span 2;width:100%;max-width:440px;justify-self:center}
+.qz-work-media{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:4px;background:#131417}
+.qz-work-item--portrait .qz-work-media{aspect-ratio:9/16}
+.qz-work-visual{position:absolute;inset:0;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.qz-work-media:hover .qz-work-visual{transform:scale(1.015)}
+.qz-work-duration{position:absolute;top:14px;right:14px;pointer-events:none;display:flex;align-items:center;gap:8px;min-height:28px;padding:0 10px;border-radius:4px;background:rgba(9,10,12,.8);font:600 12px/1 'Manrope',sans-serif;font-variant-numeric:tabular-nums}
+.qz-work-play{position:absolute;left:16px;bottom:16px;pointer-events:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid rgba(244,243,240,.65);border-radius:50%;background:rgba(9,10,12,.8);color:#f4f3f0;transition:background .25s,color .25s,border-color .25s}
+.qz-work-media:hover .qz-work-play,.qz-work-media:focus-within .qz-work-play{background:#c9a227;border-color:#c9a227;color:#090a0c}
+.qz-work-caption{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding-top:16px;cursor:default}
+.qz-work-title{max-width:34ch;font:500 clamp(18px,1.6vw,23px)/1.25 'Syne',sans-serif;letter-spacing:-.02em;text-wrap:balance}
+.qz-work-context{font-size:14px;line-height:1.55;color:var(--qz-muted);max-width:60ch}
 .qz-work-output{font-size:12px;line-height:1.5;color:var(--qz-muted);font-variant-numeric:tabular-nums}
-.qz-work-enquire{display:inline-flex;align-items:center;min-height:36px;font-size:13px;color:#c9a227;text-decoration:underline}
+@media(min-width:1100px){
+.qz-work-grid{grid-template-columns:repeat(12,minmax(0,1fr))}
+.qz-work-item{grid-column:span 6}
+.qz-work-grid--all .qz-work-item:first-child{grid-column:span 8}
+.qz-work-grid--all .qz-work-item:nth-child(2){grid-column:9 / span 4}
+.qz-work-grid--all .qz-work-item:nth-child(3),.qz-work-grid--all .qz-work-item:nth-child(4){grid-column:span 4}
+}
+@media(min-width:768px) and (max-width:1099px){.qz-work-grid--all .qz-work-item:last-child{grid-column:1/-1;width:100%;max-width:720px;justify-self:center}}
 .qz-work-note,.qz-section-note{margin:32px 0 0;font-size:14px;line-height:1.7;color:var(--qz-muted)}
 .qz-work-note a,.qz-section-note a,.qz-coverage a{color:#c9a227;text-decoration:underline}
 .qz-deliveries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
@@ -522,7 +541,7 @@ input,textarea{caret-color:#c9a227}
 .qz-process-list h3{margin:0 0 12px;font:500 23px/1.2 'Syne',sans-serif;letter-spacing:-.02em}
 .qz-process-list p{font-size:15px}
 .qz-about{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1fr);gap:clamp(32px,6vw,96px);align-items:center}
-.qz-about__portrait{display:block;width:100%;max-width:440px;aspect-ratio:4/5;object-fit:cover;border-radius:4px}
+.qz-about__portrait{display:block;width:100%;height:auto;max-width:440px;aspect-ratio:4/5;object-fit:cover;border-radius:4px}
 .qz-about__intro{font-size:20px;line-height:1.5;margin:24px 0 16px}
 .qz-about__copy{margin-bottom:28px}
 .qz-coverage{display:flex;align-items:baseline;gap:32px;max-width:1500px;box-sizing:border-box;margin:auto;padding:32px var(--qz-page);border-top:1px solid var(--qz-rule)}
@@ -544,10 +563,12 @@ input,textarea{caret-color:#c9a227}
 .qz-filterbar{display:grid;grid-template-columns:1fr 1fr}
 .filter-chip:first-child{grid-column:1/-1}
 .filter-chip{padding:12px 8px;font-size:13px}
+.qz-work-grid{grid-template-columns:minmax(0,1fr);gap:36px}
+.qz-work-item--portrait{grid-row:auto;max-width:380px}
 .qz-deliveries,.qz-process-list{grid-template-columns:1fr;gap:32px}
 .qz-delivery{gap:12px}
 .qz-about{grid-template-columns:1fr}
-.qz-about__portrait{max-width:320px;aspect-ratio:4/4.3}
+.qz-about__portrait{max-width:360px;justify-self:center}
 .qz-coverage{flex-direction:column;gap:12px}
 }
 
@@ -620,49 +641,45 @@ input,textarea{caret-color:#c9a227}
       <h2>Lavori selezionati<span>.</span></h2>
       <p>Otto estratti video: dall’inquadratura di una sede aziendale ai movimenti di un evento. Apri una clip per guardarla.</p>
     </div>
-    <div id="per-chi" class="qz-audiences" style="scroll-margin-top:{{ navH }}">
-      <p><strong>Aziende e strutture</strong>Sedi e spazi da presentare. Anche per immobili e ospitalità; i lavori qui mostrati sono esempi aziendali.</p>
-      <p><strong>Eventi e social</strong>Eventi, sport e persone in movimento. Inquadrature orizzontali o verticali, in base al canale.</p>
-    </div>
     <div class="qz-filterbar" role="group" aria-label="Filtra i lavori per utilizzo">
       <sc-for list="{{ filters }}" as="f" hint-placeholder-count="3">
         <button type="button" class="filter-chip" aria-pressed="{{ f.pressed }}" sc-camel-on-click="{{ f.onClick }}" style="border-color:{{ f.border }};background:{{ f.bg }};color:{{ f.color }}">{{ f.label }}</button>
       </sc-for>
     </div>
     <p class="qz-work-status" role="status" aria-live="polite">{{ workStatus }}</p>
-    <div style="display:grid;grid-template-columns:repeat({{ gridCols }},minmax(0,1fr));grid-auto-rows:{{ gridRow }};grid-auto-flow:dense;gap:clamp(10px,1.4vw,24px)">
+    <div class="{{ galleryClass }}">
       <sc-for list="{{ items }}" as="it" hint-placeholder-count="6">
-        <figure aria-label="{{ it.label }}" sc-camel-on-mouse-enter="{{ it.enter }}" sc-camel-on-mouse-leave="{{ it.leave }}" style="margin:0;display:flex;flex-direction:column;gap:14px;cursor:zoom-in;grid-column:{{ it.gridCol }};grid-row:span {{ it.row }}">
-          <div style="position:relative;flex:{{ it.mediaFlex }};aspect-ratio:{{ it.mediaAspect }};overflow:hidden;border-radius:4px;background:#131417">
+        <figure class="{{ it.figureClass }}" aria-label="{{ it.label }}" sc-camel-on-mouse-enter="{{ it.enter }}" sc-camel-on-mouse-leave="{{ it.leave }}">
+          <div class="qz-work-media">
             <button class="qz-work-open" type="button" aria-label="Guarda {{ it.label }}" aria-haspopup="dialog" sc-camel-on-click="{{ it.open }}" style="position:absolute;inset:0;z-index:2;width:100%;height:100%;border:0;background:transparent;cursor:zoom-in"></button>
-            <div style="position:absolute;inset:0;transition:transform 1.2s cubic-bezier(.2,.7,.2,1)" style-hover="transform:scale(1.035)">
+            <div class="qz-work-visual">
               <sc-if value="{{ it.noMedia }}" hint-placeholder-val="{{ false }}">
                 <image-slot id="{{ it.slot }}" shape="rect" placeholder="{{ it.ph }}"></image-slot>
               </sc-if>
               {{ it.videoEl }}
             </div>
             <sc-if value="{{ it.isVideo }}" hint-placeholder-val="{{ false }}">
-              <span style="position:absolute;top:14px;right:14px;pointer-events:none;display:flex;align-items:center;gap:8px;height:26px;padding:0 10px;border-radius:4px;background:rgba(9,10,12,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font:600 11px/1 'Manrope',sans-serif;letter-spacing:.1em">
+              <span class="qz-work-duration">
                 <svg width="7" height="8" sc-camel-view-box="0 0 7 8" fill="#f4f3f0"><path d="M0 0l7 4-7 4z"></path></svg>{{ it.dur }}
               </span>
-              <div style="position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:linear-gradient(180deg, rgba(9,10,12,.1) 0%, rgba(9,10,12,.6) 100%);opacity:{{ it.maskOpacity }};transition:opacity .35s ease">
-                <span style="width:48px;height:48px;border-radius:50%;border:1px solid rgba(244,243,240,.55);display:flex;align-items:center;justify-content:center;background:rgba(9,10,12,.4);backdrop-filter:blur(6px)">
-                  <svg width="13" height="15" sc-camel-view-box="0 0 13 15" fill="#f4f3f0"><path d="M0 0l13 7.5-13 7.5z"></path></svg>
-                </span>
-                <span style="font:600 11px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#f4f3f0">Guarda il video</span>
-              </div>
+              <span class="qz-work-play" aria-hidden="true">
+                <svg width="12" height="14" sc-camel-view-box="0 0 12 14" fill="currentColor"><path d="M1 1l10 6-10 6z"></path></svg>
+              </span>
             </sc-if>
           </div>
           <figcaption class="qz-work-caption">
             <span class="qz-work-title">{{ it.t }}</span>
             <span class="qz-work-context">{{ it.context }}</span>
-            <span class="qz-work-output">{{ it.output }} · {{ it.dur }}</span>
-            <a class="qz-work-enquire" href="#contatti" data-project="{{ it.t }}" sc-camel-on-click="{{ stop }}">Vorrei riprese come queste</a>
+            <span class="qz-work-output">{{ it.output }}</span>
           </figcaption>
         </figure>
       </sc-for>
     </div>
     <p class="qz-work-note">Riprese aeree di Alessio Mazzetti. Le clip sono estratti di riprese più lunghe. <a href="https://www.youtube.com/@Ale_mazzetti" target="_blank" rel="noopener noreferrer">Altri lavori su YouTube</a></p>
+    <div id="per-chi" class="qz-audiences" style="scroll-margin-top:{{ navH }}">
+      <p><strong>Aziende e strutture</strong>Sedi e spazi da presentare. Anche per immobili e ospitalità; i lavori qui mostrati sono esempi aziendali.</p>
+      <p><strong>Eventi e social</strong>Eventi, sport e persone in movimento. Inquadrature orizzontali o verticali, in base al canale.</p>
+    </div>
   </section>
 
   <!-- SERVIZI E CONSEGNE -->
@@ -706,7 +723,7 @@ input,textarea{caret-color:#c9a227}
 
   <!-- CHI SONO -->
   <section id="chi-sono" class="qz-section qz-about" data-screen-label="Chi sono" style="scroll-margin-top:{{ navH }}">
-    <img class="qz-about__portrait" src="assets/home/about-portrait.webp" alt="Alessio Mazzetti" title="Alessio Mazzetti, pilota di drone a Roma" loading="lazy" decoding="async">
+    <img class="qz-about__portrait" src="assets/home/about-portrait-back.webp" alt="Alessio Mazzetti con felpa bianca e visore sollevato" title="Alessio Mazzetti, pilota di drone a Roma" width="900" height="1125" loading="lazy" decoding="async">
     <div>
       <h2>Sono Alessio Mazzetti<span>.</span></h2>
       <p class="qz-about__intro">Pilota di drone e filmmaker, con base a Roma.</p>
@@ -866,21 +883,17 @@ const CATS = ['Aziende e strutture','Eventi e social'];
 // <video> elements via hls.js.
 const BUNNY_CDN = 'https://vz-0c0a8faa-9e0.b-cdn.net';
 
-// Layout in row-groups whose col spans each sum to exactly 12 (the grid's column
-// count), so grid-auto-flow:dense always tiles them with no leftover gaps.
+// Keep this order stable: each index maps to an existing work-N like counter.
+// CSS composes the gallery without changing media or keyboard navigation order.
 const WORKS = [
-  // row-group A (row:8) — 8 + 4 = 12
-  { t:'Baia turchese', cat:'Mare e nautica', place:'Mare e nautica', context:'Una barca e il panorama della baia.', output:'Video orizzontale', video:true, dur:'0:09', shape:'wide', col:8, row:8, src:'1aefb782-ca14-4b48-89c5-5cc82158c654', poster:'assets/portfolio/baia-turchese-poster.jpg' },
-  { t:'Ritratto sulla spiaggia', cat:'Persone e social', place:'Eventi e social', context:'Un ritratto sulla spiaggia, con inquadratura verticale.', output:'Video verticale', video:true, dur:'0:10', shape:'vert', col:4, row:8, src:'807bc22c-5b5f-490f-9a5f-9f556ab690aa', poster:'assets/portfolio/ritratto-spiaggia-poster.jpg' },
-  // row-group B (row:5) — 4 + 4 + 4 = 12
-  { t:'Gommone in mare aperto', cat:'Mare e nautica', place:'Mare e nautica', context:'Gommone e paesaggio marino ripresi dall’alto.', output:'Video orizzontale', video:true, dur:'0:11', shape:'wide', col:4, row:5, src:'6f0051e3-53f5-4925-9bf6-39da2172a01c', poster:'assets/portfolio/gommone-mare-aperto-poster.jpg' },
-  { t:'Catamarano all’ancora', cat:'Mare e nautica', place:'Mare e nautica', context:'L’imbarcazione e lo spazio di mare che la circonda.', output:'Video orizzontale', video:true, dur:'0:10', shape:'wide', col:4, row:5, src:'057649d7-ea00-40aa-962b-bbd2f3cf08cd', poster:'assets/portfolio/catamarano-ancora-poster.jpg' },
-  { t:'Corsa sulla spiaggia al tramonto', cat:'Sport', place:'Eventi e social', context:'Una corsa sulla spiaggia nella luce del tramonto.', output:'Video orizzontale', video:true, dur:'0:09', shape:'wide', col:4, row:5, src:'e719f204-0e9e-432e-8d74-b10e7491baa2', poster:'assets/portfolio/corsa-tramonto-poster.jpg' },
-  // row-group C (row:6) — 6 + 6 = 12
-  { t:'Sede aziendale e area logistica', cat:'Aziende', place:'Aziende e strutture', context:'Una vista d’insieme della sede e degli spazi logistici.', output:'Video orizzontale', video:true, dur:'0:15', shape:'wide', col:6, row:6, src:'30fee487-8334-44ce-9269-874f2bef6b5e', poster:'assets/portfolio/sede-aziendale-logistica-poster.jpg' },
-  { t:'Struttura commerciale con impianto solare', cat:'Strutture', place:'Aziende e strutture', context:'Edificio commerciale e impianto solare in copertura.', output:'Video orizzontale', video:true, dur:'0:14', shape:'wide', col:6, row:6, src:'afb6a3e9-793d-4150-8c97-ed95f0b96594', poster:'assets/portfolio/struttura-impianto-solare-poster.jpg' },
-  // row-group D (row:8) — 8 centrato (colonne 3-10)
-  { t:'Serata evento', cat:'Eventi', place:'Eventi e social', context:'La serata e il suo contesto, con riprese aeree.', output:'Video orizzontale', video:true, dur:'0:26', shape:'wide', col:8, row:8, start:3, src:'6231945d-bb20-41f8-9b2d-0b6c37eacde4', poster:'assets/portfolio/serata-evento-poster.jpg' },
+  { t:'Baia turchese', cat:'Mare e nautica', place:'Mare e nautica', context:'Una barca e il panorama della baia.', output:'Video orizzontale', video:true, dur:'0:09', shape:'wide', src:'1aefb782-ca14-4b48-89c5-5cc82158c654', poster:'assets/portfolio/baia-turchese-poster.jpg' },
+  { t:'Ritratto sulla spiaggia', cat:'Persone e social', place:'Eventi e social', context:'Un ritratto sulla spiaggia, con inquadratura verticale.', output:'Video verticale', video:true, dur:'0:10', shape:'vert', src:'807bc22c-5b5f-490f-9a5f-9f556ab690aa', poster:'assets/portfolio/ritratto-spiaggia-poster.jpg' },
+  { t:'Gommone in mare aperto', cat:'Mare e nautica', place:'Mare e nautica', context:'Gommone e paesaggio marino ripresi dall’alto.', output:'Video orizzontale', video:true, dur:'0:11', shape:'wide', src:'6f0051e3-53f5-4925-9bf6-39da2172a01c', poster:'assets/portfolio/gommone-mare-aperto-poster.jpg' },
+  { t:'Catamarano all’ancora', cat:'Mare e nautica', place:'Mare e nautica', context:'L’imbarcazione e lo spazio di mare che la circonda.', output:'Video orizzontale', video:true, dur:'0:10', shape:'wide', src:'057649d7-ea00-40aa-962b-bbd2f3cf08cd', poster:'assets/portfolio/catamarano-ancora-poster.jpg' },
+  { t:'Corsa sulla spiaggia al tramonto', cat:'Sport', place:'Eventi e social', context:'Una corsa sulla spiaggia nella luce del tramonto.', output:'Video orizzontale', video:true, dur:'0:09', shape:'wide', src:'e719f204-0e9e-432e-8d74-b10e7491baa2', poster:'assets/portfolio/corsa-tramonto-poster.jpg' },
+  { t:'Sede aziendale e area logistica', cat:'Aziende', place:'Aziende e strutture', context:'Una vista d’insieme della sede e degli spazi logistici.', output:'Video orizzontale', video:true, dur:'0:15', shape:'wide', src:'30fee487-8334-44ce-9269-874f2bef6b5e', poster:'assets/portfolio/sede-aziendale-logistica-poster.jpg' },
+  { t:'Struttura commerciale con impianto solare', cat:'Strutture', place:'Aziende e strutture', context:'Edificio commerciale e impianto solare in copertura.', output:'Video orizzontale', video:true, dur:'0:14', shape:'wide', src:'afb6a3e9-793d-4150-8c97-ed95f0b96594', poster:'assets/portfolio/struttura-impianto-solare-poster.jpg' },
+  { t:'Serata evento', cat:'Eventi', place:'Eventi e social', context:'La serata e il suo contesto, con riprese aeree.', output:'Video orizzontale', video:true, dur:'0:26', shape:'wide', src:'6231945d-bb20-41f8-9b2d-0b6c37eacde4', poster:'assets/portfolio/serata-evento-poster.jpg' },
 ].map((w, i) => ({ ...w, slot: 'work-' + (i + 1) }));
 const ASPECT = { wide:'16/9', tall:'4/5', vert:'9/16' };
 const LBW = { wide:'min(92vw, 136vh)', tall:'min(92vw, 60vh)', vert:'min(92vw, 42vh)' };
@@ -1843,7 +1856,7 @@ function MaskedHeading(props) {
 }
 
 class Component extends DCLogic {
-  state = { filter: 'Tutti', lb: null, mobile: (typeof window !== 'undefined' && window.innerWidth < 1100), scrolled: false, pastHero: false, menu: false, sent: false, sending: false, sendError: false, hoverIdx: null, step: 0, tipoVal: '', stepError: '', contactVisible: false, inputFocused: false, consentOpen: false };
+  state = { filter: 'Tutti', lb: null, mobile: (typeof window !== 'undefined' && window.innerWidth < 1100), scrolled: false, pastHero: false, menu: false, sent: false, sending: false, sendError: false, step: 0, tipoVal: '', stepError: '', contactVisible: false, inputFocused: false, consentOpen: false };
 
   componentDidMount() {
     if (window.qzMountConsent) window.qzMountConsent(document.querySelector('#qz-consent-slot'));
@@ -2034,7 +2047,7 @@ class Component extends DCLogic {
   };
 
   renderVals() {
-    const { mobile, scrolled, pastHero, menu, filter, lb, sent, sending, sendError, hoverIdx, step, tipoVal, stepError } = this.state;
+    const { mobile, scrolled, pastHero, menu, filter, lb, sent, sending, sendError, step, tipoVal, stepError } = this.state;
     const p = this.props;
     const list = this.filtered();
     const cur = lb != null ? list[lb] : null;
@@ -2079,22 +2092,16 @@ class Component extends DCLogic {
           onClick: () => this.setState({ filter: label, lb: null }) };
       }),
       workStatus: (filter === 'Tutti' ? 'Tutti i lavori' : filter) + ' · ' + list.length + ' video',
-      gridCols: mobile ? 1 : 12,
-      gridRow: mobile ? 'auto' : 'clamp(40px, 4.2vw, 70px)',
+      galleryClass: 'qz-work-grid' + (filter === 'Tutti' ? ' qz-work-grid--all' : ''),
       items: list.map((w, i) => {
-        const [c, r] = mobile ? [1, 1] : (filter === 'Tutti' ? [w.col, w.row] : [6, 6]);
-        const gridCol = (!mobile && w.start && filter === 'Tutti') ? (w.start + ' / span ' + c) : ('span ' + c);
         const label = w.t + ': ' + (w.video ? 'video con drone' : 'foto aerea') + ' (' + w.place + ')';
-        return { ...w, col: c, row: r, gridCol, label, isVideo: !!w.video, noMedia: !w.src,
+        return { ...w, figureClass: 'qz-work-item' + (w.shape === 'vert' ? ' qz-work-item--portrait' : ''), label, isVideo: !!w.video, noMedia: !w.src,
           ph: (w.video ? 'Fermo immagine video · ' : 'Foto · ') + w.place + (w.shape === 'vert' ? ' (9:16)' : ''),
           videoEl: w.src ? this.video(w.src, { poster: w.poster, lazy: true }) : null,
-          mediaAspect: mobile ? (w.shape === 'vert' ? '9/16' : '16/9') : 'auto',
-          mediaFlex: mobile ? 'none' : '1',
-          maskOpacity: hoverIdx === i ? 1 : 0,
           likeEl: w.video ? React.createElement(VideoLikeButton, { videoId: w.slot }) : null,
           open: e => { this.pendingFocus = e.currentTarget; this.setState({ lb: i }); if (window.qzEvent) window.qzEvent('video_aperto', { video_titolo: w.t, video_categoria: w.place }); },
-          enter: e => { const v = e.currentTarget.querySelector('video'); if (v) { if (v.__hls && !v.__hlsStarted) { v.__hls.startLoad(); v.__hlsStarted = true; } v.play().catch(() => {}); } this.setState({ hoverIdx: i }); },
-          leave: e => { const v = e.currentTarget.querySelector('video'); v && v.pause(); this.setState({ hoverIdx: null }); } };
+          enter: e => { const v = e.currentTarget.querySelector('video'); if (v) { if (v.__hls && !v.__hlsStarted) { v.__hls.startLoad(); v.__hlsStarted = true; } v.play().catch(() => {}); } },
+          leave: e => { const v = e.currentTarget.querySelector('video'); v && v.pause(); } };
       }),
 
       lbOpen: !!cur,

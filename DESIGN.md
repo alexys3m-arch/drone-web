@@ -114,7 +114,7 @@ Text selection uses gold with dark text. Inputs use a gold caret. The muted toke
 
 Syne is the display and title family. Manrope carries paragraphs, controls, and metadata. Both use local font files in `public/assets/fonts/`.
 
-The hero uses the display role. Section headings use the headline role, and delivery headings use the delivery-title role. The main paragraph measure stops at 65 characters. Project descriptions and output metadata use smaller Manrope text, with tabular numerals for durations and counts.
+The hero uses the display role. Section headings use the headline role, and delivery headings use the delivery-title role. The main paragraph measure stops at 65 characters. Project descriptions and output metadata use smaller Manrope text. Preview duration badges and result counts use tabular numerals.
 
 At the content breakpoint, hero type becomes `clamp(38px,10vw,56px)` with `-.03em` tracking. Navigation retains its compact uppercase treatment. Filter labels use sentence case.
 
@@ -122,9 +122,9 @@ At the content breakpoint, hero type becomes `clamp(38px,10vw,56px)` with `-.03e
 
 The main content container stops at 1500px. Hero copy has a 1420px container and sits near the bottom of the footage. Page inset and section spacing use the fluid frontmatter tokens.
 
-On desktop, the portfolio uses twelve columns and varied spans. The all-work view preserves the existing collage. Filtered work uses six-column entries. Below 1100px, the runtime switches to one column with the original horizontal or vertical media ratio.
+The portfolio preserves native 16:9 landscape and 9:16 portrait frames. At 1100px and above, the twelve-column all-work view opens with an eight-column landscape beside a four-column portrait spanning two rows. Two smaller landscapes sit below the lead; remaining work uses six-column pairs. Filtered work uses paired entries, with portraits spanning two rows and capped at 440px wide. Between 768px and 1099px, the gallery uses two columns and finishes with a centered landscape spanning both columns. Below 768px, it uses one column with a 36px gap; portrait entries stop at 380px wide. Natural media proportions remain independent of caption length.
 
-Section introductions use two columns. Delivery options and the process use three. At 767px and below, these groups become single columns. The two audience descriptions remain side by side. Filters form two columns, with all-work access spanning the first row. Both audience filters remain visible without horizontal scrolling.
+The gallery introduction stacks its heading and description. Audience filters sit above the media, while the longer audience descriptions follow the gallery. Other section introductions use two columns. Delivery options and the process use three. At 767px and below, these groups become single columns. The two audience descriptions remain side by side. Filters form two columns, with all-work access spanning the first row. Both audience filters remain visible without horizontal scrolling.
 
 Form service choices use two columns and become one at 520px and below. Navigation switches to a menu below 1100px. The separate 680px hero treatment strengthens the scrim, and the 1180px rule hides the desktop WhatsApp text label.
 
@@ -144,7 +144,9 @@ Primary hero actions have off-white fill and dark text. Secondary actions have t
 
 Filters use `aria-pressed` to expose selection. The selected filter has the same off-white and dark pairing as the primary action. A live status line reports the selected group and video count.
 
-Portfolio entries pair a media button with a title, factual context, format, duration, and enquiry link. The media button opens a labelled dialog. Its focus outline sits inside the media frame. The dialog contains focus and returns it to the opener when dismissed.
+Portfolio entries pair a media button with a title, factual context and format. Durations appear only on preview badges. A persistent play mark identifies each preview; hovering or keyboard focus turns it gold. Gallery captions have no enquiry links. The media button opens a labelled dialog; its existing project enquiry link remains available inside the dialog. Its focus outline sits inside the media frame. The dialog contains focus and returns it to the opener when dismissed.
+
+The about section uses the supplied white-sweatshirt portrait, with a stable 4:5 frame and intrinsic dimensions to reserve space.
 
 Service tiles show a Syne title and Manrope description. Hover adds a faint gold tint. Selection strengthens the tint and uses a gold border. The field style keeps a bottom rule, gold focus, and readable placeholder text. Inline errors sit beside the relevant input. Text fields and the message area use an expanded focus offset.
 
