@@ -1,14 +1,9 @@
 // Dominio "Contatto": cos'è una richiesta di contatto valida. Nessun I/O, solo regole.
-const LIMITI = { nome: 120, email: 160, telefono: 40, tipo: 80, messaggio: 4000 };
-const MIN_CIFRE_TELEFONO = 6;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// Pure rules are also served to the browser: no DOM, network or UI dependencies.
+const { LIMITI, isEmail: eEmail, isPhone } = require('../../../public/assets/js/shared/contact-rules');
 
 function pulisci(valore, max) {
   return String(valore == null ? '' : valore).trim().slice(0, max);
-}
-
-function eEmail(testo) {
-  return EMAIL_RE.test(testo);
 }
 
 // Il modulo ha un solo campo "contatto" (telefono o email): i vecchi campi email e telefono restano supportati.
@@ -30,7 +25,7 @@ function haEmail(richiesta) {
 }
 
 function haTelefono(richiesta) {
-  return richiesta.telefono.replace(/\D/g, '').length >= MIN_CIFRE_TELEFONO;
+  return isPhone(richiesta.telefono);
 }
 
 // Valida: serve un nome e almeno un modo per essere richiamati.

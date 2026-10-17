@@ -2,6 +2,13 @@
 <html lang="it"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<link rel="stylesheet" href="assets/css/site.css">
+<script src="assets/js/shared/contact-rules.js"></script>
+<script src="assets/js/portfolio/catalogue.js"></script>
+<script src="assets/js/portfolio/video-player.js"></script>
+<script src="assets/js/portfolio/likes-client.js"></script>
 <script src="assets/js/runtime/runtime-1.js"></script>
 <script>
 window.dataLayer = window.dataLayer || [];
@@ -47,537 +54,14 @@ gtag('config','G-0RN6LP6RPF');
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Quota Zero — Riprese con drone a Roma","url":"https://quotazerodrone.it/","image":"https://quotazerodrone.it/assets/brand/brand-icon-wide.png","logo":"https://quotazerodrone.it/assets/brand/favicon-192.png","description":"Riprese con drone a Roma e nel Lazio: video e foto aeree per eventi, aziende, immobili, agriturismi e contenuti social.","founder":{"@type":"Person","name":"Alessio Mazzetti"},"areaServed":[{"@type":"City","name":"Roma"},{"@type":"AdministrativeArea","name":"Lazio"}],"serviceType":["Riprese aeree con drone","Fotografia aerea","Video per aziende","Riprese per eventi","Riprese per immobili e strutture ricettive"],"sameAs":["https://www.youtube.com/@Ale_mazzetti"]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Alessio Mazzetti","url":"https://quotazerodrone.it/","sameAs":["https://www.youtube.com/@Ale_mazzetti"],"jobTitle":"Drone Pilot & Aerial Filmmaker","address":{"@type":"PostalAddress","addressLocality":"Roma","addressCountry":"IT"},"description":"Riprese aeree, fotografia e video con drone per immobili, aziende, eventi e contenuti social.","knowsAbout":["Riprese aeree","Fotografia con drone","Video making","Color grading"]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Servono permessi per volare?","acceptedAnswer":{"@type":"Answer","text":"Dipende dal luogo. Controllo io le regole di volo (zone vietate, aeroporti, aree protette, presenza di persone) e, se serve, richiedo le autorizzazioni prima del giorno delle riprese. Se in un posto non si può volare, te lo dico subito."}},{"@type":"Question","name":"Cosa succede se il tempo è brutto?","acceptedAnswer":{"@type":"Answer","text":"Con vento forte o pioggia non si vola: ci mettiamo d'accordo per un'altra data, appena il meteo lo permette."}},{"@type":"Question","name":"Quanto costa una ripresa?","acceptedAnswer":{"@type":"Answer","text":"Dipende da luogo, durata e da cosa ti serve. Raccontami il progetto e ti dico una cifra chiara prima di iniziare, senza sorprese."}},{"@type":"Question","name":"In che formato ricevo il video?","acceptedAnswer":{"@type":"Answer","text":"Dipende dalla formula. Con \"Riprese da montare\" ricevi i filmati del drone con i tempi morti rimossi, senza musica né montaggio finale. Con \"Video completo\" ricevi il video montato, con colore e musica. In entrambi i casi nel formato che ti serve per sito, YouTube o social (orizzontale o verticale)."}},{"@type":"Question","name":"Lavori anche fuori Roma?","acceptedAnswer":{"@type":"Answer","text":"La mia base è Roma e lavoro soprattutto nel Lazio. Se il progetto è più lontano, scrivimi e valutiamo insieme."}}]}</script>
-<style>/* cyrillic-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("assets/fonts/manrope-cyrillic-ext.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("assets/fonts/manrope-cyrillic.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("assets/fonts/manrope-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("assets/fonts/manrope-vietnamese.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("assets/fonts/manrope-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url("assets/fonts/manrope-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("assets/fonts/manrope-cyrillic-ext.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("assets/fonts/manrope-cyrillic.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("assets/fonts/manrope-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("assets/fonts/manrope-vietnamese.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("assets/fonts/manrope-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("assets/fonts/manrope-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("assets/fonts/manrope-cyrillic-ext.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("assets/fonts/manrope-cyrillic.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("assets/fonts/manrope-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("assets/fonts/manrope-vietnamese.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("assets/fonts/manrope-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("assets/fonts/manrope-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("assets/fonts/manrope-cyrillic-ext.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("assets/fonts/manrope-cyrillic.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("assets/fonts/manrope-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("assets/fonts/manrope-vietnamese.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("assets/fonts/manrope-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("assets/fonts/manrope-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("assets/fonts/manrope-cyrillic-ext.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("assets/fonts/manrope-cyrillic.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* greek */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("assets/fonts/manrope-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("assets/fonts/manrope-vietnamese.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("assets/fonts/manrope-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Manrope';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("assets/fonts/manrope-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* greek */
-@font-face {
-  font-family: 'Syne';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("assets/fonts/syne-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Syne';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("assets/fonts/syne-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Syne';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("assets/fonts/syne-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* greek */
-@font-face {
-  font-family: 'Syne';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("assets/fonts/syne-greek.woff2") format('woff2');
-  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Syne';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("assets/fonts/syne-latin-ext.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Syne';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("assets/fonts/syne-latin.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-</style>
 <script src="assets/js/runtime/runtime-2.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
-<script type="module">
-  import { Renderer, Camera, Geometry, Program, Mesh } from 'https://cdn.jsdelivr.net/npm/ogl@1.0.11/+esm';
-  window.OGL = { Renderer, Camera, Geometry, Program, Mesh };
-  import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.1/build/three.module.js';
-  window.THREE = THREE;
-</script>
-<style>
-html{scroll-behavior:smooth;background:#090a0c}
-body{margin:0;background:#090a0c;color:#f4f3f0;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:#f4f3f0;text-decoration:none}
-a:hover{color:#c9a227}
-::selection{background:#c9a227;color:#090a0c}
-input,select,textarea,button{font-family:inherit}
-:focus-visible{outline:2px solid #c9a227;outline-offset:3px}
-@media (max-width:680px){
-    .hero-scrim{background:linear-gradient(180deg, rgba(9,10,12,.55) 0%, rgba(9,10,12,.35) 28%, rgba(9,10,12,.5) 55%, rgba(9,10,12,.92) 100%)!important}
-  .hero-title{text-shadow:0 4px 20px rgba(0,0,0,.75),0 1px 4px rgba(0,0,0,.6)!important}
-}
-@keyframes scrollDrop{0%{transform:translateY(-100%)}60%{transform:translateY(100%)}100%{transform:translateY(100%)}}
-@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
-.masked-heading{position:relative;width:100%;margin:0;padding:0;text-wrap:balance;-webkit-font-smoothing:antialiased}
-.masked-heading__measure{color:transparent}
-.masked-heading__word{display:inline-block;white-space:pre}
-.masked-heading__word:not(:last-child)::after{content:' '}
-.masked-heading__baseline{display:inline-block;width:0;height:0}
-.masked-heading__defs{position:absolute;width:0;height:0;overflow:hidden}
-.masked-heading__reveal{position:absolute;inset:0;display:block;pointer-events:none}
-.masked-heading__clip{position:absolute;inset:0;display:block}
-.masked-heading__media{position:absolute;inset:0;display:block;will-change:transform,filter}
-.masked-heading__source{display:block;width:100%;height:100%;object-fit:cover;user-select:none;-webkit-user-drag:none}
 
-/* Ported from React Bits' PulseHeart CSS, colors left as CSS custom properties so
-   each instance can set its own (see VideoLikeButton's props). */
-.pulse-heart{--ph-size:40px;--ph-corner:32px;--ph-pill:#232326;--ph-idle:#8b8b93;--ph-liked:#ff4d6d;--ph-text:#f5f5f5;--ph-roll:350ms;--ph-stroke:2.5px;--ph-ease-out:cubic-bezier(.23,1,.32,1);position:relative;display:inline-flex;align-items:center;justify-content:center;margin:0;padding:0;border:0;border-radius:var(--ph-corner);background:none;color:var(--ph-text);font-family:inherit;cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;outline:none;transition:transform 160ms var(--ph-ease-out)}
-.pulse-heart[data-pressed]{transform:scale(.97)}
-.pulse-heart:focus-visible{outline:2px solid color-mix(in srgb, var(--ph-liked) 60%, transparent);outline-offset:3px}
-.pulse-heart:disabled{opacity:.55;cursor:default}
-.pulse-heart__pill{display:inline-flex;align-items:center;gap:calc(var(--ph-size) * .25);padding:calc(var(--ph-size) * .3);padding-inline-end:calc(var(--ph-size) * .4);border-radius:var(--ph-corner);background:var(--ph-pill);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);transform-origin:center}
-.pulse-heart[data-no-count] .pulse-heart__pill{padding-inline-end:calc(var(--ph-size) * .3)}
-.pulse-heart__heart{display:block;width:var(--ph-size);height:var(--ph-size);color:var(--ph-idle);transform-origin:center;transition:color 160ms ease}
-.pulse-heart__heart svg{display:block;width:100%;height:100%;overflow:visible;fill:none;stroke:currentColor;stroke-width:var(--ph-stroke);stroke-linecap:round;stroke-linejoin:round}
-.pulse-heart[data-solid] .pulse-heart__heart svg,.pulse-heart[data-liked='true'] .pulse-heart__heart svg{fill:currentColor}
-.pulse-heart[data-liked='true'] .pulse-heart__heart{color:var(--ph-liked)}
-.pulse-heart[data-running] .pulse-heart__heart,.pulse-heart[data-instant] .pulse-heart__heart{transition:none}
-@media (hover:hover) and (pointer:fine){.pulse-heart:not([data-liked='true']):not(:disabled):hover .pulse-heart__heart{color:color-mix(in srgb, var(--ph-idle) 45%, var(--ph-liked))}}
-.pulse-heart__count{display:inline-flex;font-size:calc(var(--ph-size) * .5);font-weight:600;line-height:1;letter-spacing:-.1px;font-variant-numeric:tabular-nums;color:var(--ph-text)}
-.pulse-heart__count>span{display:block;height:1em}
-.pulse-heart__slot{position:relative;overflow:hidden}
-.pulse-heart__roll{display:flex;flex-direction:column;transition:transform var(--ph-roll) var(--ph-ease-out)}
-.pulse-heart__roll>span{display:block;height:1em;line-height:1}
-.pulse-heart__sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;border:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-@media (pointer:coarse){.pulse-heart{min-width:44px;min-height:44px}}
-@media (prefers-contrast:more){.pulse-heart__pill{box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--ph-text) 25%, transparent)}}
-.qz-card{transition:border-color .3s ease}
-.qz-card:hover{border-color:#c9a227}
-.faq details{border-bottom:1px solid rgba(255,255,255,.14)}
-.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:24px 0;font:500 clamp(18px,1.8vw,22px)/1.25 'Syne',sans-serif;letter-spacing:-.01em;color:#f4f3f0;transition:color .3s ease}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:'+';flex:none;font:400 28px/1 'Manrope',sans-serif;color:#c9a227;transition:transform .3s ease}
-.faq details[open] summary::after{transform:rotate(45deg)}
-.faq summary:hover{color:#c9a227}
-.faq summary:focus-visible{outline:2px solid #c9a227;outline-offset:4px}
-.faq p{margin:0 0 24px;max-width:62ch;font:400 clamp(14px,1vw,16px)/1.65 'Manrope',sans-serif;color:rgba(244,243,240,.75)}
-@media (max-width:1180px){.nav-phone span{display:none}}
-a:focus-visible{outline:2px solid #c9a227;outline-offset:3px}
-.qz-step{display:none}
-#qz-form[data-step="s0"] .qz-step[data-n="0"],#qz-form[data-step="s1"] .qz-step[data-n="1"],#qz-form[data-step="s2"] .qz-step[data-n="2"]{display:block;animation:qzStepIn .45s cubic-bezier(.2,.7,.2,1)}
-@keyframes qzStepIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){#qz-form .qz-step{animation:none!important}}
-.qz-q{margin:0 0 clamp(20px,2.4vw,28px);font:500 clamp(28px,3.6vw,40px)/1.05 'Syne',sans-serif;letter-spacing:-.02em;color:#f4f3f0}
-.qz-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.qz-tile{text-align:left;display:flex;flex-direction:column;gap:8px;min-height:110px;padding:20px;background:transparent;border:1px solid rgba(255,255,255,.22);border-radius:6px;color:#f4f3f0;cursor:pointer;font:inherit;transition:border-color .25s ease,background .25s ease,transform .2s ease}
-.qz-tile:hover{border-color:#c9a227;background:rgba(201,162,39,.07)}
-.qz-tile:active{transform:scale(.985)}
-.qz-tile[aria-pressed="true"]{border-color:#c9a227;background:rgba(201,162,39,.13)}
-.qz-tile:focus-visible{outline:2px solid #c9a227;outline-offset:3px}
-.qz-tile__t{font:500 clamp(19px,2vw,23px)/1.1 'Syne',sans-serif;letter-spacing:-.01em}
-.qz-tile__d{font:400 14px/1.45 'Manrope',sans-serif;color:rgba(244,243,240,.7)}
-.qz-big{display:block;width:100%;height:64px;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.3);color:#f4f3f0;font:400 clamp(20px,2.4vw,28px)/1 'Manrope',sans-serif;outline:none;padding:0;border-radius:0;transition:border-color .25s ease}
-.qz-big:focus{border-bottom-color:#c9a227}
-.qz-big:focus-visible{outline:2px solid #c9a227;outline-offset:5px}
-.qz-work-open:focus-visible{outline:3px solid #c9a227;outline-offset:-5px}
-#qz-form textarea:focus-visible{outline:2px solid #c9a227;outline-offset:5px}
-#qz-lightbox video{max-height:calc(100dvh - 200px)}
-.qz-big::placeholder{color:rgba(244,243,240,.65)}
-#qz-form textarea::placeholder{color:rgba(244,243,240,.65)}
-.qz-field-error{margin:12px 0 0;font:600 14px/1.5 'Manrope',sans-serif;color:#e2775a}
-.qz-nav{display:flex;align-items:center;gap:12px;margin-top:32px}
-.qz-next{height:56px;padding:0 32px;border:0;background:#f4f3f0;color:#090a0c;border-radius:4px;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;cursor:pointer;transition:background .3s ease}
-.qz-next:hover{background:#c9a227}
-.qz-back{min-height:48px;padding:0 14px 0 0;background:none;border:0;color:rgba(244,243,240,.72);font:600 12px/1 'Manrope',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:color .25s ease}
-.qz-back:hover{color:#c9a227}
-.qz-next:focus-visible,.qz-back:focus-visible{outline:2px solid #c9a227;outline-offset:3px}
-@media (max-width:520px){.qz-tiles{grid-template-columns:1fr}.qz-tile{min-height:88px}.qz-nav .qz-next{flex:1}}
-.qz-chiedi span:last-child{transition:transform .25s ease}
-.qz-chiedi:hover span:last-child{transform:translateX(4px)}
-@media (prefers-reduced-motion:reduce){.qz-card,.faq summary,.faq summary::after{transition:none}}
-@media (max-width:767px){
-.qz-tap{min-height:48px}
-a.qz-flexc{display:inline-flex;align-items:center}
-.qz-inline{display:inline-block;padding:14px 6px;margin:-14px -6px}
-.qz-phone-cta{width:100%;justify-content:center}
-}
-
-:root{--qz-page:clamp(20px,3vw,40px);--qz-section:clamp(64px,7vw,104px);--qz-muted:#bdbcb8;--qz-rule:rgba(244,243,240,.16)}
-html{scrollbar-color:#77705a #090a0c}
-a{text-underline-offset:4px}
-input,textarea{caret-color:#c9a227}
-.qz-hero{position:relative;height:92svh;min-height:640px;max-height:1000px;overflow:hidden}
-.hero-scrim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(9,10,12,.18) 25%,rgba(9,10,12,.42) 55%,rgba(9,10,12,.92) 100%)}
-.qz-hero__content{position:absolute;inset:0;max-width:1420px;margin:auto;padding:0 var(--qz-page) 72px;display:flex;flex-direction:column;justify-content:flex-end;align-items:flex-start}
-.hero-title{margin:0;font:600 clamp(48px,5.8vw,84px)/1.04 'Syne',sans-serif;letter-spacing:-.035em;text-wrap:balance;max-width:15ch}
-.hero-title span,.qz-section h2>span,.qz-coverage h2>span{color:#c9a227}
-.qz-hero__content>p{max-width:55ch;margin:24px 0 28px;font:400 clamp(16px,1.4vw,19px)/1.65 'Manrope',sans-serif;color:#deddd9}
-.hero-cta{display:flex;flex-wrap:wrap;gap:12px}
-.qz-button{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border:1px solid #bdbcb8;border-radius:4px;font-size:14px;font-weight:600;transition:background .25s,color .25s,border-color .25s}
-.qz-button--solid{background:#f4f3f0;color:#090a0c;border-color:#f4f3f0}
-.qz-button:hover{background:#c9a227;color:#090a0c;border-color:#c9a227}
-.qz-section{max-width:1500px;box-sizing:border-box;margin:0 auto;padding:var(--qz-section) var(--qz-page);border-top:1px solid var(--qz-rule)}
-.qz-section h2{margin:0;font:500 clamp(34px,4.5vw,60px)/1.08 'Syne',sans-serif;letter-spacing:-.03em;text-wrap:balance}
-.qz-section-intro{display:grid;grid-template-columns:1.1fr 1fr;align-items:end;gap:32px;margin-bottom:40px}
-.qz-section-intro>p,.qz-audiences p,.qz-delivery p,.qz-process-list p,.qz-about__copy,.qz-coverage p{margin:0;max-width:65ch;font:400 16px/1.7 'Manrope',sans-serif;color:var(--qz-muted)}
-.qz-audiences{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding-top:24px;border-top:1px solid var(--qz-rule);margin-top:32px}
-.qz-audiences strong{display:block;font-size:16px;font-weight:600;color:#f4f3f0;margin-bottom:6px}
-.qz-audiences p{font-size:14px}
-.qz-filterbar{display:flex;flex-wrap:wrap;gap:8px}
-.filter-chip{min-height:48px;padding:12px 20px;border:1px solid;border-radius:4px;font:600 14px/1.3 'Manrope',sans-serif;cursor:pointer;transition:background .25s,color .25s,border-color .25s}
-.filter-chip:hover{border-color:#c9a227!important}
-.qz-work .qz-section-intro{display:block;max-width:65ch}
-.qz-work .qz-section-intro>p{margin-top:20px}
-.qz-work-status{margin:18px 0 24px;color:var(--qz-muted);font-size:13px;font-variant-numeric:tabular-nums}
-.qz-work-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:44px 24px}
-.qz-work-item{min-width:0;margin:0}
-.qz-work-item--portrait{grid-row:span 2;width:100%;max-width:440px;justify-self:center}
-.qz-work-media{position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:4px;background:#131417}
-.qz-work-item--portrait .qz-work-media{aspect-ratio:9/16}
-.qz-work-visual{position:absolute;inset:0;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
-.qz-work-media:hover .qz-work-visual{transform:scale(1.015)}
-.qz-work-duration{position:absolute;top:14px;right:14px;pointer-events:none;display:flex;align-items:center;gap:8px;min-height:28px;padding:0 10px;border-radius:4px;background:rgba(9,10,12,.8);font:600 12px/1 'Manrope',sans-serif;font-variant-numeric:tabular-nums}
-.qz-work-play{position:absolute;left:16px;bottom:16px;pointer-events:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;border:1px solid rgba(244,243,240,.65);border-radius:50%;background:rgba(9,10,12,.8);color:#f4f3f0;transition:background .25s,color .25s,border-color .25s}
-.qz-work-media:hover .qz-work-play,.qz-work-media:focus-within .qz-work-play{background:#c9a227;border-color:#c9a227;color:#090a0c}
-.qz-work-caption{display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding-top:16px;cursor:default}
-.qz-work-title{max-width:34ch;font:500 clamp(18px,1.6vw,23px)/1.25 'Syne',sans-serif;letter-spacing:-.02em;text-wrap:balance}
-.qz-work-context{font-size:14px;line-height:1.55;color:var(--qz-muted);max-width:60ch}
-.qz-work-output{font-size:12px;line-height:1.5;color:var(--qz-muted);font-variant-numeric:tabular-nums}
-@media(min-width:1100px){
-.qz-work-grid{grid-template-columns:repeat(12,minmax(0,1fr))}
-.qz-work-item{grid-column:span 6}
-.qz-work-grid--all .qz-work-item:first-child{grid-column:span 8}
-.qz-work-grid--all .qz-work-item:nth-child(2){grid-column:9 / span 4}
-.qz-work-grid--all .qz-work-item:nth-child(3),.qz-work-grid--all .qz-work-item:nth-child(4){grid-column:span 4}
-}
-@media(min-width:768px) and (max-width:1099px){.qz-work-grid--all .qz-work-item:last-child{grid-column:1/-1;width:100%;max-width:720px;justify-self:center}}
-.qz-work-note,.qz-section-note{margin:32px 0 0;font-size:14px;line-height:1.7;color:var(--qz-muted)}
-.qz-work-note a,.qz-section-note a,.qz-coverage a{color:#c9a227;text-decoration:underline}
-.qz-deliveries{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px}
-.qz-delivery{display:flex;flex-direction:column;align-items:flex-start;padding-top:24px;border-top:1px solid var(--qz-rule);gap:16px}
-.qz-delivery h3{margin:0;font:500 27px/1.15 'Syne',sans-serif;letter-spacing:-.02em}
-.qz-delivery .qz-delivery-use{font-size:14px;color:#deddd9}
-.qz-delivery>a{display:inline-flex;align-items:center;min-height:48px;margin-top:auto;font-size:14px;font-weight:600;color:#c9a227;text-decoration:underline}
-.qz-process-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;list-style:none;counter-reset:steps;margin:40px 0 0;padding:0}
-.qz-process-list li{counter-increment:steps;padding-top:20px;border-top:1px solid var(--qz-rule)}
-.qz-process-list li:before{content:counter(steps,decimal-leading-zero);display:block;color:#c9a227;font-size:14px;font-variant-numeric:tabular-nums;margin-bottom:16px}
-.qz-process-list h3{margin:0 0 12px;font:500 23px/1.2 'Syne',sans-serif;letter-spacing:-.02em}
-.qz-process-list p{font-size:15px}
-.qz-about{display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1fr);gap:clamp(32px,6vw,96px);align-items:center}
-.qz-about__portrait{display:block;width:100%;height:auto;max-width:440px;aspect-ratio:4/5;object-fit:cover;border-radius:4px}
-.qz-about__intro{font-size:20px;line-height:1.5;margin:24px 0 16px}
-.qz-about__copy{margin-bottom:28px}
-.qz-coverage{display:flex;align-items:baseline;gap:32px;max-width:1500px;box-sizing:border-box;margin:auto;padding:32px var(--qz-page);border-top:1px solid var(--qz-rule)}
-.qz-coverage h2{flex-shrink:0;margin:0;font:500 28px/1.2 'Syne',sans-serif;letter-spacing:-.02em}
-.qz-lb-like{display:flex;align-items:center}
-.qz-lb-like .pulse-heart__pill,.qz-lb-like .pulse-heart__heart{animation:none}
-.qz-like-hint{display:none}
-@media(max-width:767px){
-.qz-hero{height:86svh;min-height:620px;max-height:840px}
-.qz-hero__content{padding-bottom:48px}
-.hero-title{font-size:clamp(38px,10vw,56px);letter-spacing:-.03em}
-.qz-hero__content>p{margin:20px 0 24px;font-size:16px}
-.hero-cta{width:100%;gap:10px}
-.qz-button{padding:0 16px;font-size:13px;flex:1}
-.qz-section-intro{grid-template-columns:1fr;gap:20px;margin-bottom:28px}
-.qz-audiences{gap:20px}
-.qz-audiences p{font-size:13px;line-height:1.6}
-.qz-audiences strong{font-size:14px;line-height:1.4}
-.qz-filterbar{display:grid;grid-template-columns:1fr 1fr}
-.filter-chip:first-child{grid-column:1/-1}
-.filter-chip{padding:12px 8px;font-size:13px}
-.qz-work-grid{grid-template-columns:minmax(0,1fr);gap:36px}
-.qz-work-item--portrait{grid-row:auto;max-width:380px}
-.qz-deliveries,.qz-process-list{grid-template-columns:1fr;gap:32px}
-.qz-delivery{gap:12px}
-.qz-about{grid-template-columns:1fr}
-.qz-about__portrait{max-width:360px;justify-self:center}
-.qz-coverage{flex-direction:column;gap:12px}
-}
-
-</style>
 </helmet>
 
-<div id="qz-page" style="background:#090a0c;color:#f4f3f0;min-height:100vh;overflow-x:clip">
+<div id="qz-page" style="background:var(--qz-canvas);color:var(--qz-foreground);min-height:100vh;overflow-x:clip">
 
-  <a href="#lavori" style="position:fixed;left:-9999px;top:0;z-index:110;background:#f4f3f0;color:#090a0c;padding:14px 22px;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.14em;text-transform:uppercase;border-radius:0 0 4px 0" style-focus="left:0">Salta al contenuto</a>
+  <a href="#lavori" style="position:fixed;left:-9999px;top:0;z-index:110;background:var(--qz-foreground);color:var(--qz-canvas);padding:14px 22px;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.14em;text-transform:uppercase;border-radius:0 0 4px 0" style-focus="left:0">Salta al contenuto</a>
 
   <header style="position:fixed;top:0;left:0;right:0;z-index:50;transition:background .5s ease, border-color .5s ease, backdrop-filter .5s ease;background:{{ navBg }};backdrop-filter:{{ navBlur }};-webkit-backdrop-filter:{{ navBlur }};border-bottom:1px solid {{ navBorder }}">
     <nav style="max-width:1500px;margin:0 auto;height:{{ navH }};padding:0 clamp(20px,3vw,40px);display:flex;align-items:center;justify-content:space-between;gap:24px;transition:height .4s ease">
@@ -585,33 +69,33 @@ input,textarea{caret-color:#c9a227}
       <sc-if value="{{ desktop }}" hint-placeholder-val="{{ true }}">
         <div style="display:flex;align-items:center;gap:clamp(24px,3vw,48px)">
           <div style="display:flex;gap:clamp(18px,2.4vw,40px);white-space:nowrap;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,243,240,.72)">
-            <a href="#lavori" style="color:inherit;transition:color .3s ease" style-hover="color:#f4f3f0">Lavori</a>
-            <a href="#servizi" style="color:inherit;transition:color .3s ease" style-hover="color:#f4f3f0">Servizi</a>
-            <a href="#chi-sono" style="color:inherit;transition:color .3s ease" style-hover="color:#f4f3f0">Chi sono</a>
+            <a class="qz-nav-link" href="#lavori">Lavori</a>
+            <a class="qz-nav-link" href="#servizi">Servizi</a>
+            <a class="qz-nav-link" href="#chi-sono">Chi sono</a>
           </div>
-          <a class="nav-phone" href="https://wa.me/393342303374?text=Ciao%20Alessio%2C%20vorrei%20info%20su%20una%20ripresa%20con%20drone" target="_blank" rel="noopener noreferrer" aria-label="Scrivimi su WhatsApp" style="display:flex;align-items:center;gap:10px;white-space:nowrap;font:600 13px/1 'Manrope',sans-serif;letter-spacing:.04em;color:#f4f3f0;transition:color .3s ease" style-hover="color:#c9a227"><svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg><span>WhatsApp</span></a>
-          <a href="#contatti" style="height:44px;padding:0 24px;display:flex;align-items:center;border:1px solid rgba(255,255,255,.22);border-radius:4px;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;transition:all .3s ease;color:#f4f3f0" style-hover="border-color:#c9a227;color:#c9a227">Contattami</a>
+          <a class="nav-phone" href="https://wa.me/393342303374?text=Ciao%20Alessio%2C%20vorrei%20info%20su%20una%20ripresa%20con%20drone" target="_blank" rel="noopener noreferrer" aria-label="Scrivimi su WhatsApp" style="display:flex;align-items:center;gap:10px;white-space:nowrap;font:600 13px/1 'Manrope',sans-serif;letter-spacing:.04em;color:var(--qz-foreground);transition:color .3s ease" style-hover="color:var(--qz-gold)"><svg class="qz-icon qz-icon--whatsapp" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#whatsapp"></use></svg><span>WhatsApp</span></a>
+          <a href="#contatti" style="height:44px;padding:0 24px;display:flex;align-items:center;border:1px solid rgba(255,255,255,.22);border-radius:4px;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;transition:all .3s ease;color:var(--qz-foreground)" style-hover="border-color:var(--qz-gold);color:var(--qz-gold)">Contattami</a>
         </div>
       </sc-if>
       <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}">
-        <button id="qz-menu-toggle" type="button" sc-camel-on-click="{{ toggleMenu }}" aria-label="{{ menuLabel }}" aria-expanded="{{ menuExpanded }}" aria-controls="qz-menu" style="width:44px;height:44px;margin-right:-10px;background:none;border:0;color:#f4f3f0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer">
-          <span style="display:block;width:22px;height:1.5px;background:#f4f3f0;transition:transform .35s ease;transform:{{ burgerTop }}"></span>
-          <span style="display:block;width:22px;height:1.5px;background:#f4f3f0;transition:transform .35s ease;transform:{{ burgerBot }}"></span>
+        <button id="qz-menu-toggle" type="button" sc-camel-on-click="{{ toggleMenu }}" aria-label="{{ menuLabel }}" aria-expanded="{{ menuExpanded }}" aria-controls="qz-menu" style="width:44px;height:44px;margin-right:-10px;background:none;border:0;color:var(--qz-foreground);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer">
+          <span style="display:block;width:22px;height:1.5px;background:var(--qz-foreground);transition:transform .35s ease;transform:{{ burgerTop }}"></span>
+          <span style="display:block;width:22px;height:1.5px;background:var(--qz-foreground);transition:transform .35s ease;transform:{{ burgerBot }}"></span>
         </button>
       </sc-if>
     </nav>
   </header>
 
   <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
-    <div id="qz-menu" role="dialog" aria-modal="true" aria-label="Menu di navigazione" tabindex="-1" style="position:fixed;inset:0;z-index:40;background:#090a0c;overflow-y:auto;padding:110px 24px max(40px,env(safe-area-inset-bottom));display:flex;flex-direction:column;justify-content:space-between">
+    <div id="qz-menu" role="dialog" aria-modal="true" aria-label="Menu di navigazione" tabindex="-1" style="position:fixed;inset:0;z-index:40;background:var(--qz-canvas);overflow-y:auto;padding:110px 24px max(40px,env(safe-area-inset-bottom));display:flex;flex-direction:column;justify-content:space-between">
       <div style="display:flex;flex-direction:column;gap:10px;font:500 38px/1.2 'Syne',sans-serif;letter-spacing:-.02em">
         <a href="#lavori" sc-camel-on-click="{{ closeMenu }}">Lavori</a>
         <a href="#servizi" sc-camel-on-click="{{ closeMenu }}">Servizi</a>
         <a href="#chi-sono" sc-camel-on-click="{{ closeMenu }}">Chi sono</a>
         <a href="#contatti" sc-camel-on-click="{{ closeMenu }}">Contatti</a>
       </div>
-          <a href="https://wa.me/393342303374?text=Ciao%20Alessio%2C%20vorrei%20info%20su%20una%20ripresa%20con%20drone" target="_blank" rel="noopener noreferrer" style="height:56px;display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px;background:#f4f3f0;border-radius:4px;color:#090a0c;font:600 15px/1 'Manrope',sans-serif;letter-spacing:.04em"><svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>Scrivimi su WhatsApp</a>
-      <a href="#contatti" sc-camel-on-click="{{ closeMenu }}" style="height:52px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.22);border-radius:4px;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;transition:all .3s ease;color:#f4f3f0" style-hover="border-color:#c9a227;color:#c9a227">Contattami</a>
+          <a href="https://wa.me/393342303374?text=Ciao%20Alessio%2C%20vorrei%20info%20su%20una%20ripresa%20con%20drone" target="_blank" rel="noopener noreferrer" style="height:56px;display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px;background:var(--qz-foreground);border-radius:4px;color:var(--qz-canvas);font:600 15px/1 'Manrope',sans-serif;letter-spacing:.04em"><svg class="qz-icon qz-icon--whatsapp" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#whatsapp"></use></svg>Scrivimi su WhatsApp</a>
+      <a href="#contatti" sc-camel-on-click="{{ closeMenu }}" style="height:52px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.22);border-radius:4px;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;transition:all .3s ease;color:var(--qz-foreground)" style-hover="border-color:var(--qz-gold);color:var(--qz-gold)">Contattami</a>
     </div>
   </sc-if>
 
@@ -643,7 +127,7 @@ input,textarea{caret-color:#c9a227}
     </div>
     <div class="qz-filterbar" role="group" aria-label="Filtra i lavori per utilizzo">
       <sc-for list="{{ filters }}" as="f" hint-placeholder-count="3">
-        <button type="button" class="filter-chip" aria-pressed="{{ f.pressed }}" sc-camel-on-click="{{ f.onClick }}" style="border-color:{{ f.border }};background:{{ f.bg }};color:{{ f.color }}">{{ f.label }}</button>
+        <button type="button" class="filter-chip" aria-pressed="{{ f.pressed }}" sc-camel-on-click="{{ f.onClick }}"><span>{{ f.label }}</span><span class="qz-filter-count" aria-hidden="true">{{ f.count }}</span></button>
       </sc-for>
     </div>
     <p class="qz-work-status" role="status" aria-live="polite">{{ workStatus }}</p>
@@ -728,11 +212,11 @@ input,textarea{caret-color:#c9a227}
       <h2>Sono Alessio Mazzetti<span>.</span></h2>
       <p class="qz-about__intro">Pilota di drone e filmmaker, con base a Roma.</p>
       <p class="qz-about__copy">Cerco nuove prospettive anche nei luoghi che conosco. Seguo il progetto dalle riprese alla consegna, curando l’inquadratura e il formato adatto al tuo utilizzo.</p>
-        <div data-reveal="" style="margin-top:8px;padding-top:26px;border-top:1px solid rgba(255,255,255,.11);display:flex;flex-direction:column;gap:16px">
+        <div style="margin-top:8px;padding-top:26px;border-top:1px solid rgba(255,255,255,.11);display:flex;flex-direction:column;gap:16px">
           <span style="font:600 11px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,243,240,.55)">Certificazioni &amp; sicurezza</span>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px 24px;font:400 14px/1.5 'Manrope',sans-serif;color:rgba(244,243,240,.72)">
-            <div><strong style="color:#f4f3f0;font-weight:600">Patentino APR</strong><br>Categoria A1/A3 (Open) — EASA/ENAC, valido fino al 04.08.2031</div>
-            <div><strong style="color:#f4f3f0;font-weight:600">Registrazione pilota</strong><br>N. ITA-RP-000081907act</div>
+            <div><strong style="color:var(--qz-foreground);font-weight:600">Patentino APR</strong><br>Categoria A1/A3 (Open) — EASA/ENAC, valido fino al 04.08.2031</div>
+            <div><strong style="color:var(--qz-foreground);font-weight:600">Registrazione pilota</strong><br>N. ITA-RP-000081907act</div>
           </div>
         </div>
     </div>
@@ -742,9 +226,9 @@ input,textarea{caret-color:#c9a227}
   <section id="faq" data-screen-label="06a FAQ" style="scroll-margin-top:{{ navH }};border-top:1px solid rgba(255,255,255,.11);padding:clamp(64px,7vw,104px) clamp(20px,3vw,40px);max-width:1500px;margin:0 auto">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:clamp(32px,5vw,80px);align-items:start">
       <div>
-            <h2 data-reveal="" style="margin:0;font:500 clamp(32px,4.4vw,46px)/.952 'Syne',sans-serif;letter-spacing:-.03em;max-width:14ch;text-wrap:balance">Domande <span style="color:#c9a227">frequenti.</span></h2>
+            <h2 style="margin:0;font:500 clamp(32px,4.4vw,46px)/.952 'Syne',sans-serif;letter-spacing:-.03em;max-width:14ch;text-wrap:balance">Domande <span style="color:var(--qz-gold)">frequenti.</span></h2>
       </div>
-      <div data-reveal="" class="faq" style="border-top:1px solid rgba(255,255,255,.14)">
+      <div class="faq" style="border-top:1px solid rgba(255,255,255,.14)">
         <details>
           <summary>Servono permessi per volare?</summary>
           <p>Dipende dal luogo. Controllo io le regole di volo (zone vietate, aeroporti, aree protette, presenza di persone) e, se serve, richiedo le autorizzazioni prima del giorno delle riprese. Se in un posto non si può volare, te lo dico subito.</p>
@@ -776,20 +260,21 @@ input,textarea{caret-color:#c9a227}
 
   <!-- CONTATTI -->
   <section id="contatti" data-screen-label="07 Contatti" style="scroll-margin-top:{{ navH }};border-top:1px solid rgba(255,255,255,.11);padding:clamp(96px,10vw,144px) clamp(20px,3vw,40px);max-width:1500px;margin:0 auto">
-    <h2 data-reveal="" style="margin:0;font:500 clamp(34px,5vw,64px)/.95 'Syne',sans-serif;letter-spacing:-.03em;max-width:20ch;text-wrap:balance">Hai un progetto? <span style="color:#c9a227">Portiamolo in aria.</span></h2>
-    <p data-reveal="" style="margin:18px 0 0;max-width:42ch;font:400 clamp(15px,1.1vw,18px)/1.625 'Manrope',sans-serif;color:rgba(244,243,240,.68)">Raccontami cosa hai in mente e troviamo insieme la prospettiva migliore.</p>
-    <div data-reveal="" style="margin-top:clamp(32px,4vw,44px);display:flex;flex-wrap:wrap;align-items:center;gap:24px 40px">
-          <a class="qz-phone-cta" href="https://wa.me/393342303374?text=Ciao%20Alessio%2C%20vorrei%20info%20su%20una%20ripresa%20con%20drone" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:14px;height:68px;padding:0 34px;background:#f4f3f0;color:#090a0c;border-radius:4px;font:600 clamp(17px,1.6vw,22px)/1 'Manrope',sans-serif;letter-spacing:.02em;transition:all .3s ease" style-hover="background:#c9a227"><svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>Scrivimi su WhatsApp</a>
-      <a class="qz-tap" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=alexys3m@gmail.com" target="_blank" rel="noopener noreferrer" style="display:flex;flex-direction:column;justify-content:center;gap:6px;color:inherit;transition:color .3s ease" style-hover="color:#c9a227"><span style="font:600 11px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,243,240,.5)">Email</span><span style="font:400 15px/1 'Manrope',sans-serif">alexys3m@gmail.com</span></a>
+    <h2 style="margin:0;font:500 clamp(34px,5vw,64px)/.95 'Syne',sans-serif;letter-spacing:-.03em;max-width:20ch;text-wrap:balance">Hai un progetto? <span style="color:var(--qz-gold)">Portiamolo in aria.</span></h2>
+    <p style="margin:18px 0 0;max-width:42ch;font:400 clamp(15px,1.1vw,18px)/1.625 'Manrope',sans-serif;color:rgba(244,243,240,.68)">Raccontami cosa hai in mente e troviamo insieme la prospettiva migliore.</p>
+    <div style="margin-top:clamp(32px,4vw,44px);display:flex;flex-wrap:wrap;align-items:center;gap:24px 40px">
+          <a class="qz-phone-cta" href="https://wa.me/393342303374?text=Ciao%20Alessio%2C%20vorrei%20info%20su%20una%20ripresa%20con%20drone" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;gap:14px;height:68px;padding:0 34px;background:var(--qz-foreground);color:var(--qz-canvas);border-radius:4px;font:600 clamp(17px,1.6vw,22px)/1 'Manrope',sans-serif;letter-spacing:.02em;transition:all .3s ease" style-hover="background:var(--qz-gold)"><svg class="qz-icon qz-icon--whatsapp" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#whatsapp"></use></svg>Scrivimi su WhatsApp</a>
+      <a class="qz-tap" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=alexys3m@gmail.com" target="_blank" rel="noopener noreferrer" style="display:flex;flex-direction:column;justify-content:center;gap:6px;color:inherit;transition:color .3s ease" style-hover="color:var(--qz-gold)"><span style="font:600 11px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,243,240,.5)">Email</span><span style="font:400 15px/1 'Manrope',sans-serif">alexys3m@gmail.com</span></a>
       <span style="font:400 14px/1.5 'Manrope',sans-serif;color:rgba(244,243,240,.55)">Scrivimi su WhatsApp o per email, senza impegno.</span>
     </div>
     <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
-      <form id="qz-form" data-reveal="" data-step="{{ stepAttr }}" sc-camel-on-submit="{{ submit }}" novalidate="novalidate" style="margin-top:clamp(40px,5vw,64px);max-width:760px">
+      <form aria-busy="{{ sending }}" id="qz-form" data-step="{{ stepAttr }}" sc-camel-on-submit="{{ submit }}" novalidate="novalidate" style="margin-top:clamp(40px,5vw,64px);max-width:760px">
         <div style="display:flex;align-items:center;gap:16px;margin-bottom:clamp(28px,3vw,40px)">
-          <div style="flex:1;height:3px;background:rgba(255,255,255,.14);border-radius:3px;overflow:hidden"><div style="height:100%;width:100%;background:#c9a227;border-radius:3px;transform:scaleX({{ progressScale }});transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1)"></div></div>
+          <div class="qz-form-progress" role="progressbar" aria-label="Avanzamento della richiesta" aria-valuemin="1" aria-valuemax="3" aria-valuenow="{{ stepNum }}"><div style="transform:scaleX({{ progressScale }})"></div></div>
           <span role="status" style="font:600 12px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,243,240,.6);white-space:nowrap">Passo {{ stepNum }} di 3</span>
         </div>
-        <sc-if value="{{ hasTipo }}" hint-placeholder-val="{{ false }}"><p style="margin:0 0 24px;font:400 15px/1.5 'Manrope',sans-serif;color:rgba(244,243,240,.8)">Servizio scelto: <strong style="color:#c9a227">{{ tipoLabel }}</strong> <button type="button" class="qz-back" style="padding:6px 10px;margin-left:8px;letter-spacing:.04em;text-transform:none" sc-camel-on-click="{{ back0 }}">Cambia</button></p></sc-if>
+        <fieldset class="qz-form-fields" disabled="{{ sending }}" aria-label="Dati della richiesta">
+        <sc-if value="{{ hasTipo }}" hint-placeholder-val="{{ false }}"><p style="margin:0 0 24px;font:400 15px/1.5 'Manrope',sans-serif;color:rgba(244,243,240,.8)">Servizio scelto: <strong style="color:var(--qz-gold)">{{ tipoLabel }}</strong> <button type="button" class="qz-back" style="padding:6px 10px;margin-left:8px;letter-spacing:.04em;text-transform:none" sc-camel-on-click="{{ back0 }}">Cambia</button></p></sc-if>
         <div class="qz-step" data-n="0">
           <h3 class="qz-q">Cosa ti serve?</h3>
           <div class="qz-tiles">
@@ -800,40 +285,42 @@ input,textarea{caret-color:#c9a227}
         </div>
         <div class="qz-step" data-n="1">
           <h3 class="qz-q">Come ti chiami?</h3>
-          <input class="qz-big" name="nome" autocomplete="name" required="required" aria-invalid="{{ nameInvalid }}" aria-describedby="{{ nameErrorId }}" placeholder="Il tuo nome" aria-label="Il tuo nome">
+          <input class="qz-big" name="nome" maxlength="{{ fieldLimits.nome }}" autocomplete="name" required="required" aria-invalid="{{ nameInvalid }}" aria-describedby="{{ nameErrorId }}" placeholder="Il tuo nome" aria-label="Il tuo nome">
           <sc-if value="{{ hasNameError }}" hint-placeholder-val="{{ false }}"><p id="qz-name-error" class="qz-field-error" role="alert">{{ stepError }}</p></sc-if>
           <div class="qz-nav">
-            <button type="button" class="qz-back" sc-camel-on-click="{{ back0 }}">← Indietro</button>
-            <button type="button" class="qz-next" sc-camel-on-click="{{ next1 }}">Avanti →</button>
+            <button type="button" class="qz-back" sc-camel-on-click="{{ back0 }}"><svg class="qz-icon qz-icon--back" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#arrow"></use></svg>Indietro</button>
+            <button type="button" class="qz-next" sc-camel-on-click="{{ next1 }}">Avanti<svg class="qz-icon" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#arrow"></use></svg></button>
           </div>
         </div>
         <div class="qz-step" data-n="2">
           <h3 class="qz-q">Dove ti ricontatto?</h3>
-          <input class="qz-big" name="contatto" autocomplete="on" autocapitalize="none" spellcheck="false" required="required" aria-invalid="{{ contactInvalid }}" aria-describedby="{{ contactErrorId }}" placeholder="Telefono o email" aria-label="Telefono o email">
+          <input class="qz-big" name="contatto" maxlength="{{ fieldLimits.email }}" autocomplete="on" autocapitalize="none" spellcheck="false" required="required" aria-invalid="{{ contactInvalid }}" aria-describedby="{{ contactErrorId }}" placeholder="Telefono o email" aria-label="Telefono o email">
+          <p id="qz-contact-hint" class="qz-field-hint">Un’email o un numero di telefono a cui ricontattarti.</p>
           <sc-if value="{{ hasContactError }}" hint-placeholder-val="{{ false }}"><p id="qz-contact-error" class="qz-field-error" role="alert">{{ stepError }}</p></sc-if>
-          <label style="display:flex;flex-direction:column;gap:8px;margin-top:28px"><span style="font:600 12px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,243,240,.6)">Vuoi aggiungere qualcosa? <span style="letter-spacing:.04em;text-transform:none;font-weight:400;color:rgba(244,243,240,.5)">(facoltativo)</span></span><textarea name="messaggio" rows="2" placeholder="Dove, per cosa, entro quando… anche due righe vanno bene" style="background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.3);color:#f4f3f0;font:400 16px/1.5 'Manrope',sans-serif;padding:8px 0;resize:vertical;border-radius:0"></textarea></label>
+          <label style="display:flex;flex-direction:column;gap:8px;margin-top:28px"><span class="qz-message-label">Vuoi aggiungere qualcosa? <span style="letter-spacing:.04em;text-transform:none;font-weight:400;color:rgba(244,243,240,.5)">(facoltativo)</span></span><textarea name="messaggio" maxlength="{{ fieldLimits.messaggio }}" rows="2" placeholder="Dove, per cosa, entro quando… anche due righe vanno bene" style="background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.3);color:var(--qz-foreground);font:400 16px/1.5 'Manrope',sans-serif;padding:8px 0;resize:vertical;border-radius:0"></textarea></label>
           <div class="qz-nav">
-            <button type="button" class="qz-back" sc-camel-on-click="{{ back1 }}">← Indietro</button>
-            <button type="submit" class="qz-next" disabled="{{ sending }}" style="opacity:{{ sending ? 0.6 : 1 }}">{{ submitLabel }}</button>
+            <button type="button" class="qz-back" sc-camel-on-click="{{ back1 }}"><svg class="qz-icon qz-icon--back" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#arrow"></use></svg>Indietro</button>
+            <button type="submit" class="qz-next" disabled="{{ sending }}" aria-busy="{{ sending }}">{{ submitLabel }}</button>
           </div>
-          <p style="margin:18px 0 0;max-width:60ch;font:400 12px/1.5 'Manrope',sans-serif;color:rgba(244,243,240,.5)">Inviando accetti che i dati inseriti siano usati per rispondere alla tua richiesta. Leggi l'<a class="qz-inline" href="privacy.html" style="color:#c9a227;text-decoration:underline">informativa privacy</a>.</p>
+          <p style="margin:18px 0 0;max-width:60ch;font:400 12px/1.5 'Manrope',sans-serif;color:rgba(244,243,240,.5)">Inviando accetti che i dati inseriti siano usati per rispondere alla tua richiesta. Leggi l'<a class="qz-inline" href="privacy.html" style="color:var(--qz-gold);text-decoration:underline">informativa privacy</a>.</p>
         </div>
+        </fieldset>
         <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
         <sc-if value="{{ sendError }}" hint-placeholder-val="{{ false }}">
-          <p role="alert" style="margin:18px 0 0;font:400 14px/1.5 'Manrope',sans-serif;color:#e2775a">Qualcosa è andato storto nell'invio. Riprova, oppure scrivimi direttamente a <a href="mailto:alexys3m@gmail.com" style="color:#c9a227;text-decoration:underline">alexys3m@gmail.com</a>.</p>
+          <p role="alert" style="margin:18px 0 0;font:400 14px/1.5 'Manrope',sans-serif;color:var(--qz-error)">Qualcosa è andato storto nell'invio. Riprova, oppure scrivimi direttamente a <a href="mailto:alexys3m@gmail.com" style="color:var(--qz-gold);text-decoration:underline">alexys3m@gmail.com</a>.</p>
         </sc-if>
       </form>
     </sc-if>
     <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
       <div id="qz-form-success" role="status" tabindex="-1" style="margin-top:56px;padding-top:32px;border-top:1px solid rgba(255,255,255,.11);display:flex;flex-direction:column;gap:14px">
-        <span style="font:600 11px/1 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#c9a227">Messaggio ricevuto</span>
+        <span style="font:600 11px/1 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--qz-gold)">Messaggio ricevuto</span>
         <p style="margin:0;font:500 clamp(26px,2.8vw,38px)/1.1 'Syne',sans-serif;letter-spacing:-.02em">Grazie. Ti ricontatto a breve per parlare del decollo.</p>
       </div>
     </sc-if>
   </section>
 
   <footer style="border-top:1px solid rgba(255,255,255,.11);padding:32px clamp(20px,3vw,40px) {{ footerPad }};max-width:1500px;margin:0 auto">
-    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;font:600 11px/1 'Manrope',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(244,243,240,.55)">
+    <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px;font:500 12px/1.5 'Manrope',sans-serif;letter-spacing:.02em;color:var(--qz-muted)">
       <span style="display:flex;align-items:center"><img src="assets/brand/brand-wordmark.png" alt="Quota Zero" title="Quota Zero — riprese con drone a Roma" style="height:18px;width:auto;display:block"></span>
       <span>Riprese aeree &amp; fotografia con drone · Roma</span>
       <span style="display:flex;flex-wrap:wrap;gap:6px 22px"><a class="qz-tap qz-flexc" href="https://www.youtube.com/@Ale_mazzetti" target="_blank" rel="noopener noreferrer" style="color:inherit">YouTube</a><a class="qz-tap qz-flexc" href="privacy.html" style="color:inherit">Privacy &amp; cookie</a><a class="qz-tap qz-flexc" href="#cookie-settings" style="color:inherit">Gestisci cookie</a><span>© 2026</span></span>
@@ -842,14 +329,14 @@ input,textarea{caret-color:#c9a227}
 
   <sc-if value="{{ showSticky }}" hint-placeholder-val="{{ false }}">
     <div id="qz-sticky-contact" style="position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));z-index:30;display:flex;gap:8px">
-      <a href="#contatti" style="flex:1;height:52px;display:flex;align-items:center;justify-content:center;background:#f4f3f0;color:#090a0c;border-radius:4px;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:background .3s ease,color .3s ease" style-hover="background:#c9a227;color:#090a0c">Contattami</a>
-      <a href="https://wa.me/393342303374?text=Ciao%20Alessio%2C%20vorrei%20info%20su%20una%20ripresa%20con%20drone" target="_blank" rel="noopener noreferrer" aria-label="Scrivimi su WhatsApp" style="flex:1;height:52px;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:4px;background:rgba(9,10,12,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28);color:#f4f3f0;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase"><svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="#25D366" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"></path></svg>WhatsApp</a>
+      <a href="#contatti" style="flex:1;height:52px;display:flex;align-items:center;justify-content:center;background:var(--qz-foreground);color:var(--qz-canvas);border-radius:4px;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:background .3s ease,color .3s ease" style-hover="background:var(--qz-gold);color:var(--qz-canvas)">Contattami</a>
+      <a href="https://wa.me/393342303374?text=Ciao%20Alessio%2C%20vorrei%20info%20su%20una%20ripresa%20con%20drone" target="_blank" rel="noopener noreferrer" aria-label="Scrivimi su WhatsApp" style="flex:1;height:52px;display:flex;align-items:center;justify-content:center;gap:10px;border-radius:4px;background:rgba(9,10,12,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.28);color:var(--qz-foreground);font:600 12px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase"><svg class="qz-icon qz-icon--whatsapp" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#whatsapp"></use></svg>WhatsApp</a>
     </div>
   </sc-if>
 
   <sc-if value="{{ lbOpen }}" hint-placeholder-val="{{ false }}">
     <div id="qz-lightbox" role="dialog" aria-modal="true" aria-labelledby="qz-lightbox-title" tabindex="-1" sc-camel-on-click="{{ closeLb }}" style="position:fixed;inset:0;z-index:100;overflow-y:auto;box-sizing:border-box;background:rgba(6,7,8,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:64px 16px 24px">
-      <div sc-camel-on-click="{{ stop }}" style="position:relative;aspect-ratio:{{ lb.aspect }};width:{{ lb.w }};max-width:100%;background:#131417;overflow:hidden;border-radius:4px;box-shadow:0 40px 120px -40px rgba(0,0,0,.9)">
+      <div sc-camel-on-click="{{ stop }}" style="position:relative;aspect-ratio:{{ lb.aspect }};width:{{ lb.w }};max-width:100%;background:var(--qz-surface);overflow:hidden;border-radius:4px;box-shadow:0 40px 120px -40px rgba(0,0,0,.9)">
         <image-slot id="{{ lb.slot }}" shape="rect" fit="contain" placeholder="{{ lb.ph }}"></image-slot>
         {{ lbVideoEl }}
       </div>
@@ -859,1003 +346,61 @@ input,textarea{caret-color:#c9a227}
           <span id="qz-lightbox-title" aria-live="polite" style="font:500 24px/1.1 'Syne',sans-serif;letter-spacing:-.02em">{{ lb.t }}</span>
           <p style="margin:6px 0 0;max-width:60ch;font:400 15px/1.5 'Manrope',sans-serif;color:rgba(244,243,240,.8)">{{ lb.context }}</p>
           <p style="margin:0;max-width:60ch;font:400 14px/1.5 'Manrope',sans-serif;color:rgba(244,243,240,.65)">{{ lb.output }}</p>
-          <a href="#contatti" data-project="{{ lb.t }}" sc-camel-on-click="{{ closeLb }}" style="display:inline-flex;align-items:center;min-height:44px;color:#c9a227;text-decoration:underline;font:600 14px/1.4 'Manrope',sans-serif">Vorrei un video come questo →</a>
+          <a href="#contatti" data-project="{{ lb.t }}" sc-camel-on-click="{{ closeLb }}" class="qz-text-link">Vorrei un video come questo<svg class="qz-icon" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#arrow"></use></svg></a>
         </div>
         <sc-if value="{{ lbHasLike }}" hint-placeholder-val="{{ false }}">
-          <div class="qz-lb-like">{{ lbLikeEl }}<span class="qz-like-hint">Ti piace? Metti un cuore</span></div>
+          <div class="qz-lb-like">{{ lbLikeEl }}</div>
         </sc-if>
         <div style="display:flex;align-items:center;gap:8px;font:400 12px/1 'Manrope',sans-serif;color:rgba(244,243,240,.6)">
-          <button sc-camel-on-click="{{ prevLb }}" type="button" aria-label="Video precedente" style="width:44px;height:44px;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:none;color:#f4f3f0;cursor:pointer;font-size:15px" style-hover="border-color:#c9a227">←</button>
+          <button sc-camel-on-click="{{ prevLb }}" type="button" aria-label="Video precedente" class="qz-icon-button"><svg class="qz-icon qz-icon--back" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#arrow"></use></svg></button>
           <span style="min-width:52px;text-align:center">{{ lbCount }}</span>
-          <button sc-camel-on-click="{{ nextLb }}" type="button" aria-label="Video successivo" style="width:44px;height:44px;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:none;color:#f4f3f0;cursor:pointer;font-size:15px" style-hover="border-color:#c9a227">→</button>
+          <button sc-camel-on-click="{{ nextLb }}" type="button" aria-label="Video successivo" class="qz-icon-button"><svg class="qz-icon" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#arrow"></use></svg></button>
         </div>
       </div>
-      <button id="qz-lightbox-close" type="button" sc-camel-on-click="{{ closeLb }}" aria-label="Chiudi video" style="position:absolute;top:16px;right:16px;width:44px;height:44px;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:none;color:#f4f3f0;cursor:pointer;font-size:18px" style-hover="border-color:#c9a227">✕</button>
+      <button id="qz-lightbox-close" type="button" sc-camel-on-click="{{ closeLb }}" aria-label="Chiudi video" class="qz-icon-button qz-lightbox-close"><svg class="qz-icon" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#close"></use></svg></button>
     </div>
   </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script="" data-props="{&quot;heroVideo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;f7886441-7ff8-4862-9fe8-f2f4acd0b8a1&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Video&quot;},&quot;stickyCta&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Stile&quot;}}">
-const CATS = ['Aziende e strutture','Eventi e social'];
-// Videos are hosted on Bunny Stream (adaptive HLS, multi-codec) instead of being
-// self-hosted — `src` below is the Bunny video GUID, not a file path. See the
-// `video()` method on the Component class for how these get turned into playable
-// <video> elements via hls.js.
+const { works: WORKS, audiences: CATS, aspects: ASPECT, lightboxWidths: LBW } = window.QZPortfolio;
 const BUNNY_CDN = 'https://vz-0c0a8faa-9e0.b-cdn.net';
+const likeClient = window.QZLikes.createClient({
+  request: (...args) => fetch(...args),
+  storage: { getItem: key => window.localStorage.getItem(key), setItem: (key, value) => window.localStorage.setItem(key, value) },
+});
 
-// Keep this order stable: each index maps to an existing work-N like counter.
-// CSS composes the gallery without changing media or keyboard navigation order.
-const WORKS = [
-  { t:'Baia turchese', cat:'Mare e nautica', place:'Mare e nautica', context:'Una barca e il panorama della baia.', output:'Video orizzontale', video:true, dur:'0:09', shape:'wide', src:'1aefb782-ca14-4b48-89c5-5cc82158c654', poster:'assets/portfolio/baia-turchese-poster.jpg' },
-  { t:'Ritratto sulla spiaggia', cat:'Persone e social', place:'Eventi e social', context:'Un ritratto sulla spiaggia, con inquadratura verticale.', output:'Video verticale', video:true, dur:'0:10', shape:'vert', src:'807bc22c-5b5f-490f-9a5f-9f556ab690aa', poster:'assets/portfolio/ritratto-spiaggia-poster.jpg' },
-  { t:'Gommone in mare aperto', cat:'Mare e nautica', place:'Mare e nautica', context:'Gommone e paesaggio marino ripresi dall’alto.', output:'Video orizzontale', video:true, dur:'0:11', shape:'wide', src:'6f0051e3-53f5-4925-9bf6-39da2172a01c', poster:'assets/portfolio/gommone-mare-aperto-poster.jpg' },
-  { t:'Catamarano all’ancora', cat:'Mare e nautica', place:'Mare e nautica', context:'L’imbarcazione e lo spazio di mare che la circonda.', output:'Video orizzontale', video:true, dur:'0:10', shape:'wide', src:'057649d7-ea00-40aa-962b-bbd2f3cf08cd', poster:'assets/portfolio/catamarano-ancora-poster.jpg' },
-  { t:'Corsa sulla spiaggia al tramonto', cat:'Sport', place:'Eventi e social', context:'Una corsa sulla spiaggia nella luce del tramonto.', output:'Video orizzontale', video:true, dur:'0:09', shape:'wide', src:'e719f204-0e9e-432e-8d74-b10e7491baa2', poster:'assets/portfolio/corsa-tramonto-poster.jpg' },
-  { t:'Sede aziendale e area logistica', cat:'Aziende', place:'Aziende e strutture', context:'Una vista d’insieme della sede e degli spazi logistici.', output:'Video orizzontale', video:true, dur:'0:15', shape:'wide', src:'30fee487-8334-44ce-9269-874f2bef6b5e', poster:'assets/portfolio/sede-aziendale-logistica-poster.jpg' },
-  { t:'Struttura commerciale con impianto solare', cat:'Strutture', place:'Aziende e strutture', context:'Edificio commerciale e impianto solare in copertura.', output:'Video orizzontale', video:true, dur:'0:14', shape:'wide', src:'afb6a3e9-793d-4150-8c97-ed95f0b96594', poster:'assets/portfolio/struttura-impianto-solare-poster.jpg' },
-  { t:'Serata evento', cat:'Eventi', place:'Eventi e social', context:'La serata e il suo contesto, con riprese aeree.', output:'Video orizzontale', video:true, dur:'0:26', shape:'wide', src:'6231945d-bb20-41f8-9b2d-0b6c37eacde4', poster:'assets/portfolio/serata-evento-poster.jpg' },
-].map((w, i) => ({ ...w, slot: 'work-' + (i + 1) }));
-const ASPECT = { wide:'16/9', tall:'4/5', vert:'9/16' };
-const LBW = { wide:'min(92vw, 136vh)', tall:'min(92vw, 60vh)', vert:'min(92vw, 42vh)' };
-
-// Ported from React Bits' MaskedHeading (JSX/import-based) to plain React.createElement
-// calls, since this page has no build step. Behavior kept identical; added `startAt`
-// (seconds) to offset a looping video's playback position from other <video> instances
-// reusing the same source on the page.
-const mhClamp = (v, a, b) => (v < a ? a : v > b ? b : v);
-
-// Ported from React Bits' Particles (JSX, imports `ogl` + a .css file via a bundler)
-// to plain React.createElement calls, since this page has no build step. `ogl` is
-// loaded once as an ES module from a CDN and attached to `window.OGL` (see the
-// <script type="module"> near the GSAP tag); this component polls for it rather than
-// assuming it has landed by the time the effect runs.
-const PT_DEFAULT_COLORS = ['#ffffff', '#ffffff', '#ffffff'];
-
-function ptHexToRgb(hex) {
-  hex = hex.replace(/^#/, '');
-  if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
-  const int = parseInt(hex.slice(0, 6), 16);
-  return [((int >> 16) & 255) / 255, ((int >> 8) & 255) / 255, (int & 255) / 255];
-}
-
-const ptVertex = `
-attribute vec3 position;
-attribute vec4 random;
-attribute vec3 color;
-
-uniform mat4 modelMatrix;
-uniform mat4 viewMatrix;
-uniform mat4 projectionMatrix;
-uniform float uTime;
-uniform float uSpread;
-uniform float uBaseSize;
-uniform float uSizeRandomness;
-
-varying vec4 vRandom;
-varying vec3 vColor;
-
-void main() {
-  vRandom = random;
-  vColor = color;
-
-  vec3 pos = position * uSpread;
-  pos.z *= 10.0;
-
-  vec4 mPos = modelMatrix * vec4(pos, 1.0);
-  float t = uTime;
-  mPos.x += sin(t * random.z + 6.28 * random.w) * mix(0.1, 1.5, random.x);
-  mPos.y += sin(t * random.y + 6.28 * random.x) * mix(0.1, 1.5, random.w);
-  mPos.z += sin(t * random.w + 6.28 * random.y) * mix(0.1, 1.5, random.z);
-
-  vec4 mvPos = viewMatrix * mPos;
-
-  if (uSizeRandomness == 0.0) {
-    gl_PointSize = uBaseSize;
-  } else {
-    gl_PointSize = (uBaseSize * (1.0 + uSizeRandomness * (random.x - 0.5))) / length(mvPos.xyz);
-  }
-
-  gl_Position = projectionMatrix * mvPos;
-}
-`;
-
-const ptFragment = `
-precision highp float;
-
-uniform float uTime;
-uniform float uAlphaParticles;
-varying vec4 vRandom;
-varying vec3 vColor;
-
-void main() {
-  vec2 uv = gl_PointCoord.xy;
-  float d = length(uv - vec2(0.5));
-
-  if(uAlphaParticles < 0.5) {
-    if(d > 0.5) {
-      discard;
-    }
-    gl_FragColor = vec4(vColor + 0.2 * sin(uv.yxx + uTime + vRandom.y * 6.28), 1.0);
-  } else {
-    float circle = smoothstep(0.5, 0.4, d) * 0.8;
-    gl_FragColor = vec4(vColor + 0.2 * sin(uv.yxx + uTime + vRandom.y * 6.28), circle);
-  }
-}
-`;
-
-function ParticlesBG(props) {
-  const {
-    particleCount = 200, particleSpread = 10, speed = 0.1, particleColors,
-    moveParticlesOnHover = false, particleHoverFactor = 1, alphaParticles = false,
-    particleBaseSize = 100, sizeRandomness = 1, cameraDistance = 20,
-    disableRotation = false, pixelRatio = 1, className = '',
-  } = props;
-
-  const containerRef = React.useRef(null);
-  const mouseRef = React.useRef({ x: 0, y: 0 });
-
+function VideoLikeButton({ videoId }) {
+  const [state, setState] = React.useState(() => likeClient.get(videoId));
   React.useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    let cancelled = false;
-    let cleanup = () => {};
-
-    (async () => {
-      let tries = 0;
-      while (!window.OGL && tries < 100) {
-        await new Promise(r => setTimeout(r, 50));
-        tries++;
-      }
-      if (cancelled || !window.OGL) return;
-      const { Renderer, Camera, Geometry, Program, Mesh } = window.OGL;
-
-      const renderer = new Renderer({ dpr: pixelRatio, depth: false, alpha: true });
-      const gl = renderer.gl;
-      container.appendChild(gl.canvas);
-      gl.clearColor(0, 0, 0, 0);
-
-      const camera = new Camera(gl, { fov: 15 });
-      camera.position.set(0, 0, cameraDistance);
-
-      const resize = () => {
-        const width = container.clientWidth, height = container.clientHeight;
-        renderer.setSize(width, height);
-        camera.perspective({ aspect: gl.canvas.width / gl.canvas.height });
-      };
-      window.addEventListener('resize', resize, false);
-      resize();
-      const ro = new ResizeObserver(resize);
-      ro.observe(container);
-
-      const handleMouseMove = e => {
-        const rect = container.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-        const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-        mouseRef.current = { x, y };
-      };
-      if (moveParticlesOnHover) container.addEventListener('mousemove', handleMouseMove);
-
-      const count = particleCount;
-      const positions = new Float32Array(count * 3);
-      const randoms = new Float32Array(count * 4);
-      const colors = new Float32Array(count * 3);
-      const palette = particleColors && particleColors.length > 0 ? particleColors : PT_DEFAULT_COLORS;
-
-      for (let i = 0; i < count; i++) {
-        let x, y, z, len;
-        do {
-          x = Math.random() * 2 - 1;
-          y = Math.random() * 2 - 1;
-          z = Math.random() * 2 - 1;
-          len = x * x + y * y + z * z;
-        } while (len > 1 || len === 0);
-        const r = Math.cbrt(Math.random());
-        positions.set([x * r, y * r, z * r], i * 3);
-        randoms.set([Math.random(), Math.random(), Math.random(), Math.random()], i * 4);
-        const col = ptHexToRgb(palette[Math.floor(Math.random() * palette.length)]);
-        colors.set(col, i * 3);
-      }
-
-      const geometry = new Geometry(gl, {
-        position: { size: 3, data: positions },
-        random: { size: 4, data: randoms },
-        color: { size: 3, data: colors },
-      });
-
-      const program = new Program(gl, {
-        vertex: ptVertex, fragment: ptFragment,
-        uniforms: {
-          uTime: { value: 0 }, uSpread: { value: particleSpread },
-          uBaseSize: { value: particleBaseSize * pixelRatio },
-          uSizeRandomness: { value: sizeRandomness },
-          uAlphaParticles: { value: alphaParticles ? 1 : 0 },
-        },
-        transparent: true, depthTest: false,
-      });
-
-      const particles = new Mesh(gl, { mode: gl.POINTS, geometry, program });
-
-      let animationFrameId;
-      let lastTime = performance.now();
-      let elapsed = 0;
-
-      const update = t => {
-        animationFrameId = requestAnimationFrame(update);
-        const delta = t - lastTime;
-        lastTime = t;
-        elapsed += delta * speed;
-        program.uniforms.uTime.value = elapsed * 0.001;
-
-        if (moveParticlesOnHover) {
-          particles.position.x = -mouseRef.current.x * particleHoverFactor;
-          particles.position.y = -mouseRef.current.y * particleHoverFactor;
-        } else {
-          particles.position.x = 0;
-          particles.position.y = 0;
-        }
-
-        if (!disableRotation) {
-          particles.rotation.x = Math.sin(elapsed * 0.0002) * 0.1;
-          particles.rotation.y = Math.cos(elapsed * 0.0005) * 0.15;
-          particles.rotation.z += 0.01 * speed;
-        }
-
-        renderer.render({ scene: particles, camera });
-      };
-      animationFrameId = requestAnimationFrame(update);
-
-      cleanup = () => {
-        window.removeEventListener('resize', resize);
-        ro.disconnect();
-        if (moveParticlesOnHover) container.removeEventListener('mousemove', handleMouseMove);
-        cancelAnimationFrame(animationFrameId);
-        try { if (container.contains(gl.canvas)) container.removeChild(gl.canvas); } catch (e) {}
-      };
-    })();
-
-    return () => { cancelled = true; cleanup(); };
-  }, [particleCount, particleSpread, speed, moveParticlesOnHover, particleHoverFactor, alphaParticles, particleBaseSize, sizeRandomness, cameraDistance, disableRotation, pixelRatio]);
-
-  return React.createElement('div', {
-    ref: containerRef,
-    className: ('particles-container ' + className).trim(),
-    style: { position: 'relative', width: '100%', height: '100%', overflow: 'hidden' },
-  });
-}
-
-// Small self-contained 3D flip card: alternates between `front` and `back` on a
-// timer via a plain CSS rotateY transform (no library). Respects the site's global
-// prefers-reduced-motion rule since it disables `transition`, not just `animation`.
-function AutoFlipCard(props) {
-  const { front, back, intervalMs = 7000 } = props;
-  const [flipped, setFlipped] = React.useState(false);
-
-  React.useEffect(() => {
-    const id = setInterval(() => setFlipped(f => !f), intervalMs);
-    return () => clearInterval(id);
-  }, [intervalMs]);
-
-  return React.createElement('div', {
-    style: {
-      position: 'relative', width: '100%', height: '100%', transformStyle: 'preserve-3d',
-      transition: 'transform 1.1s cubic-bezier(.4,.1,.2,1)',
-      transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-    },
-  },
-    React.createElement('div', { style: { position: 'absolute', inset: 0, backfaceVisibility: 'hidden', overflow: 'hidden', borderRadius: '4px' } }, front),
-    React.createElement('div', { style: { position: 'absolute', inset: 0, backfaceVisibility: 'hidden', overflow: 'hidden', borderRadius: '4px', transform: 'rotateY(180deg)' } }, back)
-  );
-}
-
-// Ported from React Bits' PulseHeart (JSX, imports `@hugeicons/core-free-icons` + a
-// .css file via a bundler) to plain React.createElement calls, since this page has no
-// build step. The icon package dependency is dropped in favor of one hardcoded heart
-// SVG path (the component only ever uses the "heart" icon on this site).
-const PH_OUT = 0.4;
-const phBack = (k, c) => { const u = k - 1; return 1 + (c + 1) * u ** 3 + c * u ** 2; };
-const phSwellOf = (t, c) => (t <= 0 ? 0 : t < PH_OUT ? 1 - (1 - t / PH_OUT) ** 3 : 1 - phBack((t - PH_OUT) / (1 - PH_OUT), c));
-const phFormat = n => new Intl.NumberFormat().format(n);
-const phReducedMotion = () => typeof window !== 'undefined' && !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-const PH_HEART_D = 'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z';
-
-function PulseHeart(props) {
-  const {
-    liked: likedProp, defaultLiked = false, count = 0, onChange, showCount = true,
-    idleOutline = true, size = 40, corner = 32, likedColor = '#ff4d6d', idleColor = '#8b8b93',
-    pillColor = '#232326', textColor = '#f5f5f5', duration = 560, dotSize = 0.3,
-    overshoot = 1.7, beat = 3, rollDuration = 350, disabled = false, label = 'Like', className = '',
-  } = props;
-
-  const controlled = likedProp !== undefined;
-  const [inner, setInner] = React.useState(defaultLiked);
-  const [total, setTotal] = React.useState(count);
-  const liked = controlled ? likedProp : inner;
-  const [shown, setShown] = React.useState({ liked, count });
-  const [roll, setRoll] = React.useState(null);
-
-  const rootRef = React.useRef(null);
-  const pillRef = React.useRef(null);
-  const heartRef = React.useRef(null);
-  const glyphRef = React.useRef(null);
-  const rollRef = React.useRef(null);
-  const raf = React.useRef(0);
-  const rollTimer = React.useRef(0);
-  const viaPointer = React.useRef(false);
-  const shownRef = React.useRef(shown);
-  const logical = React.useRef({ liked, count: total });
-  logical.current = { liked, count: total };
-  const cfg = React.useRef({ duration, dotSize, overshoot, beat, rollDuration });
-  cfg.current = { duration, dotSize, overshoot, beat, rollDuration };
-
-  React.useEffect(() => { setTotal(count); }, [count]);
-
-  React.useEffect(() => {
-    if (raf.current) return;
-    if (shownRef.current.liked === liked && shownRef.current.count === total) return;
-    shownRef.current = { liked, count: total };
-    setShown(shownRef.current);
-  }, [liked, total]);
-
-  React.useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (!root || root.dataset.instant === undefined) return;
-    root.getBoundingClientRect();
-    delete root.dataset.instant;
-  }, [shown]);
-
-  React.useLayoutEffect(() => {
-    const el = rollRef.current;
-    if (!el || !roll) return;
-    el.style.transition = 'none';
-    el.style.transform = `translateY(${roll.up ? '0' : '-1em'})`;
-    el.getBoundingClientRect();
-    el.style.transition = '';
-    el.style.transform = `translateY(${roll.up ? '-1em' : '0'})`;
-  }, [roll]);
-
-  React.useEffect(() => () => { cancelAnimationFrame(raf.current); clearTimeout(rollTimer.current); }, []);
-
-  const startRoll = (from, to) => {
-    if (from === to) return;
-    const a = phFormat(from);
-    const b = phFormat(to);
-    const changed = a.length === b.length ? [...b].flatMap((ch, i) => (ch !== a[i] ? [i] : [])) : [];
-    setRoll({ a, b, at: changed.length === 1 ? changed[0] : -1, up: to > from });
-    clearTimeout(rollTimer.current);
-    rollTimer.current = setTimeout(() => setRoll(null), cfg.current.rollDuration);
-  };
-
-  const run = (nextLiked, nextCount) => {
-    const root = rootRef.current, heart = heartRef.current, pill = pillRef.current;
-    if (!root || !heart || !pill) return;
-    const glyph = glyphRef.current;
-    root.dataset.running = '';
-    let swapped = false, prev = 0;
-    const t0 = performance.now();
-    const tick = now => {
-      const { duration: D, dotSize: dot, overshoot: c, beat: B } = cfg.current;
-      const t = Math.min(1, (now - t0) / D);
-      const step = prev ? now - prev : 1000 / 60;
-      prev = now;
-      const s = phSwellOf(t, c);
-      const k = 1 - (1 - dot) * s;
-      if (glyph) glyph.setAttribute('transform', `translate(12 12) scale(${k}) translate(-12 -12)`);
-      else heart.style.transform = `scale(${k})`;
-      pill.style.transform = `scale(${1 - (B / 100) * s})`;
-      if (!swapped && t + step / 2 / D >= PH_OUT) {
-        swapped = true;
-        root.dataset.liked = String(nextLiked);
-        startRoll(shownRef.current.count, nextCount);
-        shownRef.current = { liked: nextLiked, count: nextCount };
-        setShown(shownRef.current);
-      }
-      if (t < 1) { raf.current = requestAnimationFrame(tick); return; }
-      raf.current = 0;
-      if (glyph) glyph.removeAttribute('transform');
-      heart.style.transform = '';
-      pill.style.transform = '';
-      delete root.dataset.running;
-      const l = logical.current;
-      if (l.liked !== shownRef.current.liked || l.count !== shownRef.current.count) {
-        shownRef.current = { liked: l.liked, count: l.count };
-        setShown(shownRef.current);
-      }
-    };
-    raf.current = requestAnimationFrame(tick);
-  };
-
-  const handlePointerDown = e => {
-    if (e.button !== 0 || disabled) return;
-    viaPointer.current = true;
-    if (!phReducedMotion() && rootRef.current) rootRef.current.dataset.pressed = '';
-  };
-  const handlePointerUp = () => { if (rootRef.current) delete rootRef.current.dataset.pressed; };
-  const handlePointerCancel = () => { viaPointer.current = false; handlePointerUp(); };
-  const handleKeyDown = () => { viaPointer.current = false; };
-  const handleClick = e => {
-    if (disabled || raf.current) return;
-    const pointer = viaPointer.current && e.detail !== 0;
-    viaPointer.current = false;
-    const nextLiked = !liked;
-    const nextCount = total + (nextLiked ? 1 : -1);
-    if (!controlled) setInner(nextLiked);
-    setTotal(nextCount);
-    onChange && onChange(nextLiked, nextCount);
-    if (pointer && !phReducedMotion()) run(nextLiked, nextCount);
-    else if (rootRef.current) rootRef.current.dataset.instant = '';
-  };
-
-  const text = phFormat(shown.count);
-  const cells = roll
-    ? roll.at === -1
-      ? [{ top: roll.up ? roll.a : roll.b, bottom: roll.up ? roll.b : roll.a }]
-      : [...roll.b].map((ch, i) => (i === roll.at ? { top: roll.up ? roll.a[i] : ch, bottom: roll.up ? ch : roll.a[i] } : { ch }))
-    : [...text].map(ch => ({ ch }));
-
-  return React.createElement('button', {
-    ref: rootRef, type: 'button', 'aria-pressed': liked, disabled,
-    'data-liked': String(shown.liked),
-    'data-solid': idleOutline ? undefined : '',
-    'data-no-count': showCount ? undefined : '',
-    className: ('pulse-heart' + (className ? ' ' + className : '')),
-    style: {
-      '--ph-size': `${size}px`, '--ph-corner': `${corner}px`, '--ph-pill': pillColor,
-      '--ph-idle': idleColor, '--ph-liked': likedColor, '--ph-text': textColor,
-      '--ph-roll': `${rollDuration}ms`, '--ph-stroke': `${(1.5 * size) / 24}px`,
-    },
-    onPointerDown: handlePointerDown, onPointerUp: handlePointerUp, onPointerLeave: handlePointerUp,
-    onPointerCancel: handlePointerCancel, onKeyDown: handleKeyDown, onClick: handleClick,
-  },
-    React.createElement('span', { ref: pillRef, className: 'pulse-heart__pill' },
-      React.createElement('span', { ref: heartRef, className: 'pulse-heart__heart', 'aria-hidden': 'true' },
-        React.createElement('svg', { viewBox: '0 0 24 24', xmlns: 'http://www.w3.org/2000/svg' },
-          React.createElement('g', { ref: glyphRef },
-            React.createElement('path', { d: PH_HEART_D, vectorEffect: 'non-scaling-stroke' })
-          )
-        )
-      ),
-      showCount ? React.createElement('span', { className: 'pulse-heart__count', 'aria-hidden': 'true' },
-        cells.map((cell, i) => 'ch' in cell
-          ? React.createElement('span', { key: 'c' + i }, cell.ch)
-          : React.createElement('span', { key: 'r' + i, className: 'pulse-heart__slot' },
-              React.createElement('span', { ref: rollRef, className: 'pulse-heart__roll' },
-                React.createElement('span', null, cell.top),
-                React.createElement('span', null, cell.bottom)
-              )
-            )
-        )
-      ) : null,
-      React.createElement('span', { className: 'pulse-heart__sr' }, showCount ? `${label}, ${phFormat(total)}` : label)
-    )
-  );
-}
-
-// Fetches and persists a per-video like count against the /api/like serverless
-// function (Vercel + a KV store — see the api/like.js file next to this one). Each
-// visitor's own "did I like this" flag is remembered locally (localStorage) since
-// there's no user login on this site; the shared count itself lives in KV. If the
-// API isn't reachable (e.g. this static file previewed with no server behind /api,
-// which is the case for local preview), it fails quietly and shows 0 rather than
-// breaking the page.
-function VideoLikeButton(props) {
-  const { videoId, size = 22, corner = 18 } = props;
-  const instId = React.useRef(Math.random().toString(36).slice(2));
-  const [count, setCount] = React.useState(0);
-  const [liked, setLiked] = React.useState(false);
-
-  React.useEffect(() => {
-    let cancelled = false;
-    let storedLiked = false;
-    try { storedLiked = window.localStorage.getItem('like:' + videoId) === '1'; } catch (e) {}
-    fetch('/api/like?id=' + encodeURIComponent(videoId))
-      .then(r => (r.ok ? r.json() : { count: 0 }))
-      .then(data => { if (!cancelled) { setCount(data.count || 0); setLiked(storedLiked); } })
-      .catch(() => {});
-    return () => { cancelled = true; };
+    const unsubscribe = likeClient.subscribe(videoId, setState);
+    setState(likeClient.get(videoId));
+    likeClient.load(videoId);
+    return unsubscribe;
   }, [videoId]);
-
-  React.useEffect(() => {
-    const onSync = e => {
-      const d = e.detail;
-      if (!d || d.videoId !== videoId || d.src === instId.current) return;
-      setLiked(d.liked);
-      setCount(d.count);
-    };
-    window.addEventListener('qz-like', onSync);
-    return () => window.removeEventListener('qz-like', onSync);
-  }, [videoId]);
-
-  const handleChange = (nextLiked, nextCount) => {
-    setLiked(nextLiked);
-    setCount(nextCount);
-    window.dispatchEvent(new CustomEvent('qz-like', { detail: { videoId, liked: nextLiked, count: nextCount, src: instId.current } }));
-    try { window.localStorage.setItem('like:' + videoId, nextLiked ? '1' : '0'); } catch (e) {}
-    if (nextLiked && window.qzEvent) {
-      const work = WORKS.find(item => item.slot === videoId);
-      window.qzEvent('mi_piace_video', { video_titolo: work ? work.t : videoId });
-    }
-    fetch('/api/like', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: videoId, liked: nextLiked }),
-    }).catch(() => {});
-  };
-
-  return React.createElement(PulseHeart, {
-    liked, count, onChange: handleChange, showCount: true, size, corner,
-    likedColor: '#c9a227', idleColor: 'rgba(244,243,240,.55)',
-    pillColor: 'rgba(244,243,240,.08)', textColor: '#f4f3f0', label: 'Mi piace',
-  });
-}
-
-// Ported from React Bits' ColorBends (JSX, imports `three` + a .css file via a
-// bundler) to plain React.createElement calls, since this page has no build step.
-// `three` is loaded once as an ES module from a CDN and attached to `window.THREE`
-// (see the <script type="module"> near the GSAP tag); this component polls for it
-// rather than assuming it has landed by the time the effect runs.
-const CB_MAX_COLORS = 8;
-
-const cbFrag = `
-#define MAX_COLORS ${CB_MAX_COLORS}
-uniform vec2 uCanvas;
-uniform float uTime;
-uniform float uSpeed;
-uniform vec2 uRot;
-uniform int uColorCount;
-uniform vec3 uColors[MAX_COLORS];
-uniform int uTransparent;
-uniform float uScale;
-uniform float uFrequency;
-uniform float uWarpStrength;
-uniform vec2 uPointer;
-uniform float uMouseInfluence;
-uniform float uParallax;
-uniform float uNoise;
-uniform int uIterations;
-uniform float uIntensity;
-uniform float uBandWidth;
-varying vec2 vUv;
-
-void main() {
-  float t = uTime * uSpeed;
-  vec2 p = vUv * 2.0 - 1.0;
-  p += uPointer * uParallax * 0.1;
-  vec2 rp = vec2(p.x * uRot.x - p.y * uRot.y, p.x * uRot.y + p.y * uRot.x);
-  vec2 q = vec2(rp.x * (uCanvas.x / uCanvas.y), rp.y);
-  q /= max(uScale, 0.0001);
-  q /= 0.5 + 0.2 * dot(q, q);
-  q += 0.2 * cos(t) - 7.56;
-  vec2 toward = (uPointer - rp);
-  q += toward * uMouseInfluence * 0.2;
-
-    for (int j = 0; j < 5; j++) {
-      if (j >= uIterations - 1) break;
-      vec2 rr = sin(1.5 * (q.yx * uFrequency) + 2.0 * cos(q * uFrequency));
-      q += (rr - q) * 0.15;
-    }
-
-    vec3 col = vec3(0.0);
-    float a = 1.0;
-
-    if (uColorCount > 0) {
-      vec2 s = q;
-      vec3 sumCol = vec3(0.0);
-      float cover = 0.0;
-      for (int i = 0; i < MAX_COLORS; ++i) {
-            if (i >= uColorCount) break;
-            s -= 0.01;
-            vec2 r = sin(1.5 * (s.yx * uFrequency) + 2.0 * cos(s * uFrequency));
-            float m0 = length(r + sin(5.0 * r.y * uFrequency - 3.0 * t + float(i)) / 4.0);
-            float kBelow = clamp(uWarpStrength, 0.0, 1.0);
-            float kMix = pow(kBelow, 0.3);
-            float gain = 1.0 + max(uWarpStrength - 1.0, 0.0);
-            vec2 disp = (r - s) * kBelow;
-            vec2 warped = s + disp * gain;
-            float m1 = length(warped + sin(5.0 * warped.y * uFrequency - 3.0 * t + float(i)) / 4.0);
-            float m = mix(m0, m1, kMix);
-            float w = 1.0 - exp(-uBandWidth / exp(uBandWidth * m));
-            sumCol += uColors[i] * w;
-            cover = max(cover, w);
-      }
-      col = clamp(sumCol, 0.0, 1.0);
-      a = uTransparent > 0 ? cover : 1.0;
-    } else {
-        vec2 s = q;
-        for (int k = 0; k < 3; ++k) {
-            s -= 0.01;
-            vec2 r = sin(1.5 * (s.yx * uFrequency) + 2.0 * cos(s * uFrequency));
-            float m0 = length(r + sin(5.0 * r.y * uFrequency - 3.0 * t + float(k)) / 4.0);
-            float kBelow = clamp(uWarpStrength, 0.0, 1.0);
-            float kMix = pow(kBelow, 0.3);
-            float gain = 1.0 + max(uWarpStrength - 1.0, 0.0);
-            vec2 disp = (r - s) * kBelow;
-            vec2 warped = s + disp * gain;
-            float m1 = length(warped + sin(5.0 * warped.y * uFrequency - 3.0 * t + float(k)) / 4.0);
-            float m = mix(m0, m1, kMix);
-            col[k] = 1.0 - exp(-uBandWidth / exp(uBandWidth * m));
+  const busy = state.loading || state.pending;
+  const label = state.liked ? 'Rimuovi il Mi piace' : 'Metti Mi piace';
+  return React.createElement('div', { className: 'qz-like-group' },
+    React.createElement('button', {
+      type: 'button', className: 'qz-like-button', disabled: busy,
+      'aria-pressed': state.liked, 'aria-busy': busy,
+      'aria-label': label + (state.count === null ? '' : ', ' + state.count),
+      'aria-describedby': 'like-feedback-' + videoId,
+      onClick: async () => {
+        const result = await likeClient.toggle(videoId);
+        if (!result.error && result.liked && window.qzEvent) {
+          window.qzEvent('mi_piace_video', { video_titolo: WORKS.find(work => work.slot === videoId)?.t || videoId });
         }
-        a = uTransparent > 0 ? max(max(col.r, col.g), col.b) : 1.0;
-    }
-
-    col *= uIntensity;
-
-    if (uNoise > 0.0001) {
-      float n = fract(sin(dot(gl_FragCoord.xy + vec2(uTime), vec2(12.9898, 78.233))) * 43758.5453123);
-      col += (n - 0.5) * uNoise;
-      col = clamp(col, 0.0, 1.0);
-    }
-
-    vec3 rgb = (uTransparent > 0) ? col * a : col;
-    gl_FragColor = vec4(rgb, a);
-}
-`;
-
-const cbVert = `
-varying vec2 vUv;
-void main() {
-  vUv = uv;
-  gl_Position = vec4(position, 1.0);
-}
-`;
-
-function cbHexToVec3(hex, THREE) {
-  const h = hex.replace('#', '').trim();
-  const v = h.length === 3
-    ? [parseInt(h[0] + h[0], 16), parseInt(h[1] + h[1], 16), parseInt(h[2] + h[2], 16)]
-    : [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
-  return new THREE.Vector3(v[0] / 255, v[1] / 255, v[2] / 255);
-}
-
-function ColorBendsBG(props) {
-  const {
-    className = '', style = {}, rotation = 90, speed = 0.2, colors = [], transparent = true,
-    autoRotate = 0, scale = 1, frequency = 1, warpStrength = 1, mouseInfluence = 1,
-    parallax = 0.5, noise = 0.15, iterations = 1, intensity = 1.5, bandWidth = 6,
-  } = props;
-
-  const containerRef = React.useRef(null);
-  const rendererRef = React.useRef(null);
-  const rafRef = React.useRef(null);
-  const materialRef = React.useRef(null);
-  const resizeObserverRef = React.useRef(null);
-  const rotationRef = React.useRef(rotation);
-  const autoRotateRef = React.useRef(autoRotate);
-  const pointerTargetRef = React.useRef(null);
-  const pointerCurrentRef = React.useRef(null);
-  const pointerSmoothRef = React.useRef(8);
-
-  React.useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    let cancelled = false;
-    let cleanup = () => {};
-
-    (async () => {
-      let tries = 0;
-      while (!window.THREE && tries < 100) {
-        await new Promise(r => setTimeout(r, 50));
-        tries++;
-      }
-      if (cancelled || !window.THREE) return;
-      const THREE = window.THREE;
-      pointerTargetRef.current = new THREE.Vector2(0, 0);
-      pointerCurrentRef.current = new THREE.Vector2(0, 0);
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-      const geometry = new THREE.PlaneGeometry(2, 2);
-      const uColorsArray = Array.from({ length: CB_MAX_COLORS }, () => new THREE.Vector3(0, 0, 0));
-      const material = new THREE.ShaderMaterial({
-        vertexShader: cbVert, fragmentShader: cbFrag,
-        uniforms: {
-          uCanvas: { value: new THREE.Vector2(1, 1) }, uTime: { value: 0 }, uSpeed: { value: speed },
-          uRot: { value: new THREE.Vector2(1, 0) }, uColorCount: { value: 0 }, uColors: { value: uColorsArray },
-          uTransparent: { value: transparent ? 1 : 0 }, uScale: { value: scale }, uFrequency: { value: frequency },
-          uWarpStrength: { value: warpStrength }, uPointer: { value: new THREE.Vector2(0, 0) },
-          uMouseInfluence: { value: mouseInfluence }, uParallax: { value: parallax }, uNoise: { value: noise },
-          uIterations: { value: iterations }, uIntensity: { value: intensity }, uBandWidth: { value: bandWidth },
-        },
-        premultipliedAlpha: true, transparent: true,
-      });
-      materialRef.current = material;
-
-      const mesh = new THREE.Mesh(geometry, material);
-      scene.add(mesh);
-
-      const renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance', alpha: true });
-      rendererRef.current = renderer;
-      renderer.outputColorSpace = THREE.SRGBColorSpace;
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
-      renderer.setClearColor(0x000000, transparent ? 0 : 1);
-      renderer.domElement.style.width = '100%';
-      renderer.domElement.style.height = '100%';
-      renderer.domElement.style.display = 'block';
-      container.appendChild(renderer.domElement);
-
-      const clock = new THREE.Clock();
-
-      const handleResize = () => {
-        const w = container.clientWidth || 1;
-        const h = container.clientHeight || 1;
-        renderer.setSize(w, h, false);
-        material.uniforms.uCanvas.value.set(w, h);
-      };
-      handleResize();
-
-      const ro = new ResizeObserver(handleResize);
-      ro.observe(container);
-      resizeObserverRef.current = ro;
-
-      const handlePointerMove = e => {
-        const rect = container.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / (rect.width || 1)) * 2 - 1;
-        const y = -(((e.clientY - rect.top) / (rect.height || 1)) * 2 - 1);
-        pointerTargetRef.current.set(x, y);
-      };
-      container.addEventListener('pointermove', handlePointerMove);
-
-      const loop = () => {
-        const dt = clock.getDelta();
-        const elapsed = clock.elapsedTime;
-        material.uniforms.uTime.value = elapsed;
-
-        const deg = (rotationRef.current % 360) + autoRotateRef.current * elapsed;
-        const rad = (deg * Math.PI) / 180;
-        material.uniforms.uRot.value.set(Math.cos(rad), Math.sin(rad));
-
-        const cur = pointerCurrentRef.current, tgt = pointerTargetRef.current;
-        cur.lerp(tgt, Math.min(1, dt * pointerSmoothRef.current));
-        material.uniforms.uPointer.value.copy(cur);
-
-        renderer.render(scene, camera);
-        rafRef.current = requestAnimationFrame(loop);
-      };
-      rafRef.current = requestAnimationFrame(loop);
-
-      const applyDynamicProps = p => {
-        rotationRef.current = p.rotation ?? rotation;
-        autoRotateRef.current = p.autoRotate ?? autoRotate;
-        material.uniforms.uSpeed.value = p.speed ?? speed;
-        material.uniforms.uScale.value = p.scale ?? scale;
-        material.uniforms.uFrequency.value = p.frequency ?? frequency;
-        material.uniforms.uWarpStrength.value = p.warpStrength ?? warpStrength;
-        material.uniforms.uMouseInfluence.value = p.mouseInfluence ?? mouseInfluence;
-        material.uniforms.uParallax.value = p.parallax ?? parallax;
-        material.uniforms.uNoise.value = p.noise ?? noise;
-        material.uniforms.uIterations.value = p.iterations ?? iterations;
-        material.uniforms.uIntensity.value = p.intensity ?? intensity;
-        material.uniforms.uBandWidth.value = p.bandWidth ?? bandWidth;
-        const arr = (p.colors ?? colors ?? []).filter(Boolean).slice(0, CB_MAX_COLORS).map(hex => cbHexToVec3(hex, THREE));
-        for (let i = 0; i < CB_MAX_COLORS; i++) {
-          const vec = material.uniforms.uColors.value[i];
-          if (i < arr.length) vec.copy(arr[i]); else vec.set(0, 0, 0);
-        }
-        material.uniforms.uColorCount.value = arr.length;
-        const isTransparent = p.transparent ?? transparent;
-        material.uniforms.uTransparent.value = isTransparent ? 1 : 0;
-        renderer.setClearColor(0x000000, isTransparent ? 0 : 1);
-      };
-      applyDynamicProps(props);
-      containerRef.current.__cbApplyProps = applyDynamicProps;
-
-      cleanup = () => {
-        if (rafRef.current !== null) { cancelAnimationFrame(rafRef.current); rafRef.current = null; }
-        ro.disconnect();
-        container.removeEventListener('pointermove', handlePointerMove);
-        geometry.dispose();
-        material.dispose();
-        renderer.dispose();
-        renderer.forceContextLoss();
-        try { if (renderer.domElement.parentElement === container) container.removeChild(renderer.domElement); } catch (e) {}
-      };
-    })();
-
-    return () => { cancelled = true; cleanup(); };
-  }, []);
-
-  React.useEffect(() => {
-    const container = containerRef.current;
-    if (container && container.__cbApplyProps) container.__cbApplyProps(props);
-  }, [rotation, autoRotate, speed, colors, transparent, scale, frequency, warpStrength, mouseInfluence, parallax, noise, iterations, intensity, bandWidth]);
-
-  return React.createElement('div', {
-    ref: containerRef,
-    className: ('color-bends-container ' + className).trim(),
-    style: Object.assign({ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }, style),
-  });
-}
-
-
-function MaskedHeading(props) {
-  const {
-    text = 'Aerial Showreel', tag = 'h2', mediaType = 'image', src = '', poster = '',
-    fillScale = 1.25, parallax = 26, drift = 18, brightness = 1, saturation = 1, grayscale = false,
-    reveal = 'rise', duration = 1.1, stagger = 0.09, trigger = 'view', align = 'center',
-    weight = 700, tracking = -0.03, lineHeight = 1.06, textScale = 0.115,
-    startAt = 0, className = '', style, grainientProps = null,
-  } = props;
-
-  const rootRef = React.useRef(null);
-  const measureRef = React.useRef(null);
-  const revealRef = React.useRef(null);
-  const mediaRef = React.useRef(null);
-  const wordRefs = React.useRef([]);
-  const baseRefs = React.useRef([]);
-  const glyphRefs = React.useRef([]);
-  const tweenRef = React.useRef(null);
-  const offsetRef = React.useRef({ x: 0, y: 0, tx: 0, ty: 0 });
-
-  const clipId = 'mh-' + React.useId().replace(/[^a-zA-Z0-9_-]/g, '');
-  const words = React.useMemo(() => String(text).split(/\s+/).filter(Boolean), [text]);
-
-  const settingsRef = React.useRef({});
-  settingsRef.current = { fillScale, parallax, drift, brightness, saturation, grayscale, textScale };
-
-  const place = React.useCallback(() => {
-    const root = rootRef.current, media = mediaRef.current;
-    if (!root || !media) return;
-    const s = settingsRef.current;
-    const W = root.clientWidth, H = root.clientHeight;
-    const off = offsetRef.current;
-    const maxX = Math.max(0, ((s.fillScale - 1) / 2) * W);
-    const maxY = Math.max(0, ((s.fillScale - 1) / 2) * H);
-    media.style.transform = `translate3d(${mhClamp(off.x, -maxX, maxX).toFixed(2)}px, ${mhClamp(off.y, -maxY, maxY).toFixed(2)}px, 0) scale(${s.fillScale})`;
-    media.style.filter = `brightness(${s.brightness}) saturate(${s.saturation})${s.grayscale ? ' grayscale(1)' : ''}`;
-  }, []);
-
-  const sync = React.useCallback(() => {
-    const root = rootRef.current, measure = measureRef.current;
-    if (!root || !measure) return;
-    const s = settingsRef.current;
-    root.style.fontSize = `${mhClamp(root.clientWidth * s.textScale, 20, 200).toFixed(1)}px`;
-    const cs = window.getComputedStyle(measure);
-    for (let i = 0; i < wordRefs.current.length; i += 1) {
-      const box = wordRefs.current[i], base = baseRefs.current[i], glyph = glyphRefs.current[i];
-      if (!box || !base || !glyph) continue;
-      glyph.setAttribute('x', `${box.offsetLeft}`);
-      glyph.setAttribute('y', `${base.offsetTop}`);
-      glyph.style.fontFamily = cs.fontFamily;
-      glyph.style.fontSize = cs.fontSize;
-      glyph.style.fontWeight = cs.fontWeight;
-      glyph.style.fontStyle = cs.fontStyle;
-      glyph.style.letterSpacing = cs.letterSpacing;
-    }
-    place();
-  }, [place]);
-
-  React.useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-    sync();
-    const ro = new ResizeObserver(sync);
-    ro.observe(root);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sync).catch(() => {});
-
-    let raf = 0, last = performance.now(), clock = 0;
-    const frame = now => {
-      const dt = Math.min(0.05, (now - last) / 1000);
-      last = now; clock += dt;
-      const s = settingsRef.current, off = offsetRef.current;
-      const dx = Math.sin(clock * 0.21) * s.drift;
-      const dy = Math.cos(clock * 0.17) * s.drift * 0.6;
-      const ease = 1 - Math.exp(-dt / 0.18);
-      off.x += (off.tx + dx - off.x) * ease;
-      off.y += (off.ty + dy - off.y) * ease;
-      place();
-      raf = requestAnimationFrame(frame);
-    };
-    const onMove = e => {
-      const s = settingsRef.current;
-      if (s.parallax <= 0) return;
-      const r = root.getBoundingClientRect();
-      const nx = ((e.clientX - r.left) / (r.width || 1)) * 2 - 1;
-      const ny = ((e.clientY - r.top) / (r.height || 1)) * 2 - 1;
-      offsetRef.current.tx = mhClamp(nx, -1, 1) * -s.parallax;
-      offsetRef.current.ty = mhClamp(ny, -1, 1) * -s.parallax;
-    };
-    const onLeave = () => { offsetRef.current.tx = 0; offsetRef.current.ty = 0; };
-    root.addEventListener('pointermove', onMove);
-    root.addEventListener('pointerleave', onLeave);
-    raf = requestAnimationFrame(frame);
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-      root.removeEventListener('pointermove', onMove);
-      root.removeEventListener('pointerleave', onLeave);
-    };
-  }, [place, sync]);
-
-  React.useEffect(() => { sync(); }, [sync, words, tag, align, weight, tracking, lineHeight, textScale]);
-
-  React.useEffect(() => {
-    const root = rootRef.current, layer = revealRef.current;
-    if (!root || !layer) return;
-    const glyphs = glyphRefs.current.filter(Boolean);
-    if (!glyphs.length) return;
-    const riseDistance = () => (parseFloat(window.getComputedStyle(root).fontSize) || 48) * 1.15;
-    const settle = () => {
-      gsap.set(glyphs, { y: 0 });
-      gsap.set(layer, { opacity: 1, scale: 1, clipPath: 'inset(0% 0% 0% 0%)' });
-    };
-    const rest = () => {
-      if (reveal === 'rise') gsap.set(glyphs, { y: riseDistance() });
-      else if (reveal === 'wipe') gsap.set(layer, { clipPath: 'inset(0% 100% 0% 0%)' });
-      else if (reveal === 'fade') gsap.set(layer, { opacity: 0, scale: 1.08 });
-    };
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reveal === 'none' || reduce) { settle(); return; }
-    const play = () => {
-      if (tweenRef.current) tweenRef.current.kill();
-      if (reveal === 'rise') {
-        gsap.set(layer, { opacity: 1, scale: 1, clipPath: 'inset(0% 0% 0% 0%)' });
-        tweenRef.current = gsap.fromTo(glyphs, { y: riseDistance() }, { y: 0, duration, stagger, ease: 'power4.out', overwrite: 'auto' });
-      } else if (reveal === 'wipe') {
-        gsap.set(glyphs, { y: 0 });
-        const state = { p: 100 };
-        tweenRef.current = gsap.to(state, { p: 0, duration, ease: 'power3.inOut', overwrite: 'auto',
-          onUpdate: () => { layer.style.clipPath = `inset(0% ${state.p}% 0% 0%)`; } });
-      } else {
-        gsap.set(glyphs, { y: 0 });
-        tweenRef.current = gsap.fromTo(layer, { opacity: 0, scale: 1.08 }, { opacity: 1, scale: 1, duration, ease: 'power3.out', overwrite: 'auto' });
-      }
-    };
-    if (trigger === 'hover') {
-      settle();
-      root.addEventListener('pointerenter', play);
-      return () => { root.removeEventListener('pointerenter', play); if (tweenRef.current) tweenRef.current.kill(); };
-    }
-    if (trigger === 'view') {
-      settle(); rest();
-      const io = new IntersectionObserver(entries => {
-        if (entries.some(e => e.isIntersecting)) { play(); io.disconnect(); }
-      }, { threshold: 0.25 });
-      io.observe(root);
-      return () => { io.disconnect(); if (tweenRef.current) tweenRef.current.kill(); };
-    }
-    play();
-    return () => { if (tweenRef.current) tweenRef.current.kill(); };
-  }, [reveal, trigger, duration, stagger, words]);
-
-  const wordEls = words.map((word, i) => React.createElement('span', {
-    key: word + '-' + i,
-    ref: el => { wordRefs.current[i] = el; },
-    className: 'masked-heading__word',
-  }, word, React.createElement('i', { ref: el => { baseRefs.current[i] = el; }, className: 'masked-heading__baseline' })));
-
-  const glyphEls = words.map((word, i) => React.createElement('text', {
-    key: word + '-' + i,
-    ref: el => { glyphRefs.current[i] = el; },
-  }, word));
-
-  const mediaEl = mediaType === 'video'
-    ? React.createElement('video', {
-        className: 'masked-heading__source', src, poster, autoPlay: true, muted: true, loop: true, playsInline: true,
-        ref: el => {
-          if (!el) return;
-          const seek = () => { try { el.currentTime = startAt; } catch (err) {} };
-          if (el.readyState >= 1) seek(); else el.addEventListener('loadedmetadata', seek, { once: true });
-        },
-      })
-    : mediaType === 'grainient'
-    ? React.createElement('div', { className: 'masked-heading__source' }, React.createElement(GrainientBG, grainientProps || {}))
-    : React.createElement('img', { className: 'masked-heading__source', src, alt: '', draggable: false });
-
-  return React.createElement(tag, {
-    ref: rootRef,
-    className: ('masked-heading ' + className).trim(),
-    style: Object.assign({ textAlign: align, fontWeight: weight, letterSpacing: tracking + 'em', lineHeight }, style || {}),
-  },
-    React.createElement('span', { ref: measureRef, className: 'masked-heading__measure' }, wordEls),
-    React.createElement('svg', { className: 'masked-heading__defs', 'aria-hidden': 'true', focusable: 'false' },
-      React.createElement('defs', null,
-        React.createElement('clipPath', { id: clipId, clipPathUnits: 'userSpaceOnUse' }, glyphEls))),
-    React.createElement('span', { ref: revealRef, className: 'masked-heading__reveal' },
-      React.createElement('span', { className: 'masked-heading__clip', style: { clipPath: `url(#${clipId})` } },
-        React.createElement('span', { ref: mediaRef, className: 'masked-heading__media' }, mediaEl))),
-  );
+      },
+    },
+    React.createElement('svg', { viewBox: '0 0 24 24', 'aria-hidden': true },
+      React.createElement('path', { d: 'M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z' })),
+    React.createElement('span', { 'aria-hidden': true }, state.count === null ? '—' : new Intl.NumberFormat('it-IT').format(state.count))),
+    React.createElement('span', { id: 'like-feedback-' + videoId, className: 'qz-like-feedback', role: 'status' }, state.error));
 }
 
 class Component extends DCLogic {
+  player = window.QZVideo.createPlayer({ Hls: window.Hls, cdn: BUNNY_CDN });
   state = { filter: 'Tutti', lb: null, mobile: (typeof window !== 'undefined' && window.innerWidth < 1100), scrolled: false, pastHero: false, menu: false, sent: false, sending: false, sendError: false, step: 0, tipoVal: '', stepError: '', contactVisible: false, inputFocused: false, consentOpen: false };
 
   componentDidMount() {
@@ -1911,7 +456,6 @@ class Component extends DCLogic {
     window.addEventListener('scroll', this.onScroll, { passive: true });
     window.addEventListener('keydown', this.onKey);
     this.onResize(); this.onScroll();
-    this.revealTimer = setTimeout(() => this.setupReveal(), 60);
   }
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
@@ -1920,10 +464,9 @@ class Component extends DCLogic {
     document.removeEventListener('focusin', this.onFocus);
     document.removeEventListener('focusout', this.onFocus);
     window.removeEventListener('qz-consent-change', this.onConsent);
-    clearTimeout(this.focusTimer); clearTimeout(this.revealTimer); clearTimeout(this.stepTimer);
-    this.io && this.io.disconnect();
+    clearTimeout(this.focusTimer); clearTimeout(this.stepTimer);
     this.restoreBackground();
-    this.lbHls && this.lbHls.destroy();
+    this.player.dispose();
   }
   componentDidUpdate() {
     const overlay = this.state.lb != null ? '#qz-lightbox' : this.state.menu && this.state.mobile ? '#qz-menu' : null;
@@ -1950,7 +493,6 @@ class Component extends DCLogic {
         if (target && target.isConnected) { if (!target.matches('a,button,input,textarea,[tabindex]')) target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }); }
       }
     }
-    if (this.state.lb == null && this.lbHls) { this.lbHls.destroy(); this.lbHls = null; }
     if (this.state.sent && !this.successFocused) { this.successFocused = true; document.querySelector('#qz-form-success')?.focus({ preventScroll: true }); }
   }
   restoreBackground() {
@@ -1966,64 +508,31 @@ class Component extends DCLogic {
     if (contactVisible !== this.state.contactVisible) this.setState({ contactVisible });
   }
 
-  setupReveal() {
-    if (this.reduced || !('IntersectionObserver' in window)) return;
-    this.io = new IntersectionObserver(entries => entries.forEach(en => {
-      if (!en.isIntersecting) return;
-      const el = en.target;
-      el.style.opacity = '1'; el.style.transform = 'none';
-      this.io.unobserve(el);
-    }), { rootMargin: '0px 0px -8% 0px' });
-    document.querySelectorAll('[data-reveal]').forEach((el, i) => {
-      const r = el.getBoundingClientRect();
-      el.style.transition = 'opacity 1.1s cubic-bezier(.2,.7,.2,1), transform 1.1s cubic-bezier(.2,.7,.2,1)';
-      el.style.transitionDelay = r.top < window.innerHeight ? (i % 4) * 0.08 + 's' : '0s';
-      el.style.opacity = '0'; el.style.transform = 'translateY(28px)';
-      this.io.observe(el);
+  filtered() { const f = this.state.filter; return f === 'Tutti' ? WORKS : WORKS.filter(w => w.place === f); }
+  step(d) { const n = this.filtered().length; if (!n) return; this.setState(s => ({ lb: (s.lb + d + n) % n })); }
+
+  video(id, extra = {}) {
+    const { lazy = false, ...attributes } = extra;
+    this._videoRefs ||= new Map();
+    const key = id + (lazy ? ':preview' : ':player');
+    if (!this._videoRefs.has(key)) {
+      let current = null;
+      this._videoRefs.set(key, element => {
+        if (current && current !== element) this.player.detach(current);
+        current = element;
+        if (element) this.player.attach(element, id, { lazy });
+      });
+    }
+    return React.createElement('video', {
+      key, ref: this._videoRefs.get(key), muted: true, loop: !attributes.controls,
+      playsInline: true, preload: lazy ? 'metadata' : 'auto',
+      style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: attributes.controls ? 'contain' : 'cover', pointerEvents: attributes.controls ? 'auto' : 'none', background: '#000' },
+      ...attributes,
     });
   }
 
-  filtered() { const f = this.state.filter; return f === 'Tutti' ? WORKS : WORKS.filter(w => w.place === f); }
-  step(d) { const n = this.filtered().length; if (!n) return; if (this.lbHls) { this.lbHls.destroy(); this.lbHls = null; } this.setState(s => ({ lb: (s.lb + d + n) % n })); }
-
-  // `id` is a Bunny Stream video GUID. Safari plays HLS natively via a plain `src`;
-  // every other browser needs hls.js attached to the element. The ref callback is
-  // cached per (id, lazy) on the instance so it keeps the same identity across
-  // re-renders — otherwise React would tear down and re-create the hls.js pipeline
-  // on every unrelated state change (scroll, filter, hover...) instead of once.
-  // `lazy: true` (grid previews) delays segment loading until `enter()` below calls
-  // `hls.startLoad()`, so hovering is what triggers the download, not page load.
-  video(id, extra) {
-    const lazy = !!(extra && extra.lazy);
-    const rest = Object.assign({}, extra);
-    delete rest.lazy;
-    if (!this._videoRefs) this._videoRefs = {};
-    const cacheKey = id + (lazy ? ':lazy' : ':eager');
-    if (!this._videoRefs[cacheKey]) {
-      this._videoRefs[cacheKey] = el => {
-        if (!el || el.dataset.hlsInit) return;
-        el.dataset.hlsInit = '1';
-        const hlsUrl = BUNNY_CDN + '/' + id + '/playlist.m3u8';
-        // hls.js first, even in browsers whose canPlayType() claims native HLS
-        // support: this Bunny playlist mixes HEVC and AVC renditions, and at least
-        // one Chromium build's still-experimental native HLS/MSE path throws
-        // CHUNK_DEMUXER_ERROR_APPEND_FAILED switching between them mid-stream —
-        // hls.js handles that codec switch correctly via MSE's changeType().
-        if (window.Hls && window.Hls.isSupported()) {
-          const hls = new window.Hls(lazy ? { autoStartLoad: false } : {});
-          hls.loadSource(hlsUrl);
-          hls.attachMedia(el);
-          el.__hls = hls;
-        } else if (el.canPlayType('application/vnd.apple.mpegurl')) {
-          el.src = hlsUrl;
-        }
-      };
-    }
-    return React.createElement('video', { key: id, ref: this._videoRefs[cacheKey], muted: true, loop: true, playsInline: true, preload: lazy ? 'metadata' : 'auto',
-      style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', pointerEvents: 'none' }, ...rest });
-  }
-
   goStep = (n, tipo) => {
+    if (this.state.sending) return;
     this.setState({ step: n, stepError: '', ...(tipo !== undefined ? { tipoVal: tipo } : {}) });
     if (window.qzEvent) window.qzEvent('form_passo', { passo: n + 1, servizio: tipo !== undefined ? tipo : this.state.tipoVal });
     clearTimeout(this.stepTimer);
@@ -2040,9 +549,7 @@ class Component extends DCLogic {
   checkContact = () => {
     const el = document.querySelector('#qz-form [name="contatto"]');
     const v = el ? el.value.trim() : '';
-    const okMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-    const okTel = v.replace(/\D/g, '').length >= 6 && !/[a-z]/i.test(v);
-    if (!okMail && !okTel) { this.setState({ stepError: "Scrivi un numero di telefono o un'email valida." }); el?.focus(); return false; }
+    if (!window.QZContactRules.isContact(v)) { this.setState({ stepError: "Scrivi un numero di telefono o un'email valida." }); el?.focus(); return false; }
     return true;
   };
 
@@ -2073,22 +580,9 @@ class Component extends DCLogic {
       footerPad: mobile ? '96px' : '32px',
 
       heroVideoEl: heroSrc ? this.video(heroSrc, { key: heroSrc, autoPlay: true, preload: 'auto', poster: 'assets/home/hero-poster.jpg' }) : null,
-      scrollLine: React.createElement('span', { style: { position: 'relative', width: 1, height: 'clamp(28px,6vh,56px)', flexShrink: 0, background: 'rgba(244,243,240,.2)', overflow: 'hidden', display: 'block' } },
-        React.createElement('span', { style: { position: 'absolute', inset: 0, background: '#f4f3f0', animation: 'scrollDrop 2.2s cubic-bezier(.6,0,.3,1) infinite' } })),
-
-
-      colorBendsBgEl: React.createElement('div', { style: { position: 'absolute', inset: 0, zIndex: 0, background: '#090a0c' } },
-        React.createElement(ColorBendsBG, {
-          colors: ['#f8a558', '#c9a227', '#3a2410'],
-          rotation: 25, speed: 0.16, scale: 1.3, frequency: 1.1, warpStrength: 0.9,
-          mouseInfluence: 0.5, parallax: 0.3, noise: 0.05, iterations: 2,
-          intensity: 1.1, bandWidth: 5, transparent: true,
-        })
-      ),
-
       filters: ['Tutti', ...CATS].map(label => {
         const on = label === filter;
-        return { label, pressed: on ? 'true' : 'false', bg: on ? '#f4f3f0' : 'transparent', color: on ? '#090a0c' : 'rgba(244,243,240,.72)', border: on ? '#f4f3f0' : 'rgba(255,255,255,.18)',
+        return { label, count: label === 'Tutti' ? WORKS.length : WORKS.filter(work => work.place === label).length, pressed: on ? 'true' : 'false',
           onClick: () => this.setState({ filter: label, lb: null }) };
       }),
       workStatus: (filter === 'Tutti' ? 'Tutti i lavori' : filter) + ' · ' + list.length + ' video',
@@ -2098,65 +592,25 @@ class Component extends DCLogic {
         return { ...w, figureClass: 'qz-work-item' + (w.shape === 'vert' ? ' qz-work-item--portrait' : ''), label, isVideo: !!w.video, noMedia: !w.src,
           ph: (w.video ? 'Fermo immagine video · ' : 'Foto · ') + w.place + (w.shape === 'vert' ? ' (9:16)' : ''),
           videoEl: w.src ? this.video(w.src, { poster: w.poster, lazy: true }) : null,
-          likeEl: w.video ? React.createElement(VideoLikeButton, { videoId: w.slot }) : null,
           open: e => { this.pendingFocus = e.currentTarget; this.setState({ lb: i }); if (window.qzEvent) window.qzEvent('video_aperto', { video_titolo: w.t, video_categoria: w.place }); },
-          enter: e => { const v = e.currentTarget.querySelector('video'); if (v) { if (v.__hls && !v.__hlsStarted) { v.__hls.startLoad(); v.__hlsStarted = true; } v.play().catch(() => {}); } },
-          leave: e => { const v = e.currentTarget.querySelector('video'); v && v.pause(); } };
+          enter: e => { if (!this.reduced && window.matchMedia('(hover:hover) and (pointer:fine)').matches) this.player.play(e.currentTarget.querySelector('video')); },
+          leave: e => this.player.pause(e.currentTarget.querySelector('video')) };
       }),
 
       lbOpen: !!cur,
-      lbLikeEl: cur && cur.video ? React.createElement(VideoLikeButton, { key: 'lb-' + cur.slot, videoId: cur.slot, size: 28, corner: 22 }) : null,
+      lbLikeEl: cur && cur.video ? React.createElement(VideoLikeButton, { key: 'lb-' + cur.slot, videoId: cur.slot }) : null,
       lbHasLike: !!(cur && cur.video),
       lb: cur ? { ...cur, aspect: ASPECT[cur.shape], w: LBW[cur.shape], ph: cur.t } : {},
-      lbVideoEl: cur && cur.src ? React.createElement('video', {
-        key: cur.src, poster: cur.poster, controls: true, autoPlay: true, playsInline: true,
-        onTimeUpdate: e => {
-          const v = e.currentTarget;
-          if (!v.duration || !window.qzEvent) return;
-          const pct = (v.currentTime / v.duration) * 100;
-          v.__qzMarks = v.__qzMarks || {};
-          [25, 50, 75].forEach(m => {
-            if (pct >= m && !v.__qzMarks[m]) { v.__qzMarks[m] = 1; window.qzEvent('video_progresso', { video_titolo: cur.t, percentuale: m }); }
-          });
-        },
-        onEnded: e => {
-          const v = e.currentTarget;
-          v.__qzMarks = v.__qzMarks || {};
-          if (!v.__qzMarks[100] && window.qzEvent) { v.__qzMarks[100] = 1; window.qzEvent('video_progresso', { video_titolo: cur.t, percentuale: 100 }); }
-        },
-        ref: el => {
-          if (!el || el.dataset.hlsInit) return;
-          el.dataset.hlsInit = '1';
-          const hlsUrl = BUNNY_CDN + '/' + cur.src + '/playlist.m3u8';
-          if (window.Hls && window.Hls.isSupported()) {
-            const hls = new window.Hls();
-            this.lbHls = hls;
-            hls.loadSource(hlsUrl);
-            hls.attachMedia(el);
-          } else if (el.canPlayType('application/vnd.apple.mpegurl')) {
-            el.src = hlsUrl;
-          }
-        },
-        style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'contain', background: '#000' } }) : null,
+      lbVideoEl: cur && cur.src ? this.video(cur.src, {
+        poster: cur.poster, controls: true, muted: false, autoPlay: true,
+        onTimeUpdate: e => this.player.track(e.currentTarget, cur.t, window.qzEvent),
+        onEnded: e => this.player.track(e.currentTarget, cur.t, window.qzEvent, true),
+      }) : null,
       lbCount: cur ? String(lb + 1).padStart(2, '0') + ' / ' + String(list.length).padStart(2, '0') : '',
       closeLb: e => { this.menuDestination = e?.currentTarget?.getAttribute('href'); this.setState({ lb: null }); },
       prevLb: e => { e.stopPropagation(); this.step(-1); },
       nextLb: e => { e.stopPropagation(); this.step(1); },
       stop: e => e.stopPropagation(),
-
-      aboutBgEl: React.createElement('div', { style: { position: 'absolute', inset: 0, zIndex: 0, background: '#090a0c' } },
-        React.createElement(ParticlesBG, {
-          particleColors: ['#c9a227'], particleCount: 180, particleSpread: 10, speed: 0.1,
-          particleBaseSize: 90, sizeRandomness: 1, alphaParticles: true, disableRotation: false,
-          moveParticlesOnHover: true, particleHoverFactor: 1,
-          pixelRatio: Math.min(window.devicePixelRatio || 1, 2),
-        })
-      ),
-      aboutCardEl: React.createElement(AutoFlipCard, {
-        intervalMs: 4000,
-        front: React.createElement('img', { src: 'assets/home/about-portrait.webp', alt: 'Alessio Mazzetti', loading: 'lazy', decoding: 'async', style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' } }),
-        back: React.createElement('img', { src: 'assets/home/about-portrait-back.webp', alt: 'Alessio Mazzetti, visore alzato', loading: 'lazy', decoding: 'async', style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' } }),
-      }),
 
       notSent: !sent, sent, sending, sendError,
       submitLabel: sending ? 'Invio in corso…' : 'Chiedi info',
@@ -2164,7 +618,8 @@ class Component extends DCLogic {
       tipoVal, tipoLabel: tipoVal === 'Video' ? 'Riprese da montare' : tipoVal, hasTipo: !!tipoVal, stepError,
       hasNameError: step === 1 && !!stepError, hasContactError: step === 2 && !!stepError,
       nameInvalid: step === 1 && !!stepError ? 'true' : 'false', nameErrorId: step === 1 && stepError ? 'qz-name-error' : '',
-      contactInvalid: step === 2 && !!stepError ? 'true' : 'false', contactErrorId: step === 2 && stepError ? 'qz-contact-error' : '',
+      fieldLimits: window.QZContactRules.LIMITI,
+      contactInvalid: step === 2 && !!stepError ? 'true' : 'false', contactErrorId: step === 2 && stepError ? 'qz-contact-hint qz-contact-error' : 'qz-contact-hint',
       tiles: [
         { label: 'Foto aeree', desc: 'Scatti dall\'alto, curati e ritoccati' },
         { label: 'Riprese da montare', value: 'Video', desc: 'Riprese del drone, tagliate nei punti morti' },

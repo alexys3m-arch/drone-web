@@ -21,6 +21,7 @@ Pagina unica con modulo di contatto a step, filtri per pubblico, video accessibi
 2. [Mappa dei contesti](docs/mappa-dei-contesti.md): Contatto, Portfolio, Consenso e misurazione, Presenza online.
 3. [Decisioni](docs/decisioni.md): cosa non va cambiato e perché.
 4. [Operatività](docs/operativita.md): provare, pubblicare, aggiungere un lavoro.
+5. [Componenti e dipendenze](docs/componenti.md): responsabilità, codice condiviso e contratti frontend/server.
 
 Il contesto del prodotto è in [PRODUCT.md](PRODUCT.md). Il sistema visivo dark/gold è documentato in [DESIGN.md](DESIGN.md).
 

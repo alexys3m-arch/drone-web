@@ -54,6 +54,12 @@ test('dominio: il campo website identifica un bot', () => {
   assert.equal(eUnBot({}), false);
 });
 
+test('dominio: un indirizzo incompleto o testo con cifre non è un telefono', () => {
+  for (const contatto of ['utente123456@', 'abc123456', '123456abc']) {
+    assert.equal(eValida(creaRichiesta({ nome: 'Anna', contatto }, ORA)), false, contatto);
+  }
+});
+
 test('caso d\'uso: richiesta valida -> archiviata e notificata', async () => {
   const archivio = fakeArchivio(); const notifica = fakeNotifica();
   const esito = await inviaRichiestaDiContatto({ dati: { nome: 'A', contatto: 'a@b.it' }, archivio, notifica, log: silenzioso, ora: ORA });

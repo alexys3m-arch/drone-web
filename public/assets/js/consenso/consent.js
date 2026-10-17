@@ -124,13 +124,12 @@
     banner = document.createElement('section');
     banner.id = 'qz-consent';
     banner.setAttribute('aria-label', 'Preferenze cookie');
-    banner.style.cssText = 'box-sizing:border-box;position:relative;margin:0 auto;max-width:1500px;padding:24px clamp(20px,3vw,40px);background:#131417;color:#f4f3f0;font:400 14px/1.6 Manrope,system-ui,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:20px 32px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.16)';
     banner.innerHTML =
-      '<p style="margin:0;flex:1 1 440px;max-width:76ch">Uso cookie tecnici per il sito. Solo se accetti, uso Google Ads e Analytics per capire quali annunci portano richieste e come viene usato il sito. Puoi cambiare scelta da «Gestisci cookie» in fondo alla pagina. ' +
-      '<a href="privacy.html" style="color:#c9a227;text-decoration:underline;display:inline-block;padding:10px 2px;margin:-10px 0">Privacy &amp; cookie</a></p>' +
-      '<div style="display:flex;gap:12px;flex:1 1 260px;max-width:360px">' +
-      '<button type="button" data-qz-choice="denied" style="flex:1;min-height:44px;padding:12px 16px;border:0;border-radius:4px;background:#f4f3f0;color:#090a0c;font:600 14px/1.2 Manrope,system-ui,sans-serif;cursor:pointer">Rifiuta</button>' +
-      '<button type="button" data-qz-choice="granted" style="flex:1;min-height:44px;padding:12px 16px;border:0;border-radius:4px;background:#f4f3f0;color:#090a0c;font:600 14px/1.2 Manrope,system-ui,sans-serif;cursor:pointer">Accetta</button>' +
+      '<p class="qz-consent-copy">Uso cookie tecnici per il sito. Solo se accetti, uso Google Ads e Analytics per capire quali annunci portano richieste e come viene usato il sito. Puoi cambiare scelta da «Gestisci cookie» in fondo alla pagina. ' +
+      '<a href="privacy.html">Privacy &amp; cookie</a></p>' +
+      '<div class="qz-consent-actions">' +
+      '<button type="button" data-qz-choice="denied" class="qz-consent-button">Rifiuta</button>' +
+      '<button type="button" data-qz-choice="granted" class="qz-consent-button">Accetta</button>' +
       '</div>';
     banner.addEventListener('click', function (e) {
       var btn = e.target.closest ? e.target.closest('[data-qz-choice]') : null;

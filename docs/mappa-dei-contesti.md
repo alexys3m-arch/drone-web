@@ -15,15 +15,15 @@ Il sito è piccolo (una pagina e due funzioni), quindi i contesti sono leggeri: 
 | Contesto | Responsabilità | Codice |
 |---|---|---|
 | **Contatto** | Ricevere una richiesta, validarla, archiviarla, avvisare Alessio. | `src/contatto/`, `api/contact.js`, `public/assets/js/contatto/` |
-| **Portfolio** | Mostrare i lavori e contare i Mi piace. | `src/portfolio/`, `api/like.js`, `public/assets/portfolio/` |
-| **Consenso e misurazione** | Chiedere il consenso e misurare solo se concesso. | `public/assets/js/consenso/` |
+| **Portfolio** | Mostrare i lavori e contare i Mi piace. | `src/portfolio/`, `api/like.js`, `public/assets/portfolio/`, `public/assets/js/portfolio/` |
+| **Consenso e misurazione** | Chiedere il consenso e applicare le regole di misurazione documentate nelle decisioni. | `public/assets/js/consenso/` |
 | **Presenza online** | Pagina, testi, immagine del marchio, SEO, privacy, scroll e animazioni. | `public/` (esclusi i contesti sopra), `public/assets/brand/`, `public/assets/home/`, `public/assets/js/presentazione/` |
 
 ## Relazioni
 
 - **Presenza online** ospita gli altri tre: la pagina contiene il modulo, la griglia dei lavori e il banner.
-- **Contatto** e **Consenso** si incontrano su un solo punto: l'invio del modulo è una conversione (`generate_lead`), tracciata solo con consenso.
-- **Portfolio** e **Presenza online** condividono l'elenco `WORKS`: l'ordine definisce gli identificativi dei Mi piace.
+- **Contatto** e **Consenso** si incontrano su un solo punto: l'invio del modulo è una conversione (`generate_lead`), inviata secondo il Consent Mode già configurato, tranne che da localhost.
+- **Portfolio** e **Presenza online** leggono il catalogo unico `public/assets/js/portfolio/catalogue.js`: gli identificativi sono espliciti e indipendenti dall'ordine.
 
 ## Livelli nel codice (`src/`)
 
@@ -54,12 +54,23 @@ sito/
 │     ├─ home/               hero e ritratto
 │     ├─ portfolio/          poster dei lavori
 │     ├─ fonts/
-│     └─ js/{runtime,consenso,contatto,presentazione}
+│     ├─ css/                font, fondazione UI e stili delle due pagine
+│     ├─ icons/              simboli SVG condivisi
+│     └─ js/{runtime,shared,consenso,contatto,portfolio,presentazione}
 ├─ test/                     test automatici (si lanciano con npm test)
 ├─ docs/                     questa documentazione
 └─ .github/workflows/        pubblicazione automatica
 ```
 
-## Cosa NON è stato separato, e perché
+## Confini del frontend
 
-`public/index.html` resta un file unico: contiene il componente della pagina nel formato del suo motore (`runtime-1.js`, `runtime-2.js`), che legge il codice inline. Dividerlo in moduli per contesto richiederebbe riscrivere il motore: rischio alto, beneficio basso. Dentro il file i contesti sono comunque riconoscibili (sezioni, `WORKS`, modulo `#qz-form`).
+`public/index.html` conserva il template e il coordinamento della pagina nel formato inline richiesto dal motore esistente. Non contiene più gli effetti non utilizzati né i dettagli di caricamento HLS e sincronizzazione dei Mi piace.
+
+- `assets/css/ui.css`: token, pulsanti, focus, stati di caricamento e preferenze cookie condivisi anche con privacy.
+- `assets/css/site.css` e `privacy.css`: composizione specifica di ciascuna pagina; `fonts.css` dichiara una sola volta i font locali.
+- `assets/js/portfolio/video-player.js`: avvio differito, fallback HLS nativo, traguardi di visione e rilascio degli stream.
+- `assets/js/portfolio/likes-client.js`: stato dei Mi piace, conferma del server, recupero dagli errori e memoria locale.
+- `assets/js/portfolio/catalogue.js`: dati immutabili, usati anche dal dominio server.
+- `assets/js/shared/contact-rules.js`: regole pure e limiti, usati da browser e server. La collocazione pubblica permette di servirli senza un passaggio di build; il modulo non dipende da DOM, rete o runtime della pagina.
+
+Le API, i casi d'uso e gli adattatori KV/Resend mantengono i confini esistenti. Vedi [Componenti e dipendenze](componenti.md) per i contratti e le regole di manutenzione.

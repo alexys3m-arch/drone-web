@@ -9,39 +9,16 @@
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/assets/images/favicon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
-<style>
-@font-face{font-family:'Manrope';font-style:normal;font-weight:300 700;font-display:swap;src:url("assets/fonts/manrope-latin.woff2") format('woff2')}
-@font-face{font-family:'Syne';font-style:normal;font-weight:500 600;font-display:swap;src:url("assets/fonts/syne-latin.woff2") format('woff2')}
-*{box-sizing:border-box}
-html{background:#090a0c}
-body{margin:0;background:#090a0c;color:#f4f3f0;font-family:'Manrope',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
-a{color:#c9a227;text-decoration:underline}
-a:hover{color:#f4f3f0}
-header{border-bottom:1px solid rgba(255,255,255,.11)}
-.bar{max-width:1500px;margin:0 auto;height:72px;padding:0 clamp(20px,3vw,40px);display:flex;align-items:center;justify-content:space-between;gap:20px}
-.bar a{text-decoration:none;color:inherit}
-.back{font:600 12px/1 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,243,240,.72)}
-main{max-width:760px;margin:0 auto;padding:clamp(56px,8vw,96px) clamp(20px,3vw,40px) 96px}
-h1{margin:0 0 12px;font:500 clamp(32px,5vw,52px)/1 'Syne',sans-serif;letter-spacing:-.03em}
-h1 span{color:#c9a227}
-h2{margin:44px 0 12px;font:600 20px/1.2 'Syne',sans-serif;letter-spacing:-.01em}
-p,li{font:400 15px/1.7 'Manrope',sans-serif;color:rgba(244,243,240,.78)}
-p{margin:0 0 14px}
-ul{margin:0 0 14px;padding-left:20px}
-li{margin-bottom:6px}
-.updated{font-size:13px;color:rgba(244,243,240,.5)}
-table{width:100%;border-collapse:collapse;margin:8px 0 14px}
-th,td{padding:10px 12px;text-align:left;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.12);font:400 14px/1.55 'Manrope',sans-serif;color:rgba(244,243,240,.78)}
-th{font-weight:600;color:#f4f3f0}
-.tablewrap{overflow-x:auto}
-</style>
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/ui.css">
+<link rel="stylesheet" href="assets/css/privacy.css">
 <script src="assets/js/consenso/consent.js" defer></script>
 </head>
 <body>
 <header>
   <div class="bar">
     <a href="./" aria-label="Quota Zero"><img src="assets/brand/brand-wordmark.png" alt="Quota Zero" style="height:22px;width:auto;display:block"></a>
-    <a class="back" href="./">&larr; Torna al sito</a>
+    <a class="back" href="./"><svg class="qz-icon qz-icon--back" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#arrow"></use></svg>Torna al sito</a>
   </div>
 </header>
 <main>
@@ -74,7 +51,7 @@ th{font-weight:600;color:#f4f3f0}
   <p>Alcuni di questi fornitori possono trattare dati anche fuori dallo Spazio economico europeo, con le garanzie previste dal GDPR (ad esempio le clausole contrattuali standard).</p>
 
   <h2>Cookie e strumenti simili</h2>
-  <div class="tablewrap">
+  <div class="tablewrap" role="region" aria-label="Cookie e strumenti usati dal sito" tabindex="0">
   <table>
     <thead><tr><th>Cosa</th><th>A cosa serve</th><th>Quando</th></tr></thead>
     <tbody>
