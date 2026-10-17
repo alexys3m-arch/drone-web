@@ -9,10 +9,14 @@ Sito di riprese con drone a Roma: https://quotazerodrone.it
 
 ## Pubblicare
 
-Da questa cartella, con la CLI di Vercel (progetto quota.zero):
+Ad ogni push su `main`, GitHub Actions (`.github/workflows/deploy.yml`) pubblica il sito in produzione sul progetto Vercel `quota.zero`, poi controlla che quotazerodrone.it risponda. Si può rilanciare a mano da Actions ("Run workflow").
+
+Segreti del repository necessari: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_ID`. Senza il token il deploy viene saltato con un avviso.
+
+Pubblicazione manuale (alternativa), da questa cartella:
 
 ```
 npx --yes vercel@latest deploy --prod --yes
 ```
 
-Il collegamento a Vercel è in .vercel/project.json (non versionato). Non usare "Redeploy" dalla dashboard e non ricollegare il progetto: il dominio non deve cambiare.
+Non usare "Redeploy" dalla dashboard e non ricreare il progetto: il dominio non deve cambiare.

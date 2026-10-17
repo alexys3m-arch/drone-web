@@ -1,0 +1,54 @@
+name: Deploy su Vercel
+
+# Ad ogni push su main pubblica il sito in produzione (progetto Vercel quota.zero).
+# Servono i segreti del repository: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID.
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "README.md"
+      - ".gitignore"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-produzione
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Controllo dei segreti
+        id: check
+        run: |
+          if [ -z "$VERCEL_TOKEN" ] || [ -z "$VERCEL_ORG_ID" ] || [ -z "$VERCEL_PROJECT_ID" ]; then
+            echo "::warning::Segreti Vercel mancanti (VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID): deploy saltato."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.check.outputs.ok == 'true'
+        with:
+          node-version: 22
+
+      - name: Deploy in produzione
+        if: steps.check.outputs.ok == 'true'
+        run: npx --yes vercel@64.5.0 deploy --prod --yes --token "$VERCEL_TOKEN"
+
+      - name: Verifica che il sito risponda
+        if: steps.check.outputs.ok == 'true'
+        run: |
+          curl -fsSL --retry 6 --retry-delay 10 --retry-all-errors https://quotazerodrone.it/ | grep -qi "quota zero"
+          echo "quotazerodrone.it risponde"
