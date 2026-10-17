@@ -1,11 +1,8 @@
 // Dominio "Portfolio": i lavori mostrati nella griglia e i loro "Mi piace".
-//
-// L'identificativo di un lavoro è la sua posizione nell'elenco WORKS di public/index.html
-// ("work-1" è il primo, "work-2" il secondo, ...). Riordinare o inserire lavori in testa
-// sposta i Mi piace: i nuovi lavori vanno aggiunti in coda e NUMERO_LAVORI va aggiornato.
-const NUMERO_LAVORI = 8;
-
-const ID_LAVORI = Object.freeze(Array.from({ length: NUMERO_LAVORI }, (_, i) => 'work-' + (i + 1)));
+// Catalogue is data-only and shared with the browser. IDs never depend on display order.
+const { works } = require('../../../public/assets/js/portfolio/catalogue');
+const NUMERO_LAVORI = works.length;
+const ID_LAVORI = Object.freeze(works.map(work => work.slot));
 
 function eIdLavoroValido(id) {
   return typeof id === 'string' && ID_LAVORI.includes(id);

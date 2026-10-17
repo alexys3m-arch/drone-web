@@ -6,6 +6,10 @@ const handlers = {};
 const fields = { nome: { value: '', focus() { this.focused = true; } }, contatto: { value: '', focus() { this.focused = true; } } };
 const doc = { body: { style: { overflow: '' } }, activeElement: null, documentElement: { dataset: {} }, querySelector(selector) { return selector.includes('name="nome"') ? fields.nome : selector.includes('name="contatto"') ? fields.contatto : null; }, querySelectorAll() { return []; }, addEventListener() {}, removeEventListener() {} };
 const win = { innerWidth: 390, innerHeight: 844, scrollY: 0, matchMedia() { return { matches: true }; }, addEventListener(name, fn) { handlers[name] = fn; }, removeEventListener() {} };
+win.QZContactRules = require('../public/assets/js/shared/contact-rules');
+win.QZPortfolio = require('../public/assets/js/portfolio/catalogue');
+win.QZVideo = require('../public/assets/js/portfolio/video-player');
+win.QZLikes = require('../public/assets/js/portfolio/likes-client');
 class Logic { constructor() { this.props = {}; } setState(value) { Object.assign(this.state, typeof value === 'function' ? value(this.state) : value); } }
 const scope = { DCLogic: Logic, document: doc, window: win, React: { createElement() { return null; } }, setTimeout() { return 1; }, clearTimeout() {}, requestAnimationFrame() { return 1; }, cancelAnimationFrame() {}, console };
 vm.createContext(scope);
@@ -35,6 +39,11 @@ assert.equal(page.renderVals().showSticky, false, 'Sticky contact is suppressed 
 page.state.consentOpen = false;
 page.state.inputFocused = true;
 assert.equal(page.renderVals().showSticky, false, 'Sticky contact is suppressed during input');
+page.state.sending = true;
+page.state.step = 2;
+page.goStep(0);
+assert.equal(page.state.step, 2, 'The service and step cannot change while the request is sending');
+page.state.sending = false;
 page.componentWillUnmount();
 console.log('Usability behavior checks passed: menu Escape, validation focus, accepted contacts, sticky states.');
 

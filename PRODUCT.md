@@ -53,8 +53,8 @@ The user confirmed that the rehab retains the existing dark/gold identity. Both 
 
 ## Evidence on Hand
 
-- `public/index.html` contains the current service descriptions, FAQs, delivery options, contact details, portfolio metadata, and about copy.
-- `public/assets/portfolio/` contains eight real portfolio posters. Their associated video identifiers are in `WORKS` in `public/index.html`.
+- `public/index.html` contains the current service descriptions, FAQs, delivery options, contact details and about copy. Portfolio metadata is shared through `public/assets/js/portfolio/catalogue.js`.
+- `public/assets/portfolio/` contains eight real portfolio posters. Their associated video identifiers and stable work IDs are in `public/assets/js/portfolio/catalogue.js`.
 - `public/assets/home/hero-poster.jpg` contains the hero preview.
 - `public/assets/brand/` and `public/assets/home/` contains brand assets and portraits.
 - `public/privacy.html` contains the existing privacy and cookie information.

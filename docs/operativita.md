@@ -7,7 +7,7 @@ npm test                                   # test automatici, nessuna dipendenza
 npx --yes serve public -l 8767             # il sito su http://localhost:8767
 ```
 
-I video si riproducono solo da `quotazerodrone.it` (protezione dagli incorporamenti sul servizio video): in locale si vedono pagina, poster e layout, non la riproduzione. Gli eventi di misurazione sono disattivati da localhost.
+Il server statico mostra pagine, poster e video se il CDN li rende disponibili. La riproduzione locale è stata verificata; eventuali restrizioni del CDN possono dipendere dal dominio. Le API `/api/contact` e `/api/like` richiedono Vercel e non vengono eseguite da un server statico. Gli eventi di misurazione sono disattivati da localhost.
 
 ## Pubblicare
 
@@ -33,8 +33,8 @@ Una nuova variabile richiede un nuovo deploy per essere letta.
 
 1. Carica il video sul servizio video e prendi l'identificativo.
 2. Salva il poster in `public/assets/portfolio/<nome-del-lavoro>-poster.jpg`.
-3. Aggiungi la voce **in coda** all'elenco `WORKS` in `public/index.html`.
-4. Alza `NUMERO_LAVORI` in `src/portfolio/dominio/lavori.js` (e il test `portfolio.test.js` lo verifica).
+3. Aggiungi la voce a `public/assets/js/portfolio/catalogue.js`, con uno `slot` nuovo e stabile. Non riassegnare gli identificativi esistenti.
+4. Il dominio server ricava automaticamente identificativi e numero di lavori dal catalogo. Aggiorna eventuali riferimenti testuali al numero di clip nella pagina.
 5. `npm test`, prova in locale, push.
 
 ## Controlli SEO dopo modifiche importanti

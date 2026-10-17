@@ -3,6 +3,7 @@ name: Quota Zero
 description: Retained dark and gold design for a drone photography and video portfolio.
 colors:
   canvas: "#090a0c"
+  surface: "#131417"
   gold: "#c9a227"
   foreground: "#f4f3f0"
   muted: "#bdbcb8"
@@ -102,7 +103,7 @@ components:
 
 Quota Zero retains its dark background, warm gold accent, local Syne and Manrope fonts, and existing brand images. Real aerial footage leads the page. Text and controls explain the work without competing with it.
 
-This records the merged homepage in `public/index.html`. The frontmatter owns the tokens. `.impeccable/design.json` extends them with motion, breakpoints, and standalone component examples. Product facts remain in `PRODUCT.md`.
+This records the homepage in `public/index.html` and the shared foundation used by `public/privacy.html`. Reusable tokens and controls live in `public/assets/css/ui.css`; page compositions live in `site.css` and `privacy.css`. Font declarations live in `fonts.css`. The frontmatter owns the tokens. `.impeccable/design.json` extends them with motion, breakpoints, and standalone component examples. Product facts remain in `PRODUCT.md`.
 
 ## Colors
 
@@ -114,7 +115,7 @@ Text selection uses gold with dark text. Inputs use a gold caret. The muted toke
 
 Syne is the display and title family. Manrope carries paragraphs, controls, and metadata. Both use local font files in `public/assets/fonts/`.
 
-The hero uses the display role. Section headings use the headline role, and delivery headings use the delivery-title role. The main paragraph measure stops at 65 characters. Project descriptions and output metadata use smaller Manrope text, with tabular numerals for durations and counts.
+The hero uses the display role. Section headings use the headline role, and delivery headings use the delivery-title role. The main paragraph measure stops at 65 characters. Project descriptions and output metadata use smaller Manrope text. Footer navigation and optional-message labels use sentence case and readable support text. Preview duration badges and result counts use tabular numerals.
 
 At the content breakpoint, hero type becomes `clamp(38px,10vw,56px)` with `-.03em` tracking. Navigation retains its compact uppercase treatment. Filter labels use sentence case.
 
@@ -122,9 +123,9 @@ At the content breakpoint, hero type becomes `clamp(38px,10vw,56px)` with `-.03e
 
 The main content container stops at 1500px. Hero copy has a 1420px container and sits near the bottom of the footage. Page inset and section spacing use the fluid frontmatter tokens.
 
-On desktop, the portfolio uses twelve columns and varied spans. The all-work view preserves the existing collage. Filtered work uses six-column entries. Below 1100px, the runtime switches to one column with the original horizontal or vertical media ratio.
+The portfolio preserves native 16:9 landscape and 9:16 portrait frames. At 1100px and above, the twelve-column all-work view opens with an eight-column landscape beside a four-column portrait spanning two rows. Two smaller landscapes sit below the lead; remaining work uses six-column pairs. Filtered work uses paired entries, with portraits spanning two rows and capped at 440px wide. Between 768px and 1099px, the gallery uses two columns and finishes with a centered landscape spanning both columns. Below 768px, it uses one column with a 36px gap; portrait entries stop at 380px wide. Natural media proportions remain independent of caption length.
 
-Section introductions use two columns. Delivery options and the process use three. At 767px and below, these groups become single columns. The two audience descriptions remain side by side. Filters form two columns, with all-work access spanning the first row. Both audience filters remain visible without horizontal scrolling.
+The gallery introduction stacks its heading and description. Audience filters sit above the media, while the longer audience descriptions follow the gallery. Other section introductions use two columns. Delivery options and the process use three. At 767px and below, these groups become single columns. The two audience descriptions remain side by side. Filters form two columns, with all-work access spanning the first row. Both audience filters remain visible without horizontal scrolling.
 
 Form service choices use two columns and become one at 520px and below. Navigation switches to a menu below 1100px. The separate 680px hero treatment strengthens the scrim, and the 1180px rule hides the desktop WhatsApp text label.
 
@@ -142,13 +143,21 @@ Buttons, filters, and media frames use the control radius. Service selection til
 
 Primary hero actions have off-white fill and dark text. Secondary actions have transparent fill and a muted border. Both turn gold on hover. Their documented heights are minimum heights. Global keyboard focus uses a gold outline with a 3px offset.
 
-Filters use `aria-pressed` to expose selection. The selected filter has the same off-white and dark pairing as the primary action. A live status line reports the selected group and video count.
+Filters use `aria-pressed` to expose selection. The selected filter has the same off-white and dark pairing as the primary action. Small tabular count badges show the available clips before a filter is selected. A live status line reports the selected group and video count.
 
-Portfolio entries pair a media button with a title, factual context, format, duration, and enquiry link. The media button opens a labelled dialog. Its focus outline sits inside the media frame. The dialog contains focus and returns it to the opener when dismissed.
+Portfolio entries pair a media button with a title, factual context and format. Durations appear only on preview badges. A persistent play mark identifies each preview; hovering or keyboard focus turns it gold. Gallery captions have no enquiry links. The media button opens a labelled dialog; its existing project enquiry link remains available inside the dialog. Its focus outline sits inside the media frame. The dialog contains focus and returns it to the opener when dismissed.
 
-Service tiles show a Syne title and Manrope description. Hover adds a faint gold tint. Selection strengthens the tint and uses a gold border. The field style keeps a bottom rule, gold focus, and readable placeholder text. Inline errors sit beside the relevant input. Text fields and the message area use an expanded focus offset.
+The about section uses the supplied white-sweatshirt portrait, with a stable 4:5 frame and intrinsic dimensions to reserve space.
 
-Desktop navigation uses compact uppercase links. Mobile navigation uses larger Syne links in a full-height menu. Native FAQ disclosures retain their visible focus treatment. Reduced-motion preferences disable animations and transitions.
+Shared icon buttons use 44px targets and symbols from `assets/icons/ui.svg`; the same arrow and WhatsApp mark are reused throughout the site. The like control uses a simple heart, authoritative server count, busy state and visible retry feedback. An unavailable count is shown as a dash. Failed saves restore the previous choice and count.
+
+Service tiles show a Syne title and Manrope description. Hover adds a faint gold tint. Selection strengthens the tint, uses a gold border and adds a check mark. The field style keeps a bottom rule, gold focus, and readable placeholder text. Inline errors sit beside the relevant input. Text fields and the message area use an expanded focus offset.
+
+Desktop navigation uses compact uppercase links. Mobile navigation uses larger Syne links in a full-height menu. Native FAQ disclosures retain their visible focus treatment. Form progress exposes the current step through an accessible progress bar. A spinner and busy state accompany sending; fields and step navigation are disabled until the request finishes. Inputs retain their values after an error. The contact hint and field limits use the shared validation rules.
+
+Content and controls are visible immediately; there are no delayed section reveals. Reduced-motion preferences disable animations and transitions, including pseudo-elements. Hover previews respect reduced motion and fine-pointer availability.
+
+The privacy page shares fonts, selection, focus and controls with the homepage. Its back link has a 44px target, and the cookie table has a labelled, keyboard-focusable scroll region. Cookie choices use the same control component, with equal size and visual weight.
 
 ## Do's and Don'ts
 

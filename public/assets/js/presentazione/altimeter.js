@@ -4,20 +4,6 @@
 
   var TICKS = [0, 25, 50, 75, 100];
 
-  var css =
-    '.qz-alt{position:fixed;right:1px;top:50%;transform:translateY(-50%);height:min(44vh,380px);width:18px;z-index:35;pointer-events:none;opacity:0;transition:opacity .5s ease}' +
-    '.qz-alt.on{opacity:1}' +
-    '.qz-alt__track{position:absolute;right:2px;top:0;bottom:0;width:2px;border-radius:2px;background:rgba(244,243,240,.2)}' +
-    '.qz-alt__fill{position:absolute;left:0;right:0;bottom:0;height:0;border-radius:2px;background:#c9a227}' +
-    '.qz-alt__dot{position:absolute;right:-2px;bottom:0;width:6px;height:6px;border-radius:50%;background:#c9a227;box-shadow:0 0 0 3px rgba(201,162,39,.28);transform:translateY(50%)}' +
-    '.qz-alt__tick{position:absolute;right:2px;width:6px;height:1px;background:rgba(244,243,240,.35);transform:translateX(-4px)}' +
-    '.qz-alt__val{position:absolute;right:6px;white-space:nowrap;writing-mode:vertical-rl;transform:rotate(180deg);font:600 11px/1 Manrope,system-ui,sans-serif;letter-spacing:.08em;color:#f4f3f0;text-shadow:0 1px 8px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.9)}' +
-    '@media (max-width:1099px){.qz-alt{display:none}}' +
-    '@media (prefers-reduced-motion:reduce){.qz-alt{transition:none}}';
-
-  var style = document.createElement('style');
-  style.textContent = css;
-  document.head.appendChild(style);
 
   var root = document.createElement('div');
   root.className = 'qz-alt';

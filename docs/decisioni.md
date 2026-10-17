@@ -8,9 +8,9 @@ Icone (`favicon-192.png`, `apple-touch-icon.png`), immagine di anteprima (`brand
 
 Il file `googleedc9b739c9d16ad5.html` verifica la proprietà su Google Search Console: **non va mai rimosso né rinominato**.
 
-## 2. Gli identificativi dei Mi piace seguono l'ordine di `WORKS`
+## 2. Gli identificativi dei Mi piace sono espliciti e condivisi
 
-`work-1` è il primo lavoro dell'elenco. Aggiungere lavori **in coda** e aggiornare `NUMERO_LAVORI` in `src/portfolio/dominio/lavori.js`. Riordinare sposterebbe i Mi piace su altri lavori.
+Il catalogo in `public/assets/js/portfolio/catalogue.js` assegna a ogni video uno `slot` stabile (`work-1`, `work-2`, ...). Browser e API leggono lo stesso catalogo. Riordinare le voci non cambia l'identificativo; non riutilizzare mai uno slot per un video diverso. Il numero di lavori ammessi è derivato dai dati, senza un secondo contatore da aggiornare.
 
 ## 3. Prima si archivia, poi si avvisa
 
