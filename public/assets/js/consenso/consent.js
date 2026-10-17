@@ -63,9 +63,13 @@
   // le prove in locale non devono sporcare i dati di Ads e Analytics
   var isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
 
+  // Il tag Google è già caricato con consent mode "denied" di default (vedi index.html):
+  // l'evento va sempre inviato, è Google a decidere cosa farne in base al consenso
+  // (conteggio modellato/cookieless se negato, cookie e personalizzazione solo se concesso).
+  // Negare l'invio qui in più azzererebbe le conversioni anche per chi ha accettato.
   function track(name) {
     var params = CONVERSIONS[name];
-    if (params && getChoice() === 'granted' && window.gtag && !isLocal) {
+    if (params && window.gtag && !isLocal) {
       window.gtag('event', 'conversion', params);
       if (name === 'form') sendEvent('generate_lead', {});
       else if (name === 'phone') sendEvent('click_telefono', {});
@@ -74,7 +78,7 @@
   window.qzTrack = track;
 
   function sendEvent(name, params) {
-    if (getChoice() === 'granted' && window.gtag && !isLocal) {
+    if (window.gtag && !isLocal) {
       window.gtag('event', name, params || {});
     }
   }

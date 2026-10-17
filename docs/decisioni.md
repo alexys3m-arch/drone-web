@@ -20,9 +20,9 @@ Una richiesta valida viene salvata nell'archivio prima di mandare l'email. Se Re
 
 Chi compila `website` riceve una risposta positiva ma non viene registrato niente: il bot non capisce di essere stato scartato.
 
-## 5. Misurare solo con consenso
+## 5. Il consenso decide cosa ne fa Google, non se l'evento parte
 
-Il consenso parte negato (Google Consent Mode v2). Gli eventi partono solo se `qz_consent` è `granted` e mai da localhost.
+Il consenso parte negato (Google Consent Mode v2): senza consenso, Google non salva cookie né personalizza. Ma gli eventi (`conversion`, `generate_lead`, `click_whatsapp`, ...) partono sempre, tranne che da localhost — è il modo raccomandato da Google per non perdere ogni conversione quando il visitatore non accetta il banner. Prima (fino al 2026-10-17) gli eventi partivano solo con `qz_consent` a `granted`: così Google Ads non riceveva nessun segnale e non poteva ottimizzare le campagne.
 
 ## 6. Pubblicazione automatica ad ogni push su `main`
 
