@@ -107,7 +107,7 @@ This records the homepage in `public/index.html` and the shared foundation used 
 
 ## Colors
 
-Gold marks emphasis, enquiry links, hover states, and keyboard focus. Off-white carries headings and filled primary actions. Muted text supports descriptions and format metadata. Translucent rules separate sections. The error color appears beside invalid form fields.
+Gold marks emphasis, enquiry links, hover states, and keyboard focus. Off-white carries headings and filled primary actions. Muted text supports descriptions and format metadata. A gold rule sits above each new titled section (the section change); finer rules inside a section (cards, steps, FAQ rows, footer) stay translucent. The author name in the About title is gold. The error color appears beside invalid form fields.
 
 Text selection uses gold with dark text. Inputs use a gold caret. The muted token corresponds to `--qz-muted`; the rule token corresponds to `--qz-rule`.
 
