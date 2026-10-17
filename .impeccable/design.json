@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-17T16:43:05.774990Z",
+  "title": "Design System: Quota Zero",
+  "extensions": {
+    "shadows": [
+      {
+        "name": "lightbox-media",
+        "value": "0 40px 120px -40px rgba(0,0,0,.9)",
+        "purpose": "Depth around the video player in the modal backdrop."
+      },
+      {
+        "name": "mobile-contact",
+        "value": "0 10px 30px rgba(0,0,0,.4)",
+        "purpose": "Primary contact action above page content."
+      }
+    ],
+    "motion": [
+      {
+        "name": "control-transition",
+        "value": ".25s",
+        "purpose": "Hero actions, filters, and service-choice color changes."
+      },
+      {
+        "name": "form-step",
+        "value": ".45s cubic-bezier(.2,.7,.2,1)",
+        "purpose": "Form step opacity and 16px vertical entrance."
+      },
+      {
+        "name": "form-progress",
+        "value": ".5s cubic-bezier(.2,.7,.2,1)",
+        "purpose": "Progress fill changes through scaleX with left transform origin."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Disables animations, transitions, and smooth scrolling."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "form-tiles-max",
+        "value": "520px"
+      },
+      {
+        "name": "hero-scrim-max",
+        "value": "680px"
+      },
+      {
+        "name": "content-layout-max",
+        "value": "767px"
+      },
+      {
+        "name": "navigation-gallery-min",
+        "value": "1100px"
+      },
+      {
+        "name": "whatsapp-label-max",
+        "value": "1180px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary hero action",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Hero action with the observed hover and keyboard focus states.",
+      "html": "<a class=\"ds-button-primary\" href=\"#lavori\">Guarda i lavori</a>",
+      "css": ".ds-button-primary{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border:1px solid #bdbcb8;border-radius:4px;font:600 14px/normal 'Manrope',sans-serif;text-decoration:none;transition:background .25s,color .25s,border-color .25s;background:#f4f3f0;color:#090a0c;border-color:#f4f3f0}.ds-button-primary:hover{background:#c9a227;color:#090a0c;border-color:#c9a227}.ds-button-primary:focus-visible{outline:2px solid #c9a227;outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-button-primary{transition:none}}"
+    },
+    {
+      "name": "Secondary hero action",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Hero action with the observed hover and keyboard focus states.",
+      "html": "<a class=\"ds-button-secondary\" href=\"#contatti\">Parliamo del progetto</a>",
+      "css": ".ds-button-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border:1px solid #bdbcb8;border-radius:4px;font:600 14px/normal 'Manrope',sans-serif;text-decoration:none;transition:background .25s,color .25s,border-color .25s;background:transparent;color:#f4f3f0}.ds-button-secondary:hover{background:#c9a227;color:#090a0c;border-color:#c9a227}.ds-button-secondary:focus-visible{outline:2px solid #c9a227;outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-button-secondary{transition:none}}"
+    },
+    {
+      "name": "Contact field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "The contact input has a bottom rule; hover leaves it unchanged and focus turns it gold.",
+      "html": "<input class=\"ds-field\" name=\"contatto\" autocomplete=\"on\" autocapitalize=\"none\" spellcheck=\"false\" required aria-label=\"Telefono o email\" placeholder=\"Telefono o email\">",
+      "css": ".ds-field{display:block;width:100%;height:64px;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.3);color:#f4f3f0;font:400 clamp(20px,2.4vw,28px)/1 'Manrope',sans-serif;padding:0;border-radius:0;caret-color:#c9a227;transition:border-color .25s ease}.ds-field:hover{border-bottom-color:rgba(255,255,255,.3)}.ds-field:focus{border-bottom-color:#c9a227}.ds-field:focus-visible{outline:2px solid #c9a227;outline-offset:5px}.ds-field::placeholder{color:rgba(244,243,240,.65)}@media(prefers-reduced-motion:reduce){.ds-field{transition:none}}"
+    },
+    {
+      "name": "Audience filter",
+      "kind": "chip",
+      "refersTo": "filter",
+      "description": "An audience filter; aria-pressed exposes its selected state.",
+      "html": "<button type=\"button\" class=\"ds-filter\" aria-pressed=\"true\">Aziende e strutture</button>",
+      "css": ".ds-filter{min-height:48px;padding:12px 20px;border:1px solid rgba(255,255,255,.18);border-radius:4px;background:transparent;color:rgba(244,243,240,.72);font:600 14px/1.3 'Manrope',sans-serif;cursor:pointer;transition:background .25s,color .25s,border-color .25s}.ds-filter[aria-pressed=true]{background:#f4f3f0;color:#090a0c;border-color:#f4f3f0}.ds-filter:hover{border-color:#c9a227}.ds-filter:focus-visible{outline:2px solid #c9a227;outline-offset:3px}@media(max-width:767px){.ds-filter{padding:12px 8px;font-size:13px}}@media(prefers-reduced-motion:reduce){.ds-filter{transition:none}}"
+    },
+    {
+      "name": "Service choice",
+      "kind": "card",
+      "refersTo": "service-tile",
+      "description": "A selectable form tile, rather than a decorative content card.",
+      "html": "<button type=\"button\" class=\"ds-service\" aria-pressed=\"false\"><span class=\"ds-service-title\">Riprese da montare</span><span class=\"ds-service-description\">Riprese tagliate, senza montaggio finale né musica.</span></button>",
+      "css": ".ds-service{text-align:left;display:flex;flex-direction:column;gap:8px;min-height:110px;padding:20px;background:transparent;border:1px solid rgba(255,255,255,.22);border-radius:6px;color:#f4f3f0;cursor:pointer;font-family:'Manrope',sans-serif;transition:border-color .25s ease,background .25s ease,transform .2s ease}.ds-service-title{font:500 clamp(19px,2vw,23px)/1.1 'Syne',sans-serif;letter-spacing:-.01em}.ds-service-description{font:400 14px/1.45 'Manrope',sans-serif;color:rgba(244,243,240,.7)}.ds-service:hover{border-color:#c9a227;background:rgba(201,162,39,.07)}.ds-service:active{transform:scale(.985)}.ds-service[aria-pressed=true]{border-color:#c9a227;background:rgba(201,162,39,.13)}.ds-service:focus-visible{outline:2px solid #c9a227;outline-offset:3px}@media(max-width:520px){.ds-service{min-height:88px}}@media(prefers-reduced-motion:reduce){.ds-service{transition:none}}"
+    },
+    {
+      "name": "Desktop section navigation",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Compact section links from the desktop header.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Sezioni\"><a href=\"#lavori\">Lavori</a><a href=\"#servizi\">Servizi</a><a href=\"#chi-sono\">Chi sono</a></nav>",
+      "css": ".ds-nav{display:flex;gap:clamp(18px,2.4vw,40px);white-space:nowrap;font:600 12px/1 'Manrope',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:rgba(244,243,240,.72)}.ds-nav a{color:inherit;text-decoration:none;transition:color .3s ease}.ds-nav a:hover{color:#f4f3f0}.ds-nav a:focus-visible{outline:2px solid #c9a227;outline-offset:3px}@media(prefers-reduced-motion:reduce){.ds-nav a{transition:none}}"
+    }
+  ]
+}

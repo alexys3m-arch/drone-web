@@ -1,0 +1,9 @@
+{
+  "files": [
+    "public/index.html",
+    "public/privacy.html"
+  ],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}

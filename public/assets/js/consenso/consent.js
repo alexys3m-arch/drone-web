@@ -7,6 +7,7 @@
     whatsapp: { send_to: 'AW-18494564224/zWyiCP3bqJkdEIDP8vJE' }
   };
   var banner = null;
+  var returnFocus = null;
 
   function getChoice() {
     try { return window.localStorage.getItem(KEY); } catch (e) { return null; }
@@ -79,15 +80,29 @@
   }
   window.qzEvent = sendEvent;
 
+  function announceBanner(open) {
+    document.documentElement.dataset.qzConsentOpen = open ? 'true' : 'false';
+    window.dispatchEvent(new CustomEvent('qz-consent-change'));
+  }
+
+  window.qzMountConsent = function (slot) { if (slot && banner) slot.appendChild(banner); };
+
   function hideBanner() {
     if (banner && banner.parentNode) banner.parentNode.removeChild(banner);
     banner = null;
+    announceBanner(false);
   }
 
   function choose(value) {
     var wasGranted = getChoice() === 'granted';
     setChoice(value);
+    var hadFocus = banner && banner.contains(document.activeElement);
     hideBanner();
+    if (hadFocus) {
+      var next = returnFocus && returnFocus.isConnected ? returnFocus : document.querySelector('#lavori h2');
+      if (next) { if (!next.hasAttribute('tabindex')) next.setAttribute('tabindex', '-1'); next.focus({ preventScroll: true }); }
+    }
+    returnFocus = null;
     if (value === 'granted') {
       applyConsent(true);
     } else if (wasGranted) {
@@ -97,26 +112,30 @@
     }
   }
 
-  function showBanner() {
-    if (banner) return;
-    banner = document.createElement('div');
-    banner.setAttribute('role', 'dialog');
+  function showBanner(fromSettings) {
+    if (banner) {
+      if (fromSettings) { banner.scrollIntoView({ block: 'center', behavior: 'instant' }); banner.querySelector('button').focus({ preventScroll: true }); }
+      return;
+    }
+    banner = document.createElement('section');
+    banner.id = 'qz-consent';
     banner.setAttribute('aria-label', 'Preferenze cookie');
-    banner.style.cssText = 'position:fixed;left:12px;bottom:12px;right:12px;z-index:200;max-width:560px;padding:20px;background:#131417;border:1px solid rgba(255,255,255,.16);border-radius:4px;box-shadow:0 20px 60px rgba(0,0,0,.55);color:#f4f3f0;font:400 13px/1.55 Manrope,system-ui,sans-serif';
+    banner.style.cssText = 'box-sizing:border-box;position:relative;margin:0 auto;max-width:1500px;padding:24px clamp(20px,3vw,40px);background:#131417;color:#f4f3f0;font:400 14px/1.6 Manrope,system-ui,sans-serif;display:flex;align-items:center;justify-content:space-between;gap:20px 32px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.16)';
     banner.innerHTML =
-      '<p style="margin:0 0 14px;color:rgba(244,243,240,.8)">Uso cookie tecnici per far funzionare il sito. Con il tuo consenso uso anche i cookie di Google Ads e Google Analytics, per capire quali annunci portano richieste e come viene usato il sito. ' +
-      'Se rifiuti, i tag di Google non salvano cookie. ' +
-      'Puoi cambiare idea in ogni momento dal link &laquo;Gestisci cookie&raquo; in fondo alla pagina. ' +
-      '<a href="privacy.html" style="color:#c9a227;text-decoration:underline;display:inline-block;padding:13px 2px;margin:-13px 0">Privacy &amp; cookie</a></p>' +
-      '<div style="display:flex;gap:10px;flex-wrap:wrap">' +
-      '<button type="button" data-qz-choice="denied" style="flex:1 1 140px;height:44px;border:0;border-radius:4px;background:#f4f3f0;color:#090a0c;font:600 12px/1 Manrope,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">Rifiuta</button>' +
-      '<button type="button" data-qz-choice="granted" style="flex:1 1 140px;height:44px;border:0;border-radius:4px;background:#f4f3f0;color:#090a0c;font:600 12px/1 Manrope,system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer">Accetta</button>' +
+      '<p style="margin:0;flex:1 1 440px;max-width:76ch">Uso cookie tecnici per il sito. Solo se accetti, uso Google Ads e Analytics per capire quali annunci portano richieste e come viene usato il sito. Puoi cambiare scelta da «Gestisci cookie» in fondo alla pagina. ' +
+      '<a href="privacy.html" style="color:#c9a227;text-decoration:underline;display:inline-block;padding:10px 2px;margin:-10px 0">Privacy &amp; cookie</a></p>' +
+      '<div style="display:flex;gap:12px;flex:1 1 260px;max-width:360px">' +
+      '<button type="button" data-qz-choice="denied" style="flex:1;min-height:44px;padding:12px 16px;border:0;border-radius:4px;background:#f4f3f0;color:#090a0c;font:600 14px/1.2 Manrope,system-ui,sans-serif;cursor:pointer">Rifiuta</button>' +
+      '<button type="button" data-qz-choice="granted" style="flex:1;min-height:44px;padding:12px 16px;border:0;border-radius:4px;background:#f4f3f0;color:#090a0c;font:600 14px/1.2 Manrope,system-ui,sans-serif;cursor:pointer">Accetta</button>' +
       '</div>';
     banner.addEventListener('click', function (e) {
       var btn = e.target.closest ? e.target.closest('[data-qz-choice]') : null;
       if (btn) choose(btn.getAttribute('data-qz-choice'));
     });
-    document.documentElement.appendChild(banner);
+    var slot = document.querySelector('#qz-consent-slot');
+    (slot || document.body).appendChild(banner);
+    announceBanner(true);
+    if (fromSettings) { banner.scrollIntoView({ block: 'center', behavior: 'instant' }); banner.querySelector('button').focus({ preventScroll: true }); }
   }
 
   document.addEventListener('click', function (e) {
@@ -132,7 +151,8 @@
     var href = el.getAttribute('href') || '';
     if (href === '#cookie-settings') {
       e.preventDefault();
-      showBanner();
+      returnFocus = el;
+      showBanner(true);
     } else if (href.indexOf('tel:') === 0) {
       track('phone');
     } else if (href.indexOf('wa.me/') !== -1) {

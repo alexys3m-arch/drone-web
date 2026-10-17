@@ -2,7 +2,6 @@
   if (window.__qzAltimeter) return;
   window.__qzAltimeter = true;
 
-  var MAX = 120; // metri: limite di quota per i droni
   var TICKS = [0, 25, 50, 75, 100];
 
   var css =
@@ -13,6 +12,7 @@
     '.qz-alt__dot{position:absolute;right:-2px;bottom:0;width:6px;height:6px;border-radius:50%;background:#c9a227;box-shadow:0 0 0 3px rgba(201,162,39,.28);transform:translateY(50%)}' +
     '.qz-alt__tick{position:absolute;right:2px;width:6px;height:1px;background:rgba(244,243,240,.35);transform:translateX(-4px)}' +
     '.qz-alt__val{position:absolute;right:6px;white-space:nowrap;writing-mode:vertical-rl;transform:rotate(180deg);font:600 11px/1 Manrope,system-ui,sans-serif;letter-spacing:.08em;color:#f4f3f0;text-shadow:0 1px 8px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.9)}' +
+    '@media (max-width:1099px){.qz-alt{display:none}}' +
     '@media (prefers-reduced-motion:reduce){.qz-alt{transition:none}}';
 
   var style = document.createElement('style');
@@ -52,7 +52,7 @@
     var pct = (p * 100).toFixed(2);
     fill.style.height = pct + '%';
     dot.style.bottom = pct + '%';
-    val.textContent = Math.round(p * MAX) + ' m';
+    val.textContent = Math.round(p * 100) + '%';
     if (p > 0.6) {
       val.style.bottom = 'auto';
       val.style.top = (100 - p * 100).toFixed(2) + '%';

@@ -2,7 +2,7 @@
 
 Riprese con drone a Roma: https://quotazerodrone.it
 
-Pagina unica con modulo di contatto a step, griglia dei lavori con Mi piace e banner del consenso. Pubblicato su Vercel (progetto `quota.zero`).
+Pagina unica con modulo di contatto a step, filtri per pubblico, video accessibili da tastiera e preferenze cookie nel flusso della pagina. Pubblicato su Vercel (progetto `quota.zero`).
 
 ## Dove sta cosa
 
@@ -21,6 +21,8 @@ Pagina unica con modulo di contatto a step, griglia dei lavori con Mi piace e ba
 2. [Mappa dei contesti](docs/mappa-dei-contesti.md): Contatto, Portfolio, Consenso e misurazione, Presenza online.
 3. [Decisioni](docs/decisioni.md): cosa non va cambiato e perché.
 4. [Operatività](docs/operativita.md): provare, pubblicare, aggiungere un lavoro.
+
+Il contesto del prodotto è in [PRODUCT.md](PRODUCT.md). Il sistema visivo dark/gold è documentato in [DESIGN.md](DESIGN.md).
 
 ## Comandi
 

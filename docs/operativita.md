@@ -3,7 +3,7 @@
 ## Provare in locale
 
 ```
-npm test                                   # 32 test, nessuna dipendenza da installare
+npm test                                   # test automatici, nessuna dipendenza da installare
 npx --yes serve public -l 8767             # il sito su http://localhost:8767
 ```
 
