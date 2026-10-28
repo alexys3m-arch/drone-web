@@ -1,8 +1,8 @@
-﻿# Quota Zero: sito di Alessio Mazzetti
+# Quota Zero: sito di Alessio Mazzetti
 
 Riprese con drone a Roma: https://quotazerodrone.it
 
-Pagina unica con modulo di contatto a step, filtri per pubblico, video accessibili da tastiera e preferenze cookie nel flusso della pagina. Pubblicato su Vercel (progetto `quota.zero`).
+Pagina unica con modulo di contatto a step, filtri per pubblico, video accessibili da tastiera e scelta dei cookie in una scheda fissa sempre visibile. Pubblicato su Vercel (progetto `quota.zero`).
 
 ## Dove sta cosa
 

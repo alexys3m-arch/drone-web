@@ -24,6 +24,10 @@ Chi compila `website` riceve una risposta positiva ma non viene registrato nient
 
 Il consenso parte negato (Google Consent Mode v2): senza consenso, Google non salva cookie né personalizza. Ma gli eventi (`conversion`, `generate_lead`, `click_whatsapp`, ...) partono sempre, tranne che da localhost — è il modo raccomandato da Google per non perdere ogni conversione quando il visitatore non accetta il banner. Prima (fino al 2026-10-17) gli eventi partivano solo con `qz_consent` a `granted`: così Google Ads non riceveva nessun segnale e non poteva ottimizzare le campagne.
 
+## 5b. Il banner dei cookie deve vedersi subito
+
+La scelta Accetta/Rifiuta sta in una scheda fissa in basso (a destra sugli schermi larghi), con i due pulsanti identici. Non va messa nel flusso della pagina: quando stava sotto la prima schermata nessuno la vedeva, il tasso di consenso risultava 0% e Google Ads non poteva attribuire le conversioni dei visitatori dell'Unione Europea (avviso 'La modalita di consenso presenta problemi', ottobre 2026).
+
 ## 6. Pubblicazione automatica ad ogni push su `main`
 
 GitHub Actions esegue prima i test, poi pubblica sul progetto Vercel `quota.zero` con la CLI, poi controlla che il sito risponda. Non si usa l'integrazione Git di Vercel: il progetto e il dominio non vengono ricreati. I segreti stanno nelle impostazioni del repository, mai nel codice.

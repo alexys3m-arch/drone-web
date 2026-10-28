@@ -54,10 +54,13 @@ button:disabled{opacity:.6;cursor:wait}
 .qz-filter-count{display:inline-flex;align-items:center;justify-content:center;min-width:22px;min-height:22px;padding:2px 5px;border-radius:3px;background:rgba(244,243,240,.09);font-size:12px;font-variant-numeric:tabular-nums}
 .filter-chip{display:inline-flex;align-items:center;justify-content:center;gap:10px}
 .filter-chip[aria-pressed=true] .qz-filter-count{background:rgba(9,10,12,.1)}
-#qz-consent{position:relative;max-width:1500px;margin:0 auto;padding:24px var(--qz-page);background:var(--qz-surface);color:var(--qz-foreground);font:400 14px/1.6 'Manrope',sans-serif;display:flex;align-items:center;justify-content:space-between;gap:20px 32px;flex-wrap:wrap;border-bottom:1px solid var(--qz-rule)}
-.qz-consent-copy{margin:0;flex:1 1 440px;max-width:76ch}
+/* Cookie banner: a floating card always inside the first screen. When it sat below the hero in the page flow,
+   visitors never saw Accept/Reject and Google Ads measured a 0% consent rate. */
+#qz-consent{position:fixed;left:12px;right:12px;bottom:12px;z-index:200;max-width:560px;box-sizing:border-box;margin:0;padding:18px 20px;background:var(--qz-surface);color:var(--qz-foreground);font:400 13px/1.55 'Manrope',sans-serif;display:flex;flex-direction:column;gap:14px;border:1px solid var(--qz-rule);border-radius:var(--qz-radius);box-shadow:0 20px 60px rgba(0,0,0,.55)}
+@media(min-width:768px){#qz-consent{left:auto;right:20px;bottom:20px}}
+.qz-consent-copy{margin:0}
 .qz-consent-copy a{color:var(--qz-gold);text-decoration:underline;display:inline-block;padding:10px 2px;margin:-10px 0}
-.qz-consent-actions{display:flex;gap:12px;flex:1 1 260px;max-width:360px}
+.qz-consent-actions{display:flex;gap:12px}
 .qz-consent-button{flex:1;padding:12px 16px}
 @media(max-width:767px){.hero-cta .qz-button{flex:1;padding:0 16px;font-size:13px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
