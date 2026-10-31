@@ -21,6 +21,12 @@ button{touch-action:manipulation}
 .qz-icon{display:block;width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .qz-icon--back{transform:rotate(180deg)}
 .qz-icon--whatsapp{fill:currentColor;stroke:none;color:#25d366}
+.qz-social{display:inline-flex;flex-wrap:wrap;align-items:center;gap:0 4px;margin-left:-12px}
+.qz-social a{width:48px;height:48px;display:inline-flex;align-items:center;justify-content:center;color:var(--qz-gold);transition:color var(--qz-duration) var(--qz-ease)}
+.qz-social .qz-icon{width:24px;height:24px}
+.qz-social--center{justify-content:center;margin-left:0}
+@media(max-width:600px){.qz-social--footer{flex:1 0 100%}}
+@media(hover:hover){.qz-social a:hover{color:var(--qz-foreground)}}
 .qz-button,.qz-next,.qz-icon-button,.qz-consent-button,.qz-like-button{
   display:inline-flex;align-items:center;justify-content:center;gap:10px;
   min-height:var(--qz-control-height);padding:0 22px;border:1px solid var(--qz-rule);border-radius:var(--qz-radius);
