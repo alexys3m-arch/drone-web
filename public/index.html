@@ -50,7 +50,8 @@ gtag('config','G-0RN6LP6RPF');
 <link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin="">
 <link rel="preload" href="assets/fonts/syne-latin.woff2" as="font" type="font/woff2" crossorigin="">
-<link rel="preload" href="assets/home/hero-poster.jpg" as="image">
+<link rel="preload" href="assets/home/hero-poster.jpg" as="image" media="(min-width:768px)">
+<link rel="preload" href="assets/home/hero-poster-mobile.jpg" as="image" media="(max-width:767px)">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Quota Zero — Riprese con drone a Roma","url":"https://quotazerodrone.it/","image":"https://quotazerodrone.it/assets/brand/brand-icon-wide.png","logo":"https://quotazerodrone.it/assets/brand/favicon-192.png","description":"Riprese con drone a Roma e nel Lazio: video e foto aeree per eventi, aziende, immobili, agriturismi e contenuti social.","founder":{"@type":"Person","name":"Alessio Mazzetti"},"areaServed":[{"@type":"City","name":"Roma"},{"@type":"AdministrativeArea","name":"Lazio"}],"serviceType":["Riprese aeree con drone","Fotografia aerea","Video per aziende","Riprese per eventi","Riprese per immobili e strutture ricettive"],"sameAs":["https://www.youtube.com/@Ale_mazzetti","https://www.instagram.com/quota.zero.drone/","https://www.tiktok.com/@quota.zero","https://www.facebook.com/p/Quota-Zero-Riprese-con-drone-a-Roma-61591053283993/"]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Alessio Mazzetti","url":"https://quotazerodrone.it/","sameAs":["https://www.youtube.com/@Ale_mazzetti","https://www.instagram.com/quota.zero.drone/","https://www.tiktok.com/@quota.zero","https://www.facebook.com/p/Quota-Zero-Riprese-con-drone-a-Roma-61591053283993/"],"jobTitle":"Drone Pilot & Aerial Filmmaker","address":{"@type":"PostalAddress","addressLocality":"Roma","addressCountry":"IT"},"description":"Riprese aeree, fotografia e video con drone per immobili, aziende, eventi e contenuti social.","knowsAbout":["Riprese aeree","Fotografia con drone","Video making","Color grading"]}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Servono permessi per volare?","acceptedAnswer":{"@type":"Answer","text":"Dipende dal luogo. Controllo io le regole di volo (zone vietate, aeroporti, aree protette, presenza di persone) e, se serve, richiedo le autorizzazioni prima del giorno delle riprese. Se in un posto non si può volare, te lo dico subito."}},{"@type":"Question","name":"Cosa succede se il tempo è brutto?","acceptedAnswer":{"@type":"Answer","text":"Con vento forte o pioggia non si vola: ci mettiamo d'accordo per un'altra data, appena il meteo lo permette."}},{"@type":"Question","name":"Quanto costa una ripresa?","acceptedAnswer":{"@type":"Answer","text":"Dipende da luogo, durata e da cosa ti serve. Raccontami il progetto e ti dico una cifra chiara prima di iniziare, senza sorprese."}},{"@type":"Question","name":"In che formato ricevo il video?","acceptedAnswer":{"@type":"Answer","text":"Dipende dalla formula. Con \"Riprese da montare\" ricevi i filmati del drone con i tempi morti rimossi, senza musica né montaggio finale. Con \"Video completo\" ricevi il video montato, con colore e musica. In entrambi i casi nel formato che ti serve per sito, YouTube o social (orizzontale o verticale)."}},{"@type":"Question","name":"Lavori anche fuori Roma?","acceptedAnswer":{"@type":"Answer","text":"La mia base è Roma e lavoro soprattutto nel Lazio. Se il progetto è più lontano, scrivimi e valutiamo insieme."}}]}</script>
@@ -366,7 +367,7 @@ gtag('config','G-0RN6LP6RPF');
   </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script="" data-props="{&quot;heroVideo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;be8d3194-e694-4977-8c18-4b391c9fcda9&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Video&quot;},&quot;stickyCta&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Stile&quot;}}">
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;heroVideo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;919ac8c7-7957-489c-9840-c671809501cf&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Video&quot;},&quot;heroVideoMobile&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;b6fc8417-2e01-43cb-859f-49d764054189&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Video&quot;},&quot;stickyCta&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Stile&quot;}}">
 const { works: WORKS, audiences: CATS, aspects: ASPECT, lightboxWidths: LBW } = window.QZPortfolio;
 const BUNNY_CDN = 'https://vz-0c0a8faa-9e0.b-cdn.net';
 const likeClient = window.QZLikes.createClient({
@@ -563,11 +564,14 @@ class Component extends DCLogic {
     const list = this.filtered();
     const cur = lb != null ? list[lb] : null;
     const navH = scrolled ? '64px' : '80px';
-    // A single Bunny Stream source for every screen size — its adaptive HLS ladder
-    // already picks the right bitrate per viewer, so the old separate "mobile" file
-    // (a fixed low-bitrate render everyone on mobile got regardless of their actual
-    // connection) is no longer needed.
-    const heroSrc = p.heroVideo;
+    // Two edits of the same showreel: a 16:9 cut and a 9:16 cut framed for phones
+    // (cropping the wide one to a portrait screen loses most of each shot). Both are
+    // Bunny Stream sources, so the adaptive HLS ladder still picks the bitrate.
+    // Chosen once per page load; without a mobile id every screen gets the wide cut.
+    this._heroPortrait ??= typeof window !== 'undefined' && window.matchMedia('(max-width:767px)').matches;
+    const heroMobile = this._heroPortrait && !!p.heroVideoMobile;
+    const heroSrc = heroMobile ? p.heroVideoMobile : p.heroVideo;
+    const heroPoster = heroMobile ? 'assets/home/hero-poster-mobile.jpg' : 'assets/home/hero-poster.jpg';
 
     return {
       desktop: !mobile, mobile, menuOpen: menu && mobile,
@@ -583,7 +587,7 @@ class Component extends DCLogic {
       showSticky: (p.stickyCta ?? true) && mobile && pastHero && !menu && lb == null && !this.state.contactVisible && !this.state.inputFocused && !this.state.consentOpen,
       footerPad: mobile ? '96px' : '32px',
 
-      heroVideoEl: heroSrc ? this.video(heroSrc, { key: heroSrc, autoPlay: true, preload: 'auto', poster: 'assets/home/hero-poster.jpg' }) : null,
+      heroVideoEl: heroSrc ? this.video(heroSrc, { key: heroSrc, autoPlay: true, preload: 'auto', poster: heroPoster }) : null,
       filters: ['Tutti', ...CATS].map(label => {
         const on = label === filter;
         return { label, count: label === 'Tutti' ? WORKS.length : WORKS.filter(work => work.place === label).length, pressed: on ? 'true' : 'false',
