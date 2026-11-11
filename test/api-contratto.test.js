@@ -180,7 +180,7 @@ test('mi piace: id non valido -> 400 (prima del controllo del metodo)', async ()
   reset();
   for (const req of [
     { method: 'GET', query: {} },
-    { method: 'GET', query: { id: 'work-9' } },
+    { method: 'GET', query: { id: 'work-12' } },
     { method: 'POST', body: { id: 'altro' } },
     { method: 'DELETE', body: {} },
   ]) {
@@ -190,9 +190,9 @@ test('mi piace: id non valido -> 400 (prima del controllo del metodo)', async ()
   }
 });
 
-test('mi piace: gli otto lavori sono ammessi', async () => {
+test('mi piace: i undici lavori sono ammessi', async () => {
   reset();
-  for (let i = 1; i <= 8; i++) {
+  for (let i = 1; i <= 11; i++) {
     const r = await invia(like, { method: 'GET', query: { id: 'work-' + i } });
     assert.equal(r.stato, 200);
     assert.deepEqual(r.corpo, { id: 'work-' + i, count: 0 });
