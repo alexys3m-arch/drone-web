@@ -23,7 +23,10 @@
       const stream = { id, started: !lazy, hls: null };
       // Prefer hls.js: the mixed-codec ladder needs its MSE codec switching.
       if (Hls && Hls.isSupported()) {
-        stream.hls = new Hls({ autoStartLoad: !lazy });
+        // Eager players (hero, lightbox) assume a fast link until measured: hls.js's default
+        // 0.5 Mbps guess starts on a low rung, and a short looping clip keeps replaying
+        // those first buffered seconds at that quality forever.
+        stream.hls = new Hls(lazy ? { autoStartLoad: false } : { autoStartLoad: true, abrEwmaDefaultEstimate: 8000000 });
         stream.hls.loadSource(url);
         stream.hls.attachMedia(element);
       } else if (element.canPlayType('application/vnd.apple.mpegurl')) {
