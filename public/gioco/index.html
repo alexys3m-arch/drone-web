@@ -120,13 +120,13 @@ button.sec{background:transparent;color:var(--crema);border:2px solid rgba(244,2
     <p class="claim big"><span class="g">Seguimi</span><small>per altri minigiochi.</small></p>
     <p class="fl">Ogni tanto ne esce uno nuovo.</p>
     <div class="soc">
-      <a href="https://www.instagram.com/quota.zero.drone/" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://www.tiktok.com/@quota.zero" target="_blank" rel="noopener">TikTok</a>
+      <a href="https://www.instagram.com/quota.zero.drone/" data-and="intent://www.instagram.com/quota.zero.drone/#Intent;scheme=https;package=com.instagram.android;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2Fquota.zero.drone%2F;end" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.tiktok.com/@quota.zero" data-and="intent://www.tiktok.com/@quota.zero#Intent;scheme=https;package=com.zhiliaoapp.musically;S.browser_fallback_url=https%3A%2F%2Fwww.tiktok.com%2F%40quota.zero;end" target="_blank" rel="noopener">TikTok</a>
     </div>
     <div class="sp"></div>
     <p class="claim">Le vuoi vere? Scrivimi nei <span class="g">DM</span>.</p>
     <p style="margin:6px 0 12px;font-size:14px">Riprese con il drone per matrimoni, a Roma e nel Lazio.</p>
-    <a class="btn out" id="cta" href="https://ig.me/m/quota.zero.drone" target="_blank" rel="noopener">Apri i DM</a>
+    <a class="btn out" id="cta" href="https://ig.me/m/quota.zero.drone" data-and="intent://ig.me/m/quota.zero.drone#Intent;scheme=https;package=com.instagram.android;S.browser_fallback_url=https%3A%2F%2Fig.me%2Fm%2Fquota.zero.drone;end" target="_blank" rel="noopener">Apri i DM</a>
     <button class="sec" id="again">Rigioca</button>
   </section>
 </div>
@@ -486,6 +486,12 @@ reset(); resize();
 window.__gioco = { get S() { return S; }, MOM, tick, render, start };
 if (REC) render(); else requestAnimationFrame(frame);
 })();
+</script>
+<script>
+// Su Android prova ad aprire direttamente l'app; se non c'è (o il browser lo blocca) si apre il sito web.
+// Su iPhone restano i link normali: Safari apre l'app da solo quando c'è.
+(function(){if(!/Android/i.test(navigator.userAgent))return;
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[data-and]");if(!a)return;e.preventDefault();location.href=a.getAttribute("data-and");});})();
 </script>
 </body>
 </html>
