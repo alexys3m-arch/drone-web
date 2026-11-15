@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#090a0c">
+<title>Porta a casa le riprese · Quota Zero</title>
+<meta name="description" content="Un minigioco: pilota il drone, resta sopra i momenti del matrimonio e porta a casa le riprese. Quota Zero, riprese con drone a Roma e nel Lazio.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Porta a casa le riprese · minigioco con il drone">
+<meta property="og:description" content="Decolla da quota zero, vola sopra il matrimonio e riprendi i quattro momenti. 40 secondi, si gioca dal telefono.">
+<meta property="og:url" content="https://quotazerodrone.it/gioco/">
+<meta property="og:image" content="https://quotazerodrone.it/gioco/anteprima.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://quotazerodrone.it/gioco/anteprima.png">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/assets/brand/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<link rel="preload" href="fonts/syne-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Syne";font-weight:800;font-display:swap;src:url(fonts/syne-800-latin.woff2) format("woff2")}
+@font-face{font-family:"Manrope";font-weight:300 800;font-display:swap;src:url(fonts/manrope-latin.woff2) format("woff2")}
+@font-face{font-family:"Space Mono";font-weight:700;font-display:swap;src:url(fonts/space-mono-700-latin.woff2) format("woff2")}
+@font-face{font-family:"Archivo Black";font-weight:400;font-display:swap;src:url(fonts/archivo-black-latin.woff2) format("woff2")}
+:root{--oro:#c9a227;--nero:#090a0c;--crema:#f4f3f0;--carta:#f5eee0;--giallo:#ffd21f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#000;color:var(--crema);font-family:'Manrope',system-ui,sans-serif;overscroll-behavior:none}
+#app{position:relative;margin:0 auto;max-width:460px;height:100vh;height:100dvh;background:var(--nero);overflow:hidden;user-select:none;-webkit-user-select:none}
+canvas{position:absolute;left:0;top:0;display:block;touch-action:none}
+#hud{position:absolute;left:0;right:0;top:0;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:max(12px,env(safe-area-inset-top)) 14px 26px;font:700 11px 'Space Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:rgba(244,243,240,.8);background:linear-gradient(rgba(9,10,12,.92),rgba(9,10,12,.6) 60%,rgba(9,10,12,0));pointer-events:none}
+#hud b{color:var(--oro);font-weight:700}
+#bat{display:flex;align-items:center;gap:7px;width:96px}
+#bat i{position:relative;display:block;width:32px;height:15px;border:2px solid var(--crema);border-radius:4px}
+#bat i::after{content:"";position:absolute;right:-6px;top:3px;width:3px;height:5px;background:var(--crema);border-radius:0 2px 2px 0}
+#bat u{position:absolute;left:1px;top:1px;bottom:1px;width:100%;max-width:calc(100% - 2px);background:var(--oro);border-radius:1px}
+#bat.low i{border-color:#ff5a47}#bat.low u{background:#ff5a47}#bat.low span{color:#ff5a47}
+#tel{text-align:center;line-height:1.5}
+#tel small{display:block;font-size:10px;color:rgba(244,243,240,.6)}
+#cnt{width:96px;text-align:right}
+#toast{position:absolute;z-index:3;left:50%;top:74px;transform:translate(-50%,-10px) rotate(-2deg);opacity:0;transition:opacity .18s,transform .18s;pointer-events:none;white-space:nowrap;
+  display:flex;align-items:center;gap:8px;background:var(--carta);color:#111113;border:3px solid #111113;border-radius:40px;padding:8px 18px 8px 12px;font:400 14px/1 'Archivo Black',sans-serif;box-shadow:0 0 0 3px #fff,0 8px 14px rgba(0,0,0,.5)}
+#toast.on{opacity:1;transform:translate(-50%,0) rotate(-2deg)}
+#toast i{width:12px;height:12px;border-radius:50%;background:var(--giallo);border:2.5px solid #111113;flex:none}
+#toast.miss i{background:#b9b3a6}
+#hint{position:absolute;z-index:2;left:0;right:0;bottom:0;padding:34px 20px max(18px,env(safe-area-inset-bottom));text-align:center;font-size:14px;line-height:1.3;color:rgba(244,243,240,.85);background:linear-gradient(rgba(9,10,12,0),rgba(9,10,12,.85));pointer-events:none;transition:opacity .5s}
+#hint.off{opacity:0}
+.ov{position:absolute;inset:0;z-index:5;background:var(--nero);display:flex;flex-direction:column;padding:max(22px,env(safe-area-inset-top)) 22px max(22px,env(safe-area-inset-bottom));overflow-y:auto}
+.ov[hidden]{display:none}
+.tag{font:700 12px 'Space Mono',monospace;letter-spacing:3px;text-transform:uppercase;color:rgba(244,243,240,.62);padding-bottom:14px;border-bottom:2px solid rgba(201,162,39,.55)}
+h1{font:800 40px/.98 'Syne',sans-serif;letter-spacing:-.03em;margin:26px 0 0}
+h1 em,.g{font-style:normal;color:var(--oro)}
+p{margin:14px 0 0;font-size:17px;line-height:1.38;color:rgba(244,243,240,.82)}
+.pill{display:inline-flex;align-items:center;gap:10px;background:var(--carta);color:#111113;border:3px solid #111113;border-radius:40px;padding:9px 20px 9px 14px;font:400 18px/1 'Archivo Black',sans-serif;box-shadow:0 0 0 3px #fff,0 8px 14px rgba(0,0,0,.5);transform:rotate(-3deg);margin-top:22px;align-self:flex-start}
+.pill i{width:14px;height:14px;border-radius:50%;background:var(--giallo);border:3px solid #111113}
+ol{margin:22px 0 0;padding:0;list-style:none;counter-reset:n}
+ol li{counter-increment:n;display:flex;gap:14px;align-items:flex-start;font-size:16px;line-height:1.35;color:rgba(244,243,240,.85);margin-top:12px}
+ol li::before{content:counter(n);flex:none;width:28px;height:28px;border-radius:50%;background:var(--oro);color:var(--nero);font:800 16px/28px 'Syne',sans-serif;text-align:center}
+.sp{flex:1;min-height:18px}
+button,.btn{display:block;width:100%;border:0;border-radius:16px;padding:17px 18px;background:var(--oro);color:var(--nero);font:800 19px/1.1 'Syne',sans-serif;letter-spacing:-.01em;text-align:center;text-decoration:none;cursor:pointer}
+button.sec{background:transparent;color:var(--crema);border:2px solid rgba(244,243,240,.35);margin-top:10px;font-size:16px;padding:13px}
+.drone{width:150px;margin:22px 0 0 -6px}
+#end h1{font-size:30px;margin-top:18px}
+#end p{font-size:15px;margin-top:10px}
+#cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0 0;width:100%}
+#end .claim{font:800 19px/1.08 'Syne',sans-serif;color:var(--crema);letter-spacing:-.025em;margin-top:18px}
+#end .claim.big{font-size:46px;line-height:.95;margin-top:24px}
+#end .claim.big small{display:block;font-size:22px;line-height:1.1;margin-top:6px;white-space:nowrap}
+#end .fl{margin:8px 0 14px;font-size:15px;color:rgba(244,243,240,.82)}
+.soc{display:flex;gap:10px}
+.soc a{flex:1;border-radius:16px;padding:16px 8px;text-align:center;text-decoration:none;background:var(--oro);color:var(--nero);font:800 18px/1.1 'Syne',sans-serif}
+.btn.out{background:transparent;color:var(--crema);border:2px solid var(--oro);padding:13px 18px;font-size:17px}
+#end button.sec{border:0;padding:12px;margin-top:6px;font-size:14px;color:rgba(244,243,240,.7);text-decoration:underline;text-underline-offset:4px}
+.card{margin:0;text-align:center}
+.card div{aspect-ratio:4/5;background:#15171a;border:4px solid #f2eee4;border-radius:3px;overflow:hidden;box-shadow:0 8px 14px rgba(0,0,0,.5)}
+.card img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.82) contrast(.94) sepia(.16) brightness(1.05)}
+.card.no div{border:2px dashed rgba(244,243,240,.3);background:transparent;box-shadow:none;display:flex;align-items:center;justify-content:center;font:700 10px 'Space Mono',monospace;letter-spacing:2px;color:rgba(244,243,240,.4);text-transform:uppercase}
+.card figcaption{margin-top:7px;font-size:10.5px;line-height:1.2;color:rgba(244,243,240,.75)}
+.card:nth-child(odd) div{transform:rotate(-2.5deg)}.card:nth-child(even) div{transform:rotate(2deg)}
+</style>
+</head>
+<body>
+<div id="app">
+  <canvas id="cv"></canvas>
+  <header id="hud">
+    <div id="bat"><i><u></u></i><span>100%</span></div>
+    <div id="tel">quota <b id="alt">0</b> m<small><span id="spd">0</span> km/h</small></div>
+    <div id="cnt">riprese <b>0</b>/4</div>
+  </header>
+  <div id="toast"><i></i><span></span></div>
+  <footer id="hint">Tieni premuto e trascina: è la leva del drone.</footer>
+
+  <section id="start" class="ov">
+    <div class="tag">Quota Zero · minigioco</div>
+    <svg class="drone" viewBox="0 0 150 96" aria-hidden="true">
+      <g fill="none" stroke="#d7d9dc" stroke-width="5"><circle cx="42" cy="26" r="20"/><circle cx="108" cy="26" r="20"/><circle cx="42" cy="70" r="20"/><circle cx="108" cy="70" r="20"/></g>
+      <g stroke="#f4f3f0" stroke-width="3" stroke-linecap="round" opacity=".7"><path d="M27 20 57 32M93 32 123 20M27 76 57 64M93 64 123 76"/></g>
+      <rect x="58" y="14" width="34" height="68" rx="12" fill="#e6e8ea"/><rect x="62" y="30" width="26" height="30" rx="7" fill="#2a2d32"/>
+      <rect x="65" y="6" width="20" height="14" rx="5" fill="#15161a"/><circle cx="75" cy="13" r="4" fill="#c9a227"/>
+    </svg>
+    <h1>Porta<br>a casa<br>le <em>riprese</em>.</h1>
+    <div class="pill"><i></i>matrimonio</div>
+    <p>Oggi il pilota sei tu. Si decolla da quota zero.</p>
+    <ol>
+      <li>Tieni premuto e trascina: è la leva del drone.</li>
+      <li>Vola sopra il momento e resta lì finché registra.</li>
+      <li>Quattro momenti, 40 secondi di batteria.</li>
+    </ol>
+    <div class="sp"></div>
+    <button id="go">Decolla</button>
+  </section>
+
+  <section id="end" class="ov" hidden>
+    <div class="tag">Quota Zero · matrimonio</div>
+    <h1 id="res"></h1>
+    <p id="resub"></p>
+    <div id="cards"></div>
+    <p class="claim big"><span class="g">Seguimi</span><small>per altri minigiochi.</small></p>
+    <p class="fl">Ogni tanto ne esce uno nuovo.</p>
+    <div class="soc">
+      <a href="https://www.instagram.com/quota.zero.drone/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.tiktok.com/@quota.zero" target="_blank" rel="noopener">TikTok</a>
+    </div>
+    <div class="sp"></div>
+    <p class="claim">Le vuoi vere? Scrivimi nei <span class="g">DM</span>.</p>
+    <p style="margin:6px 0 12px;font-size:14px">Riprese con il drone per matrimoni, a Roma e nel Lazio.</p>
+    <a class="btn out" id="cta" href="https://ig.me/m/quota.zero.drone" target="_blank" rel="noopener">Apri i DM</a>
+    <button class="sec" id="again">Rigioca</button>
+  </section>
+</div>
+
+<script>
+(() => {
+'use strict';
+const W = 360, H = 640, VW = 360, FW = 112, FH = 140, DUR = 40, HOLD = 1.4, ZOOM = 1.45, ALT = 30, VMAX = 175;
+const ORO = '#c9a227', NERO = '#090a0c', CREMA = '#f4f3f0', CARTA = '#f5eee0', GIALLO = '#ffd21f';
+const $ = id => document.getElementById(id);
+const cv = $('cv'), ctx = cv.getContext('2d');
+// parametri di servizio: ?auto pilota da solo, ?demo mostra la leva mentre lo fa, ?rec ferma il ciclo (lo guida chi registra), ?hq raddoppia la nitidezza
+const QS = location.search, AUTO = /[?&](auto|demo)/.test(QS), DEMO = /[?&]demo/.test(QS), REC = /[?&]rec/.test(QS), HQ = /[?&]hq/.test(QS);
+let demoIn = [0, 0], toastEnd = 0;
+let scale = 1, dpr = 1, VH = 640;
+
+function resize() {
+  const r = $('app').getBoundingClientRect();
+  scale = r.width / VW; VH = r.height / scale;
+  dpr = Math.min(window.devicePixelRatio || 1, HQ ? 3 : 2);
+  cv.style.width = r.width + 'px'; cv.style.height = r.height + 'px';
+  cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+}
+addEventListener('resize', resize);
+
+// ---------- utilità ----------
+let seed = 7;
+const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; };
+const cl = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, p) => a + (b - a) * p;
+const ease = p => p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+const dot = (x, y, r, c) => { ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fillStyle = c; ctx.fill(); };
+function rr(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function poly(pts, c) { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.fillStyle = c; ctx.fill(); }
+function toward(o, tx, ty, sp, dt) { const dx = tx - o.x, dy = ty - o.y, d = Math.hypot(dx, dy); if (d < .01) return; const s = Math.min(d, sp * dt); o.x += dx / d * s; o.y += dy / d * s; }
+
+// ---------- scena ----------
+const HOME = { x: 62, y: 160 };
+const TREES = [[22, 70, 20], [338, 50, 22], [332, 160, 15], [20, 215, 16], [18, 330, 14], [100, 480, 17], [98, 592, 15], [338, 455, 17], [335, 612, 19], [140, 292, 13]];
+for (let x = -70; x <= 430; x += 44) { TREES.push([x + rnd() * 16, -34 - rnd() * 30, 17 + rnd() * 8], [x + rnd() * 16, 690 + rnd() * 34, 17 + rnd() * 8]); }
+for (let y = 10; y <= 650; y += 46) { TREES.push([-36 - rnd() * 34, y + rnd() * 16, 17 + rnd() * 8], [398 + rnd() * 34, y + rnd() * 16, 17 + rnd() * 8]); }
+const TABLES = [[205, 318], [285, 300], [310, 372], [240, 395], [178, 388]];
+const DANCE = { x: 180, y: 545, s: 84 };
+const CAKE = { x: 290, y: 516 };
+const B0 = [40, 700], B1 = [40, 300], B2 = [144, 174];
+const bez = u => [(1 - u) * (1 - u) * B0[0] + 2 * (1 - u) * u * B1[0] + u * u * B2[0], (1 - u) * (1 - u) * B0[1] + 2 * (1 - u) * u * B1[1] + u * u * B2[1]];
+const COL = [CREMA, ORO, '#d98e73', '#8fa9b8', '#e7c9a9', '#b9b3a6'];
+const N = 40, guests = [];
+for (let i = 0; i < N; i++) {
+  const side = i % 2 ? 1 : -1, k = Math.floor(i / 2), col = k % 2, row = Math.floor(k / 2);
+  const t = TABLES[i % 5], a = Math.floor(i / 5) * Math.PI / 4, da = (i / 2) / 20 * 6.2832;
+  const p0 = [205 + rnd() * 88, 140 + rnd() * 62], tav = [t[0] + Math.cos(a) * 16, t[1] + Math.sin(a) * 16];
+  guests.push({ x: p0[0], y: p0[1], c: COL[i % COL.length], ph: rnd() * 6.28,
+    P: [p0, [180 + side * (15 + col * 8), 137 + row * 6.5], tav, i % 2 === 0 ? [DANCE.x + Math.cos(da) * 62, DANCE.y + Math.sin(da) * 62] : tav] });
+}
+const phase = T => T < 10.5 ? 0 : T < 20.4 ? 1 : T < 29.4 ? 2 : 3;
+
+const MOM = [
+  { n: "L'arrivo dell'auto", s: "L'auto", a: 3, b: 13.2 },
+  { n: "L'uscita degli sposi", s: 'Gli sposi', a: 12.6, b: 20.6 },
+  { n: 'Il taglio della torta', s: 'La torta', a: 21.4, b: 29.6 },
+  { n: 'Il primo ballo', s: 'Il ballo', a: 30, b: 39.7 },
+];
+
+let S;
+function reset() {
+  S = {
+    mode: 'idle', T: 0, A: 0, tk: 0, tl: 0, alt: 0, zoom: 2.5, head: 0, endAt: 0, capNow: -1,
+    drone: { x: HOME.x, y: HOME.y }, vel: { x: 0, y: 0 }, cam: { x: HOME.x, y: HOME.y },
+    car: { x: B0[0], y: B0[1], a: -1.57 }, sposa: { x: 176, y: 118 }, sposo: { x: 184, y: 118 },
+    rec: MOM.map(() => 0), got: MOM.map(() => null), lost: MOM.map(() => false), flash: 0, rice: []
+  };
+  guests.forEach(g => { g.x = g.P[0][0]; g.y = g.P[0][1]; });
+  $('cnt').innerHTML = 'riprese <b>0</b>/' + MOM.length;
+}
+
+function momPos(i) {
+  if (i === 0) return [S.car.x, S.car.y];
+  if (i === 1) return [(S.sposa.x + S.sposo.x) / 2, (S.sposa.y + S.sposo.y) / 2];
+  if (i === 2) return [CAKE.x, CAKE.y + 6];
+  return [DANCE.x, DANCE.y];
+}
+
+function world(dt) {
+  const T = S.T;
+  const u = ease(cl((T - 3) / 7.5, 0, 1)), p = bez(u), q = bez(Math.min(1, u + .01));
+  S.car.x = p[0]; S.car.y = p[1]; if (u < 1) S.car.a = Math.atan2(q[1] - p[1], q[0] - p[0]);
+  const ph = phase(T);
+  guests.forEach(g => { const t = g.P[ph]; toward(g, t[0] + Math.sin(S.A * 1.7 + g.ph) * .9, t[1] + Math.cos(S.A * 1.3 + g.ph) * .9, 62, dt); });
+  let a, b, sp = 120;
+  if (T < 12.6) { a = [176, 118]; b = [184, 118]; }
+  else if (T < 20.4) { const y = lerp(124, 182, cl((T - 12.6) / 3.6, 0, 1)); a = [175, y]; b = [185, y]; }
+  else if (T < 29.4) { a = [CAKE.x - 6, CAKE.y + 15]; b = [CAKE.x + 6, CAKE.y + 15]; }
+  else { const an = S.A * 2.4; a = [DANCE.x + Math.cos(an) * 6, DANCE.y + Math.sin(an) * 6]; b = [DANCE.x - Math.cos(an) * 6, DANCE.y - Math.sin(an) * 6]; if (Math.hypot(S.sposa.x - DANCE.x, S.sposa.y - DANCE.y) < 9) sp = 400; }
+  toward(S.sposa, a[0], a[1], sp, dt); toward(S.sposo, b[0], b[1], sp, dt);
+  if (T > 13.2 && T < 16.6 && S.rice.length < 90) for (let k = 0; k < 3; k++) { const s = rnd() < .5 ? -1 : 1; S.rice.push({ x: S.sposa.x + 5 + s * 16, y: S.sposa.y + (rnd() - .5) * 22, vx: -s * (18 + rnd() * 22), vy: (rnd() - .5) * 26, l: .7 }); }
+  S.rice.forEach(r => { r.x += r.vx * dt; r.y += r.vy * dt; r.l -= dt; }); S.rice = S.rice.filter(r => r.l > 0);
+}
+
+let joy = null; const keys = new Set();
+function input() {
+  let x = 0, y = 0;
+  if (AUTO) { const i = MOM.findIndex((m, i) => S.T >= m.a && S.T < m.b && !S.got[i]); if (i >= 0) { const m = momPos(i), dx = m[0] - S.drone.x, dy = m[1] - S.drone.y, d = Math.hypot(dx, dy) || 1, g = Math.min(1, d / 45); x = dx / d * g; y = dy / d * g; } }
+  if (joy) { x = (joy.x - joy.ox) / 52; y = (joy.y - joy.oy) / 52; }
+  if (keys.has('ArrowLeft')) x -= 1; if (keys.has('ArrowRight')) x += 1; if (keys.has('ArrowUp')) y -= 1; if (keys.has('ArrowDown')) y += 1;
+  const m = Math.hypot(x, y); if (m > 1) { x /= m; y /= m; } if (m < .08) { x = 0; y = 0; }
+  demoIn = [lerp(demoIn[0], x, .25), lerp(demoIn[1], y, .25)];
+  return [x, y];
+}
+function fly(dt, ix, iy, resp) {
+  const k = 1 - Math.exp(-dt / resp);
+  S.vel.x = lerp(S.vel.x, ix, k); S.vel.y = lerp(S.vel.y, iy, k);
+  S.drone.x += S.vel.x * dt; S.drone.y += S.vel.y * dt;
+  if (S.drone.x < 12 || S.drone.x > W - 12) { S.drone.x = cl(S.drone.x, 12, W - 12); S.vel.x = 0; }
+  if (S.drone.y < 30 || S.drone.y > H - 14) { S.drone.y = cl(S.drone.y, 30, H - 14); S.vel.y = 0; }
+  const v = Math.hypot(S.vel.x, S.vel.y);
+  if (v > 14) { let d = Math.atan2(S.vel.y, S.vel.x) + 1.5708 - S.head; d = Math.atan2(Math.sin(d), Math.cos(d)); S.head += d * (1 - Math.exp(-dt / .18)); }
+}
+function record(dt) {
+  S.capNow = -1;
+  MOM.forEach((m, i) => {
+    if (S.got[i] || S.lost[i]) return;
+    if (S.T >= m.b) { S.lost[i] = true; toast('Persa: ' + m.n.toLowerCase(), true); return; }
+    if (S.T < m.a) return;
+    const mp = momPos(i), inside = Math.abs(mp[0] - S.drone.x) < FW * .37 && Math.abs(mp[1] - S.drone.y) < FH * .37;
+    S.rec[i] = cl(S.rec[i] + (inside ? dt / HOLD : -dt * .7), 0, 1);
+    if (S.rec[i] >= 1) S.capNow = i;
+  });
+}
+
+function tick(dt) {
+  S.A += dt; S.flash = Math.max(0, S.flash - dt * 2.6); S.capNow = -1;
+  if (toastEnd && S.A >= toastEnd) { $('toast').classList.remove('on'); toastEnd = 0; }
+  if (S.mode === 'idle' || S.mode === 'done') return;
+  world(dt);
+  if (S.mode === 'takeoff') {
+    S.tk += dt; const p = ease(cl(S.tk / 2.2, 0, 1)); S.alt = ALT * p; S.zoom = lerp(2.5, ZOOM, p);
+    if (S.tk >= 2.2) { S.mode = 'fly'; toast('Si vola!'); }
+  } else if (S.mode === 'fly') {
+    S.T += dt; const i = input(); fly(dt, i[0] * VMAX, i[1] * VMAX, .2); record(dt);
+    if (S.T >= DUR) { S.mode = 'rth'; toast('Batteria scarica: si rientra', true); }
+    else if (!S.endAt && S.got.every(Boolean)) S.endAt = S.A + 1;
+    else if (S.endAt && S.A >= S.endAt) { S.mode = 'rth'; toast('Tutte prese: si rientra'); }
+  } else if (S.mode === 'rth') {
+    const dx = HOME.x - S.drone.x, dy = HOME.y - S.drone.y, d = Math.hypot(dx, dy) || 1, v = Math.min(240, d * 4);
+    fly(dt, dx / d * v, dy / d * v, .12);
+    if (d < 2.5) { S.mode = 'land'; S.tl = 0; S.vel.x = S.vel.y = 0; }
+  } else if (S.mode === 'land') {
+    S.tl += dt; const p = ease(cl(S.tl / 1.6, 0, 1)); S.alt = ALT * (1 - p); S.zoom = lerp(ZOOM, 2.4, p);
+    if (S.tl >= 1.6) { S.mode = 'done'; finish(); }
+  }
+  const look = S.mode === 'fly' ? .2 : 0, k = 1 - Math.pow(.003, dt);
+  S.cam.x = lerp(S.cam.x, S.drone.x + S.vel.x * look, k); S.cam.y = lerp(S.cam.y, S.drone.y + S.vel.y * look, k);
+}
+
+// ---------- disegno ----------
+function drawScene() {
+  const T = S.T, A = S.A, cx = S.cam.x, cy = S.cam.y;
+  ctx.fillStyle = '#1c2a1f'; ctx.fillRect(cx - 500, cy - 700, 1000, 1400);
+  for (let i = -22; i < 24; i += 2) poly([[i * 46, -200], [i * 46 + 46, -200], [i * 46 + 46 + 340, 900], [i * 46 + 340, 900]], 'rgba(255,255,255,.035)');
+  // viale e piazzale
+  ctx.lineCap = 'round'; ctx.strokeStyle = '#5a554b'; ctx.lineWidth = 30;
+  ctx.beginPath(); ctx.moveTo(B0[0], B0[1] + 200); ctx.lineTo(B0[0], B0[1]); ctx.quadraticCurveTo(B1[0], B1[1], B2[0], B2[1]); ctx.stroke();
+  dot(180, 152, 46, '#5a554b');
+  ctx.strokeStyle = 'rgba(244,243,240,.13)'; ctx.lineWidth = 1; ctx.setLineDash([3, 5]);
+  ctx.beginPath(); ctx.moveTo(B0[0], B0[1] + 200); ctx.lineTo(B0[0], B0[1]); ctx.quadraticCurveTo(B1[0], B1[1], B2[0], B2[1]); ctx.stroke(); ctx.setLineDash([]);
+  // punto di decollo
+  dot(HOME.x, HOME.y, 15, 'rgba(9,10,12,.55)'); ctx.strokeStyle = ORO; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(HOME.x, HOME.y, 13, 0, 6.2832); ctx.stroke();
+  ctx.fillStyle = ORO; ctx.font = "800 15px 'Syne', sans-serif"; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('H', HOME.x, HOME.y + 1); ctx.textAlign = 'left';
+  // vialetto di pietre
+  ctx.fillStyle = 'rgba(244,243,240,.2)';
+  [[214, 196], [222, 214], [226, 234], [224, 254], [218, 274], [206, 432], [198, 452], [190, 470], [184, 488]].forEach(s => { ctx.beginPath(); ctx.ellipse(s[0], s[1], 5, 3.4, .5, 0, 6.2832); ctx.fill(); });
+  // villa: base, facciata e tetto spostato in prospettiva
+  const vx = (180 - cx) * .07, vy = (68 - cy) * .07;
+  ctx.fillStyle = 'rgba(0,0,0,.32)'; ctx.fillRect(103, 28, 170, 100);
+  ctx.fillStyle = '#d9cfb8'; ctx.fillRect(164, 118, 32, 11); ctx.fillStyle = '#b9ae95'; ctx.fillRect(160, 129, 40, 3);
+  ctx.fillStyle = '#cdbfa4'; ctx.fillRect(95, 18, 170, 100); ctx.fillStyle = '#3a2a22'; ctx.fillRect(175, 108, 10, 10);
+  ctx.fillStyle = '#2f3237'; for (let k = 0; k < 6; k++) if (k !== 2 && k !== 3) ctx.fillRect(108 + k * 26, 110, 9, 6);
+  ctx.save(); ctx.translate(vx, vy);
+  poly([[93, 16], [267, 16], [225, 68], [135, 68]], '#7f4a34'); poly([[93, 120], [267, 120], [225, 68], [135, 68]], '#a8664b');
+  poly([[93, 16], [135, 68], [93, 120]], '#8d5440'); poly([[267, 16], [225, 68], [267, 120]], '#97593f');
+  ctx.strokeStyle = 'rgba(244,243,240,.28)'; ctx.lineWidth = 1; ctx.strokeRect(93, 16, 174, 104);
+  ctx.beginPath(); ctx.moveTo(135, 68); ctx.lineTo(225, 68); ctx.stroke(); ctx.restore();
+  // tavoli
+  TABLES.forEach(t => { dot(t[0] + 3, t[1] + 4, 11, 'rgba(0,0,0,.3)'); dot(t[0], t[1], 10.5, '#efe6d2'); dot(t[0], t[1], 2.6, ORO); });
+  // pista da ballo a scacchi
+  const d = DANCE, c = d.s / 6, x0 = d.x - d.s / 2, y0 = d.y - d.s / 2;
+  ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.fillRect(x0 + 4, y0 + 5, d.s, d.s);
+  for (let r = 0; r < 6; r++) for (let k = 0; k < 6; k++) { ctx.fillStyle = (r + k) % 2 ? ORO : NERO; ctx.fillRect(x0 + k * c, y0 + r * c, c + .3, c + .3); }
+  ctx.strokeStyle = CREMA; ctx.lineWidth = 1.5; ctx.strokeRect(x0, y0, d.s, d.s);
+  const lit = T > 29.4;
+  for (let k = 0; k < 24; k++) { const s = Math.floor(k / 6), f = (k % 6 + .5) / 6 * (d.s + 16) - 8; const lx = s === 0 ? x0 + f : s === 1 ? x0 + d.s + 8 : s === 2 ? x0 + d.s - f : x0 - 8, ly = s === 0 ? y0 - 8 : s === 1 ? y0 + f : s === 2 ? y0 + d.s + 8 : y0 + d.s - f; ctx.globalAlpha = lit ? .55 + .45 * Math.sin(A * 7 + k * 1.9) : .35; dot(lx, ly, lit ? 2.2 : 1.6, GIALLO); ctx.globalAlpha = 1; }
+  if (lit) { const g = ctx.createRadialGradient(d.x, d.y, 4, d.x, d.y, 80); g.addColorStop(0, 'rgba(255,210,31,.22)'); g.addColorStop(1, 'rgba(255,210,31,0)'); ctx.fillStyle = g; ctx.fillRect(d.x - 80, d.y - 80, 160, 160); }
+  // tavolo della torta
+  ctx.fillStyle = 'rgba(0,0,0,.3)'; rr(CAKE.x - 12, CAKE.y - 5, 30, 18, 3); ctx.fill();
+  ctx.fillStyle = '#efe6d2'; rr(CAKE.x - 15, CAKE.y - 9, 30, 18, 3); ctx.fill();
+  dot(CAKE.x, CAKE.y, 6.5, '#fff'); ctx.strokeStyle = ORO; ctx.lineWidth = .8; ctx.stroke(); dot(CAKE.x, CAKE.y, 4.2, '#fff'); ctx.stroke(); dot(CAKE.x, CAKE.y, 1.9, ORO);
+  // brindisi ai tavoli
+  if (T > 20.4 && T < 29.4) TABLES.forEach((t, i) => { for (let k = 0; k < 3; k++) { const a = A * 3 + i * 2 + k * 2.1; ctx.globalAlpha = .5 + .5 * Math.sin(A * 9 + i + k * 2); dot(t[0] + Math.cos(a) * 7, t[1] + Math.sin(a) * 7, 1.3, GIALLO); } ctx.globalAlpha = 1; });
+  // auto
+  ctx.save(); ctx.translate(S.car.x, S.car.y); ctx.rotate(S.car.a + 1.5708);
+  ctx.fillStyle = 'rgba(0,0,0,.35)'; rr(-4, -8, 12, 22, 3.5); ctx.fill();
+  ctx.fillStyle = '#f1ece0'; rr(-6, -11, 12, 22, 3.5); ctx.fill();
+  ctx.fillStyle = '#23262b'; rr(-4.5, -6, 9, 5, 1.5); ctx.fill(); rr(-4.5, 4, 9, 3.5, 1.2); ctx.fill();
+  ctx.strokeStyle = ORO; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, -11); ctx.lineTo(-4.5, -6); ctx.moveTo(0, -11); ctx.lineTo(4.5, -6); ctx.stroke();
+  ctx.restore();
+  // invitati e sposi
+  guests.forEach(g => { dot(g.x + 1.2, g.y + 1.6, 3.2, 'rgba(0,0,0,.35)'); dot(g.x, g.y, 3.1, g.c); });
+  if (T > 12.5) {
+    dot(S.sposo.x + 1.2, S.sposo.y + 1.6, 3.8, 'rgba(0,0,0,.35)'); dot(S.sposo.x, S.sposo.y, 3.7, '#15161a'); ctx.strokeStyle = CREMA; ctx.lineWidth = 1; ctx.stroke();
+    ctx.globalAlpha = .45; dot(S.sposa.x, S.sposa.y + 2, 7.5, '#fff'); ctx.globalAlpha = 1; dot(S.sposa.x, S.sposa.y, 4.3, '#fff');
+  }
+  S.rice.forEach(r => { ctx.globalAlpha = cl(r.l * 2, 0, 1); dot(r.x, r.y, 1, '#fff'); }); ctx.globalAlpha = 1;
+  // alberi: la chioma si sposta rispetto al tronco, come vista dall'alto in movimento
+  TREES.forEach(t => {
+    const ox = (t[0] - cx) * .1, oy = (t[1] - cy) * .1;
+    ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.beginPath(); ctx.ellipse(t[0] + 6, t[1] + 7, t[2], t[2] * .92, 0, 0, 6.2832); ctx.fill();
+    dot(t[0], t[1], 2.4, '#3a2a22');
+    dot(t[0] + ox, t[1] + oy, t[2], '#2b4930'); dot(t[0] + ox * 1.25 - t[2] * .25, t[1] + oy * 1.25 - t[2] * .25, t[2] * .62, '#38603f'); dot(t[0] + ox * 1.45 - t[2] * .38, t[1] + oy * 1.45 - t[2] * .38, t[2] * .28, '#467550');
+  });
+}
+
+function label(txt, cx, top, f) {
+  ctx.font = f + "px 'Archivo Black', sans-serif"; const tw = ctx.measureText(txt).width, pw = tw + f * 2.9, ph = f * 2.1, x = cx - pw / 2;
+  ctx.fillStyle = '#fff'; rr(x - f * .24, top - f * .24, pw + f * .48, ph + f * .48, ph / 2 + f * .24); ctx.fill();
+  ctx.fillStyle = CARTA; rr(x, top, pw, ph, ph / 2); ctx.fill(); ctx.strokeStyle = '#111113'; ctx.lineWidth = f * .15; ctx.stroke();
+  dot(x + f * 1.15, top + ph / 2, f * .38, GIALLO); ctx.strokeStyle = '#111113'; ctx.lineWidth = f * .12; ctx.stroke();
+  ctx.fillStyle = '#111113'; ctx.textBaseline = 'middle'; ctx.fillText(txt, x + f * 2, top + ph / 2 + f * .05);
+}
+const active = () => MOM.map((m, i) => i).filter(i => !S.got[i] && !S.lost[i] && S.T >= MOM[i].a && S.T < MOM[i].b);
+const proj = (x, y) => [(x - S.cam.x) * S.zoom + VW / 2, (y - S.cam.y) * S.zoom + VH / 2];
+const onScreen = (sx, sy) => sx > 26 && sx < VW - 26 && sy > 84 && sy < VH - 40;
+
+function drawMarkers() {
+  if (S.mode !== 'fly') return;
+  active().forEach(i => {
+    const m = MOM[i], [x, y] = momPos(i), left = (m.b - S.T) / (m.b - m.a), pu = 1 + .12 * Math.sin(S.A * 6), s = proj(x, y);
+    ctx.lineWidth = 2.5; ctx.strokeStyle = 'rgba(255,210,31,.35)'; ctx.beginPath(); ctx.arc(x, y, 24 * pu, 0, 6.2832); ctx.stroke();
+    ctx.strokeStyle = GIALLO; ctx.beginPath(); ctx.arc(x, y, 24 * pu, -1.5708, -1.5708 + 6.2832 * left); ctx.stroke();
+    if (onScreen(s[0], s[1]) && S.rec[i] === 0) label(m.n, x, y - 24 * pu - 30, 9.5);
+  });
+}
+
+function droneShape(shadow) {
+  const G = [[-9.5, -9.5], [9.5, -9.5], [-9.5, 9.5], [9.5, 9.5]];
+  if (shadow) { G.forEach(g => dot(g[0], g[1], 9, '#000')); rr(-6, -10, 12, 20, 4); ctx.fillStyle = '#000'; ctx.fill(); return; }
+  ctx.strokeStyle = '#8f949b'; ctx.lineWidth = 2.6; ctx.lineCap = 'round';
+  G.forEach(g => { ctx.beginPath(); ctx.moveTo(g[0] * .45, g[1] * .45); ctx.lineTo(g[0], g[1]); ctx.stroke(); });
+  G.forEach((g, i) => {
+    dot(g[0], g[1], 8.6, 'rgba(20,22,26,.42)'); ctx.strokeStyle = '#d7d9dc'; ctx.lineWidth = 2.2; ctx.stroke();
+    const sp = S.alt > .3 || S.mode === 'takeoff' ? 1 : 0, a = S.A * 38 * (i % 2 ? 1 : -1) + i;
+    if (sp) dot(g[0], g[1], 7.2, 'rgba(244,243,240,.16)');
+    ctx.strokeStyle = 'rgba(244,243,240,.75)'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(g[0] + Math.cos(a) * 7, g[1] + Math.sin(a) * 7); ctx.lineTo(g[0] - Math.cos(a) * 7, g[1] - Math.sin(a) * 7); ctx.stroke();
+    dot(g[0], g[1], 1.6, '#e6e8ea');
+  });
+  ctx.fillStyle = '#e6e8ea'; rr(-5.5, -10, 11, 20, 4); ctx.fill(); ctx.strokeStyle = '#9aa0a6'; ctx.lineWidth = .7; ctx.stroke();
+  ctx.fillStyle = '#2a2d32'; rr(-3.6, -4, 7.2, 9, 2); ctx.fill();
+  ctx.fillStyle = '#15161a'; rr(-3.4, -13, 6.8, 5.2, 1.8); ctx.fill(); dot(0, -10.6, 1.5, ORO);
+  dot(-3, 8, .9, '#39d27a'); dot(3, 8, .9, '#39d27a');
+}
+
+function drawDrone() {
+  const x = S.drone.x, y = S.drone.y, h = S.alt / ALT, bob = S.alt > 1 ? Math.sin(S.A * 2.3) * .8 : 0;
+  const rec = active().some(i => S.rec[i] > 0), sc = .8 + h * .34;
+  // ombra a terra
+  ctx.save(); ctx.translate(x + S.alt * .5, y + S.alt * .7); ctx.rotate(S.head); ctx.scale(.82, .82); ctx.globalAlpha = .3 - h * .1; droneShape(true); ctx.restore();
+  // inquadratura
+  if (S.mode === 'fly') {
+    const fx = x - FW / 2, fy = y - FH / 2, i = active().find(i => S.rec[i] > 0), p = i >= 0 ? S.rec[i] : 0;
+    ctx.strokeStyle = rec ? GIALLO : 'rgba(244,243,240,.55)'; ctx.lineWidth = rec ? 3 : 2; ctx.lineCap = 'butt'; const L = 15;
+    [[fx, fy, 1, 1], [fx + FW, fy, -1, 1], [fx, fy + FH, 1, -1], [fx + FW, fy + FH, -1, -1]].forEach(c => { ctx.beginPath(); ctx.moveTo(c[0] + c[2] * L, c[1]); ctx.lineTo(c[0], c[1]); ctx.lineTo(c[0], c[1] + c[3] * L); ctx.stroke(); });
+    if (rec) {
+      if (Math.sin(S.A * 12) > -.3) dot(fx + 10, fy + 11, 3.5, '#ff4a3a');
+      ctx.font = "700 9px 'Space Mono', monospace"; ctx.fillStyle = CREMA; ctx.textBaseline = 'middle'; ctx.fillText('REC', fx + 17, fy + 11.5);
+      ctx.fillStyle = 'rgba(9,10,12,.7)'; ctx.fillRect(fx + 8, fy + FH - 13, FW - 16, 6); ctx.fillStyle = GIALLO; ctx.fillRect(fx + 8, fy + FH - 13, (FW - 16) * p, 6);
+    }
+    if (S.flash > 0) { ctx.fillStyle = 'rgba(255,255,255,' + (S.flash * .75) + ')'; ctx.fillRect(fx, fy, FW, FH); }
+  }
+  // drone (si fa trasparente mentre registra, per lasciar vedere la scena)
+  ctx.save(); ctx.translate(x, y + bob); ctx.rotate(S.head + S.vel.x * .0007); ctx.scale(sc, sc); ctx.globalAlpha = rec ? .28 : 1; droneShape(false); ctx.restore(); ctx.globalAlpha = 1;
+}
+
+function drawScreen() {
+  if (S.mode === 'fly') active().forEach(i => {
+    const mp = momPos(i), s = proj(mp[0], mp[1]); if (onScreen(s[0], s[1])) return;
+    const d = proj(S.drone.x, S.drone.y), an = Math.atan2(s[1] - d[1], s[0] - d[0]);
+    const px = cl(s[0], 34, VW - 34), py = cl(s[1], 112, VH - 78), pu = 1 + .1 * Math.sin(S.A * 6);
+    dot(px, py, 17 * pu, GIALLO); ctx.strokeStyle = '#111113'; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.save(); ctx.translate(px, py); ctx.rotate(an); poly([[9, 0], [-5, -7], [-2, 0], [-5, 7]], '#111113'); ctx.restore();
+    const f = 11; ctx.font = f + "px 'Archivo Black', sans-serif"; const half = (ctx.measureText(MOM[i].n).width + f * 2.9) / 2 + 6;
+    label(MOM[i].n, cl(px, half, VW - half), py > VH / 2 ? py - 50 : py + 26, f);
+  });
+  const jj = joy || (DEMO ? { ox: VW / 2, oy: VH - 150, x: VW / 2 + demoIn[0] * 52, y: VH - 150 + demoIn[1] * 52 } : null);
+  if (jj && S.mode === 'fly') {
+    const joy = jj; let dx = joy.x - joy.ox, dy = joy.y - joy.oy; const m = Math.hypot(dx, dy); if (m > 52) { dx *= 52 / m; dy *= 52 / m; }
+    ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(244,243,240,.5)'; ctx.beginPath(); ctx.arc(joy.ox, joy.oy, 52, 0, 6.2832); ctx.stroke();
+    dot(joy.ox, joy.oy, 52, 'rgba(9,10,12,.25)'); dot(joy.ox + dx, joy.oy + dy, 22, 'rgba(201,162,39,.9)'); ctx.strokeStyle = '#111113'; ctx.lineWidth = 2; ctx.stroke();
+  }
+}
+
+const snap = document.createElement('canvas'); snap.width = 240; snap.height = 300;
+function capture(i) {
+  const k = scale * dpr, c = proj(S.drone.x, S.drone.y), w = FW * S.zoom * k, h = FH * S.zoom * k;
+  snap.getContext('2d').drawImage(cv, c[0] * k - w / 2, c[1] * k - h / 2, w, h, 0, 0, 240, 300);
+  S.got[i] = snap.toDataURL('image/jpeg', .86); S.flash = 1;
+  $('cnt').innerHTML = 'riprese <b>' + S.got.filter(Boolean).length + '</b>/' + MOM.length;
+  toast('Presa! ' + MOM[i].n);
+  try { if (navigator.vibrate && navigator.userActivation && navigator.userActivation.hasBeenActive) navigator.vibrate(30); } catch (_) {}
+}
+
+let tt;
+function toast(txt, miss) { const t = $('toast'); t.lastElementChild.textContent = txt; t.classList.toggle('miss', !!miss); t.classList.add('on'); toastEnd = S.A + 1.6; }
+
+function render() {
+  const k = scale * dpr, z = S.zoom;
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#1c2a1f'; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.setTransform(k * z, 0, 0, k * z, k * (VW / 2 - S.cam.x * z), k * (VH / 2 - S.cam.y * z));
+  drawScene();
+  if (S.capNow >= 0) capture(S.capNow);
+  drawMarkers(); drawDrone();
+  ctx.setTransform(k, 0, 0, k, 0, 0); drawScreen();
+  const pc = Math.max(0, Math.round((1 - S.T / DUR) * 100)), b = $('bat');
+  b.querySelector('u').style.width = pc + '%'; b.querySelector('span').textContent = pc + '%'; b.classList.toggle('low', pc <= 20);
+  $('alt').textContent = Math.round(S.alt); $('spd').textContent = Math.round(Math.hypot(S.vel.x, S.vel.y) * .2);
+}
+
+let last = 0;
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000 || 0); last = now;
+  const a = $('app'); if (Math.abs(a.clientWidth - parseFloat(cv.style.width)) > 1 || Math.abs(a.clientHeight - parseFloat(cv.style.height)) > 1) resize();
+  tick(dt); render(); requestAnimationFrame(frame);
+}
+
+function finish() {
+  const n = S.got.filter(Boolean).length, tot = MOM.length;
+  $('res').innerHTML = n === tot ? 'Tutte e <em>' + tot + '</em> le riprese.' : n === 0 ? 'Nessuna ripresa, <em>stavolta</em>.' : n === 1 ? 'Hai portato a casa <em>1 ripresa</em> su ' + tot + '.' : 'Hai portato a casa <em>' + n + ' riprese</em> su ' + tot + '.';
+  $('resub').textContent = n === tot ? 'Buona la prima. Drone a terra, batterie da ricaricare.' : n >= 2 ? 'Bel volo. Drone a terra, batterie da ricaricare.' : 'I momenti passano in fretta. Drone a terra, si può riprovare.';
+  $('cards').innerHTML = MOM.map((m, i) => S.got[i]
+    ? '<figure class="card"><div><img alt="' + m.n + '" src="' + S.got[i] + '"></div><figcaption>' + m.s + '</figcaption></figure>'
+    : '<figure class="card no"><div>persa</div><figcaption>' + m.s + '</figcaption></figure>').join('');
+  setTimeout(() => { $('end').hidden = false; $('end').scrollTop = 0; }, 500);
+}
+
+function start() { reset(); $('start').hidden = true; $('end').hidden = true; $('hint').classList.remove('off'); resize(); S.mode = 'takeoff'; toast('Decollo'); }
+$('go').addEventListener('click', start); $('again').addEventListener('click', start);
+
+// ---------- comandi: leva virtuale ----------
+const pos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) / scale, (e.clientY - r.top) / scale]; };
+cv.addEventListener('pointerdown', e => { const p = pos(e); joy = { ox: p[0], oy: p[1], x: p[0], y: p[1] }; try { cv.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); });
+cv.addEventListener('pointermove', e => { if (!joy) return; const p = pos(e); joy.x = p[0]; joy.y = p[1]; if (S.mode === 'fly' && Math.hypot(joy.x - joy.ox, joy.y - joy.oy) > 12) $('hint').classList.add('off'); e.preventDefault(); });
+['pointerup', 'pointercancel'].forEach(n => cv.addEventListener(n, () => { joy = null; }));
+addEventListener('keydown', e => { if (e.key.startsWith('Arrow')) { keys.add(e.key); $('hint').classList.add('off'); e.preventDefault(); } });
+addEventListener('keyup', e => keys.delete(e.key));
+document.addEventListener('touchmove', e => { if (e.target === cv) e.preventDefault(); }, { passive: false });
+
+reset(); resize();
+window.__gioco = { get S() { return S; }, MOM, tick, render, start };
+if (REC) render(); else requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
