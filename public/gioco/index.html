@@ -47,8 +47,16 @@
     <ol class="passi">
       <li>Tieni premuto e trascina: è la leva del drone.</li>
       <li>Entra nel cerchio d'oro e segui il punto. Più sei preciso, più punti fai.</li>
-      <li>Alla fine riporta il drone sulla H. Poi entra in classifica.</li>
+      <li>Alla fine riporta il drone sulla H.</li>
     </ol>
+    <div class="pilota">
+      <label for="nome">Il tuo nome da pilota</label>
+      <div class="riga">
+        <input id="nome" maxlength="3" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go">
+        <small>Tre lettere, per la classifica. Se lo lasci vuoto giochi lo stesso.</small>
+      </div>
+      <p id="nomemsg" aria-live="polite"></p>
+    </div>
     <p class="primato" id="primato"></p>
     <div class="sp"></div>
     <button id="go">Decolla</button>
@@ -56,37 +64,56 @@
 
   <section id="end" class="ov" hidden>
     <div class="tag">Quota Zero · matrimonio</div>
+
+    <!-- 1 · com'è andata -->
     <div id="punti"></div>
+    <p id="pos" aria-live="polite"></p>
     <h1 id="res"></h1>
     <p id="resub"></p>
     <div id="cards"></div>
     <p id="bonus"></p>
-
-    <div class="lb">
-      <h2>Classifica del matrimonio<small>Resta aperta fino al prossimo minigioco</small></h2>
-      <form id="lbf" autocomplete="off">
-        <input id="ini" maxlength="3" placeholder="ABC" aria-label="Le tue iniziali, tre lettere" autocapitalize="characters" spellcheck="false" enterkeyhint="send">
-        <button type="submit">Entra in classifica</button>
-      </form>
-      <p class="nota">Salvo solo le tre lettere e i punti. <a href="/privacy.html" target="_blank" rel="noopener">Privacy</a></p>
-      <p id="lbmsg" aria-live="polite"></p>
-      <ol id="lbl"></ol>
-    </div>
+    <form id="lbf" autocomplete="off" hidden>
+      <input id="ini" maxlength="3" placeholder="ABC" aria-label="Le tue iniziali, tre lettere" autocapitalize="characters" spellcheck="false" enterkeyhint="send">
+      <button type="submit">Entra in classifica</button>
+    </form>
+    <p id="lbmsg" aria-live="polite"></p>
     <div class="due">
-      <button id="share">Sfida un amico</button>
       <button class="out" id="again">Rigioca</button>
+      <button id="share">Sfida un amico</button>
+    </div>
+    <details class="lb">
+      <summary>Vedi la classifica del matrimonio</summary>
+      <ol id="lbl"></ol>
+      <p class="nota">Resta aperta fino al prossimo minigioco. Salvo solo le tre lettere e i punti. <a href="/privacy.html" target="_blank" rel="noopener">Privacy</a></p>
+    </details>
+
+    <!-- 2 · patentino e prossimo minigioco -->
+    <p class="sez" id="patmsg">Il tuo patentino</p>
+    <div class="pat" id="pat"></div>
+    <div id="segui">
+      <p class="claim big"><span class="g">Seguimi</span><small>per il prossimo timbro.</small></p>
+      <p class="fl">Il vincitore del matrimonio lo annuncio nelle storie. Poi esce un gioco nuovo: nuova classifica, nuovo timbro.</p>
+      <div class="soc">
+      <a href="https://www.instagram.com/quota.zero.drone/" data-and="intent://www.instagram.com/quota.zero.drone/#Intent;scheme=https;package=com.instagram.android;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2Fquota.zero.drone%2F;end" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.tiktok.com/@quota.zero" data-and="intent://www.tiktok.com/@quota.zero#Intent;scheme=https;package=com.zhiliaoapp.musically;S.browser_fallback_url=https%3A%2F%2Fwww.tiktok.com%2F%40quota.zero;end" target="_blank" rel="noopener">TikTok</a>
+      </div>
     </div>
 
-    <p class="claim big"><span class="g">Seguimi</span><small>per altri minigiochi.</small></p>
-    <p class="fl">Ogni tanto ne esce uno nuovo, con la sua classifica.</p>
-    <div class="soc">
+    <!-- 3 · dal gioco alle riprese vere -->
+    <div class="vero">
+      <h2>Hai visto quanto è difficile?</h2>
+      <p>In un matrimonio vero non c'è Rigioca: un'orbita sbagliata intorno alla torta non si rifà.</p>
+      <p class="claim">Le vuoi fatte bene? Scrivimi nei <span class="g">DM</span>.</p>
+      <p class="sub">Riprese con il drone per matrimoni, a Roma e nel Lazio.</p>
+      <a class="btn out" id="cta" href="https://ig.me/m/quota.zero.drone" data-and="intent://ig.me/m/quota.zero.drone#Intent;scheme=https;package=com.instagram.android;S.browser_fallback_url=https%3A%2F%2Fig.me%2Fm%2Fquota.zero.drone;end" target="_blank" rel="noopener">Apri i DM</a>
+    </div>
+
+    <!-- barra sempre visibile -->
+    <div class="barra" id="barra">
+      <span>Seguimi per<br>il prossimo gioco</span>
       <a href="https://www.instagram.com/quota.zero.drone/" data-and="intent://www.instagram.com/quota.zero.drone/#Intent;scheme=https;package=com.instagram.android;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2Fquota.zero.drone%2F;end" target="_blank" rel="noopener">Instagram</a>
       <a href="https://www.tiktok.com/@quota.zero" data-and="intent://www.tiktok.com/@quota.zero#Intent;scheme=https;package=com.zhiliaoapp.musically;S.browser_fallback_url=https%3A%2F%2Fwww.tiktok.com%2F%40quota.zero;end" target="_blank" rel="noopener">TikTok</a>
     </div>
-    <div class="sp"></div>
-    <p class="claim">Le vuoi vere? Scrivimi nei <span class="g">DM</span>.</p>
-    <p style="margin:6px 0 12px;font-size:14px">Riprese con il drone per matrimoni, a Roma e nel Lazio.</p>
-    <a class="btn out" id="cta" href="https://ig.me/m/quota.zero.drone" data-and="intent://ig.me/m/quota.zero.drone#Intent;scheme=https;package=com.instagram.android;S.browser_fallback_url=https%3A%2F%2Fig.me%2Fm%2Fquota.zero.drone;end" target="_blank" rel="noopener">Apri i DM</a>
   </section>
 
   <section id="sh" class="ov" hidden>
@@ -102,6 +129,7 @@
 </div>
 
 <script src="/gioco/punteggio.js"></script>
+<script src="/gioco/serie.js"></script>
 <script src="/gioco/motore.js"></script>
 <script src="/gioco/scenari/matrimonio.js"></script>
 <script>

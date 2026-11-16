@@ -161,5 +161,5 @@ function disegna(S, g) {
   });
 }
 
-QZMotore.avvia({ id: 'matrimonio', nome: 'matrimonio', W, H, HOME, DUR: 40, sfondo: PRATO, momenti, reset, mondo, disegna });
+QZMotore.avvia({ id: 'matrimonio', nome: 'matrimonio', W, H, HOME, DUR: 40, sfondo: PRATO, soglie: { argento: 5000, oro: 7500 }, momenti, reset, mondo, disegna });
 })();

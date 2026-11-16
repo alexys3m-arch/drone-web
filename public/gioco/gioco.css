@@ -55,7 +55,9 @@ button,.btn{display:block;width:100%;border:0;border-radius:16px;padding:17px 18
 button:disabled{opacity:.5;cursor:default}
 .btn.out,button.out{background:transparent;color:var(--crema);border:2px solid var(--oro);padding:13px 18px;font-size:17px}
 button.link{background:none;border:0;padding:12px;margin-top:6px;font:600 14px 'Manrope',sans-serif;color:rgba(244,243,240,.7);text-decoration:underline;text-underline-offset:4px}
-.drone{width:130px;margin:18px 0 0 -6px}
+.drone{width:92px;margin:14px 0 0 -4px}
+#start h1{font-size:36px;margin-top:14px}
+#start .pill{margin-top:16px}
 .primato{margin-top:14px;font:700 12px/1.6 'Space Mono',monospace;letter-spacing:1px;color:rgba(244,243,240,.7)}
 .primato b{color:var(--oro)}
 
@@ -78,7 +80,12 @@ button.link{background:none;border:0;padding:12px;margin-top:6px;font:600 14px '
 .card:nth-child(odd) div{transform:rotate(-2.5deg)}.card:nth-child(even) div{transform:rotate(2deg)}
 
 /* classifica */
-.lb{margin-top:22px;border:2px solid rgba(201,162,39,.55);border-radius:18px;padding:16px 16px 12px;background:rgba(201,162,39,.06)}
+.lb{margin-top:14px;border:1.5px solid rgba(201,162,39,.4);border-radius:14px;padding:0 14px;background:rgba(201,162,39,.05)}
+.lb summary{cursor:pointer;list-style:none;padding:13px 0;font:700 12px 'Space Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--oro);display:flex;justify-content:space-between}
+.lb summary::-webkit-details-marker{display:none}
+.lb summary::after{content:'+';font-size:16px}
+.lb[open] summary::after{content:'\2013'}
+.lb[open]{padding-bottom:12px}
 .lb h2 small{display:block;font:700 10.5px 'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:rgba(244,243,240,.6);margin-top:5px}
 #lbf{display:flex;gap:10px;margin-top:14px}
 #lbf[hidden]{display:none}
@@ -114,3 +121,60 @@ button.link{background:none;border:0;padding:12px;margin-top:6px;font:600 14px '
 #sh img{display:block;width:auto;max-width:100%;max-height:calc(100dvh - 250px);margin:6px auto 0;border-radius:14px;border:2px solid rgba(201,162,39,.6);-webkit-user-select:auto;user-select:auto;-webkit-touch-callout:default}
 #sh p{font-size:14px;margin-top:12px}
 #sh .due{width:100%}
+
+/* nome da pilota nella schermata iniziale */
+.pilota{margin-top:18px}
+.pilota label{display:block;font:700 11px 'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--oro)}
+.pilota .riga{display:flex;gap:12px;align-items:center;margin-top:8px}
+.pilota input{width:112px;flex:none;border:2px solid var(--oro);border-radius:14px;background:var(--nero);color:var(--giallo);font:700 26px 'Space Mono',monospace;letter-spacing:8px;text-align:center;text-transform:uppercase;padding:9px 0 9px 8px;outline:none}
+.pilota input::placeholder{color:rgba(244,243,240,.25)}
+.pilota input:focus{border-color:var(--giallo);box-shadow:0 0 0 3px rgba(255,210,31,.25)}
+.pilota small{font-size:12.5px;line-height:1.35;color:rgba(244,243,240,.6)}
+#nomemsg{font-size:13px;margin-top:6px;color:var(--giallo)}
+#nomemsg:empty{display:none}
+#start .primato{margin-top:12px}
+
+/* fine partita: blocco 1 */
+#pos{margin-top:6px;font:700 13px 'Space Mono',monospace;letter-spacing:.5px;color:var(--crema)}
+#pos:empty{display:none}
+#pos b{color:var(--giallo);font-size:17px}
+#end .due{margin-top:14px}
+
+/* fine partita: blocco 2, patentino */
+.sez{margin-top:34px;font:700 11px 'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:rgba(244,243,240,.6)}
+.sez b{font-size:13px}
+.pat{margin-top:10px;border-radius:18px;padding:14px 14px 16px;background:linear-gradient(135deg,#f5eee0,#e9dcc0);color:#111113;box-shadow:0 0 0 3px #111113,0 0 0 5px var(--oro),0 12px 24px rgba(0,0,0,.5);transform:rotate(-1deg)}
+.pat-t{display:flex;justify-content:space-between;align-items:center;font:700 10.5px 'Space Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2px dashed rgba(17,17,19,.25);padding-bottom:8px}
+.pat-t b{font-size:18px;letter-spacing:4px}
+.pat-l{font:800 26px/1 'Syne',sans-serif;letter-spacing:-.02em;margin-top:12px}
+.pat-l small{display:block;font:600 12.5px 'Manrope',sans-serif;letter-spacing:0;margin-top:5px;color:rgba(17,17,19,.65)}
+.timbri{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.tb{display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px}
+.tb i{display:flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:50%;font:800 13px 'Syne',sans-serif;font-style:normal;letter-spacing:-1px;border:3px solid #111113;transform:rotate(-8deg)}
+.tb span{font:400 10.5px/1.15 'Archivo Black',sans-serif;margin-top:5px}
+.tb small{font:700 8.5px 'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase;color:rgba(17,17,19,.55)}
+.tb.oro i{background:var(--oro);color:#111113}
+.tb.argento i{background:#c9ccd1;color:#111113}
+.tb.bronzo i{background:#c98a5a;color:#111113}
+.tb.lock i{border-style:dashed;color:rgba(17,17,19,.6);background:transparent}
+.tb.vuoto i{border:3px dashed rgba(17,17,19,.25);color:rgba(17,17,19,.3);background:transparent;font-size:20px}
+.tb.vuoto span{color:rgba(17,17,19,.4)}
+.tb.nuovo i{animation:timbro .6s cubic-bezier(.2,1.8,.4,1) .7s both}
+@keyframes timbro{from{transform:scale(2.2) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(-8deg);opacity:1}}
+#segui .claim.big{margin-top:30px}
+
+/* fine partita: blocco 3, riprese vere */
+.vero{margin-top:34px;padding-top:22px;border-top:2px solid rgba(201,162,39,.4)}
+.vero h2{font-size:24px}
+.vero p{font-size:15px;margin-top:8px}
+#end .vero .claim{margin-top:16px}
+.vero .sub{font-size:14px;margin:6px 0 12px}
+
+/* barra Seguimi sempre visibile */
+.barra{position:sticky;bottom:calc(-1 * max(22px, env(safe-area-inset-bottom)));margin:26px -22px calc(-1 * max(22px, env(safe-area-inset-bottom)));padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;align-items:center;background:rgba(9,10,12,.96);border-top:2px solid var(--oro);transition:transform .25s,opacity .25s;z-index:2}
+.barra span{flex:1;font:800 13.5px/1.1 'Syne',sans-serif;letter-spacing:-.01em}
+.barra a{flex:none;border-radius:12px;padding:10px 12px;text-decoration:none;background:var(--oro);color:var(--nero);font:800 13px/1 'Syne',sans-serif}
+.barra.via{transform:translateY(100%);opacity:0;pointer-events:none}
+#end .due button{font-size:16px;padding:15px 8px}
+.barra span{font-size:12.5px}
+.barra a{padding:10px 10px;font-size:12.5px}

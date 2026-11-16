@@ -300,6 +300,42 @@ function frame(now) {
   tick(dt); render(); requestAnimationFrame(frame);
 }
 
+// ---------- patentino: un timbro per ogni evento, il livello cresce con le stelle ----------
+const SERIE = window.QZSerie || { eventi: [] };
+const STELLE = { bronzo: 1, argento: 2, oro: 3 };
+const LIVELLI = [[0, 'Aspirante pilota'], [1, 'Allievo'], [3, 'Pilota'], [6, 'Pilota esperto'], [9, "Pilota d'oro"]];
+const LUCCHETTO = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+let timbroNuovo = false;
+function leggiPatentino() { try { return JSON.parse(leggi('qz_gioco_patentino') || '{}') || {}; } catch (_) { return {}; } }
+function grado(punti) { const s = SC.soglie || { argento: 5000, oro: 7500 }; return punti >= s.oro ? 'oro' : punti >= s.argento ? 'argento' : 'bronzo'; }
+// tiene il timbro migliore di ogni evento; restituisce il grado se è nuovo o migliorato
+function timbra(punti, riprese) {
+  if (!riprese) return false;
+  const p = leggiPatentino(), g = grado(punti), prima = p[SC.id] && p[SC.id].grado;
+  if (prima && STELLE[prima] >= STELLE[g]) return false;
+  p[SC.id] = { grado: g }; scrivi('qz_gioco_patentino', JSON.stringify(p));
+  return g;
+}
+function livello(p) {
+  const stelle = Object.values(p).reduce((a, t) => a + (STELLE[t && t.grado] || 0), 0);
+  let i = 0; LIVELLI.forEach((l, k) => { if (stelle >= l[0]) i = k; });
+  const dopo = LIVELLI[i + 1];
+  return { stelle, nome: LIVELLI[i][1], prossimo: dopo ? { nome: dopo[1], mancano: dopo[0] - stelle } : null };
+}
+function htmlPatentino() {
+  const p = leggiPatentino(), L = livello(p), nome = leggi('qz_gioco_iniziali') || '···';
+  const timbri = SERIE.eventi.map(e => {
+    const t = e.id && p[e.id];
+    if (t) return '<div class="tb ' + t.grado + (timbroNuovo && e.id === SC.id ? ' nuovo' : '') + '"><i>' + '★'.repeat(STELLE[t.grado]) + '</i><span>' + e.nome + '</span><small>' + t.grado + '</small></div>';
+    if (e.prossimo) return '<div class="tb lock"><i>' + LUCCHETTO + '</i><span>' + e.nome + '</span><small>prossimo</small></div>';
+    if (e.id === SC.id) return '<div class="tb vuoto"><i>?</i><span>' + e.nome + '</span><small>da prendere</small></div>';
+    return '<div class="tb vuoto"><i>?</i><span>in arrivo</span><small>&nbsp;</small></div>';
+  }).join('');
+  return '<div class="pat-t"><span>Patentino Quota Zero</span><b>' + nome + '</b></div>' +
+    '<div class="pat-l">' + L.nome + '<small>' + L.stelle + ' stell' + (L.stelle === 1 ? 'a' : 'e') + (L.prossimo ? ' · ne mancano ' + L.prossimo.mancano + ' per ' + L.prossimo.nome : '') + '</small></div>' +
+    '<div class="timbri">' + timbri + '</div>';
+}
+
 // ---------- fine partita ----------
 const chiaveRecord = () => 'qz_gioco_record_' + SC.id;
 function finish() {
@@ -309,8 +345,8 @@ function finish() {
   if (nuovo) scrivi(chiaveRecord(), String(r.totale));
   const n = r.riprese.filter(x => x.giudizio !== 'persa').length, perf = r.riprese.filter(x => x.giudizio === 'perfetta').length, tot = SC.momenti.length;
   $('punti').innerHTML = '<b>' + fmt(r.totale) + '</b><span>punti</span>';
-  $('res').innerHTML = perf === tot ? 'Tutte <em>perfette</em>. Sei un pilota.' : n === tot ? 'Tutte e <em>' + tot + '</em> le riprese.' : n === 0 ? 'Nessuna ripresa, <em>stavolta</em>.' : 'Hai portato a casa <em>' + n + ' riprese</em> su ' + tot + '.';
-  $('resub').innerHTML = nuovo && prima > 0 ? '<span class="nuovo">Nuovo record!</span> Prima avevi ' + fmt(prima) + '.' : nuovo ? '<span class="nuovo">Il tuo primo record</span> Ora prova a batterlo.' : 'Il tuo record: ' + fmt(prima) + ' punti.';
+  $('res').innerHTML = perf === tot ? 'Tutte <em>perfette</em>.' : n === tot ? 'Tutte e <em>' + tot + '</em> le riprese.' : n === 0 ? 'Nessuna ripresa, <em>stavolta</em>.' : '<em>' + n + ' riprese</em> su ' + tot + '.';
+  $('resub').innerHTML = nuovo && prima > 0 ? '<span class="nuovo">Nuovo record!</span> Prima avevi ' + fmt(prima) + '.' : nuovo ? '<span class="nuovo">Primo record</span> Ora prova a batterlo.' : 'Il tuo record: ' + fmt(prima) + ' punti.';
   const extra = [];
   if (r.batteria) extra.push('batteria +' + fmt(r.batteria));
   extra.push(S.atterraggio == null ? 'atterraggio automatico +0' : 'atterraggio +' + fmt(r.atterraggio));
@@ -321,9 +357,14 @@ function finish() {
       ? '<figure class="card ' + x.giudizio + '"><div><img alt="' + m.n + '" src="' + S.got[i] + '"></div><figcaption><b>' + x.giudizio + '</b>' + m.s + '</figcaption></figure>'
       : '<figure class="card no"><div>persa</div><figcaption><b>&nbsp;</b>' + m.s + '</figcaption></figure>';
   }).join('');
-  inviato = null; $('lbmsg').textContent = ''; $('lbf').hidden = false; $('lbf').querySelector('button').disabled = false;
-  $('ini').value = leggi('qz_gioco_iniziali') || '';
-  caricaClassifica();
+  timbroNuovo = timbra(r.totale, n);
+  $('patmsg').innerHTML = timbroNuovo ? 'Timbro <b class="g">' + timbroNuovo + '</b> sul tuo patentino!' : 'Il tuo patentino';
+  $('pat').innerHTML = htmlPatentino();
+  inviato = null; $('lbmsg').textContent = ''; $('pos').textContent = '';
+  $('lbf').querySelector('button').disabled = false; $('ini').value = '';
+  const nome = leggi('qz_gioco_iniziali');
+  if (nome) { $('lbf').hidden = true; inviaPunteggio(null, nome); }
+  else { $('lbf').hidden = false; caricaClassifica(); }
   setTimeout(() => { $('end').hidden = false; $('end').scrollTop = 0; }, 500);
 }
 
@@ -337,12 +378,14 @@ async function chiama(opzioni) {
 }
 function mostraClassifica(top, mia) {
   const ol = $('lbl'); ol.innerHTML = '';
-  if (!top.length) { ol.innerHTML = '<li class="gap">Ancora nessuno: il primo posto è tuo.</li>'; return; }
+  if (!top.length) { ol.innerHTML = '<li class="gap">Ancora nessuno: il primo posto è libero.</li>'; return; }
   let segnato = false;
+  let n = 0;
   top.forEach((e, k) => {
+    if (k === 0 || top[k - 1].punti !== e.punti) n = k + 1; // pari merito: stessa posizione
     const tu = mia && !segnato && e.iniziali === mia.iniziali && e.punti === mia.punti;
     if (tu) segnato = true;
-    ol.insertAdjacentHTML('beforeend', '<li' + (tu ? ' class="tu"' : '') + '><span class="n">' + (k + 1) + '</span><span class="i">' + e.iniziali + '</span><span class="p">' + fmt(e.punti) + '</span></li>');
+    ol.insertAdjacentHTML('beforeend', '<li' + (tu ? ' class="tu"' : '') + '><span class="n">' + n + '</span><span class="i">' + e.iniziali + '</span><span class="p">' + fmt(e.punti) + '</span></li>');
   });
   if (mia && !segnato && mia.posizione) ol.insertAdjacentHTML('beforeend', '<li class="gap">···</li><li class="tu"><span class="n">' + mia.posizione + '</span><span class="i">' + mia.iniziali + '</span><span class="p">' + fmt(mia.punti) + '</span></li>');
 }
@@ -356,21 +399,24 @@ async function caricaClassifica() {
     statoLb = null; $('lbl').innerHTML = '<li class="gap">Classifica non raggiungibile adesso.</li>';
   }
 }
-async function inviaPunteggio(e) {
-  e.preventDefault();
-  const ini = $('ini').value.toUpperCase().replace(/[^A-Z]/g, '');
+// e: invio dal modulo; auto: iniziali già scelte all'inizio della partita
+async function inviaPunteggio(e, auto) {
+  if (e) e.preventDefault();
+  const ini = String(auto || $('ini').value).toUpperCase().replace(/[^A-Z]/g, '');
   if (ini.length !== 3) { $('lbmsg').textContent = 'Servono tre lettere, come nei vecchi cabinati.'; $('ini').focus(); return; }
-  const btn = $('lbf').querySelector('button'); btn.disabled = true; $('lbmsg').textContent = 'Invio…';
+  const btn = $('lbf').querySelector('button'); btn.disabled = true; $('pos').textContent = 'Entro in classifica…';
   try {
     const j = await chiama({ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ evento: SC.id, iniziali: ini, dettaglio: S.risultato.dettaglio }) });
     scrivi('qz_gioco_iniziali', ini);
     inviato = { iniziali: ini, punti: j.punti, posizione: j.posizione, totale: j.totale };
-    $('lbf').hidden = true;
-    $('lbmsg').innerHTML = j.posizione === 1 ? '<b class="g">Sei primo!</b> Ora tutti devono battere te.' : 'Sei <b class="g">' + j.posizione + '°</b> su ' + fmt(j.totale) + '.';
+    $('lbf').hidden = true; $('lbmsg').textContent = '';
+    $('pos').innerHTML = j.posizione === 1 ? '<b>1°</b> in classifica: sei in testa, ' + ini + '!' : '<b>' + j.posizione + '°</b> in classifica su ' + fmt(j.totale) + ' · ' + ini;
     mostraClassifica(j.top || [], inviato);
+    $('pat').innerHTML = htmlPatentino();
   } catch (err) {
-    btn.disabled = false;
+    btn.disabled = false; $('lbf').hidden = false; $('pos').textContent = '';
     $('lbmsg').textContent = err.codice === 'iniziali' ? 'Queste iniziali non si possono usare: scegline altre.' : err.codice === 'chiusa' ? 'La classifica di questo evento è chiusa.' : err.codice === 'troppe' ? 'Troppe partite inviate di fila: riprova tra qualche minuto.' : 'Non riesco a salvare adesso. Riprova tra poco.';
+    if (auto) caricaClassifica();
   }
 }
 
@@ -396,12 +442,14 @@ async function cartolina() {
   x.fillStyle = ORO; x.font = "800 230px 'Syne'"; let big = fmt(r.totale); while (x.measureText(big).width > 900 && x.font) { x.font = "800 " + (parseInt(x.font.match(/\d+(?=px)/)[0], 10) - 10) + "px 'Syne'"; }
   x.fillText(big, 80, 720);
   x.fillStyle = CREMA; x.font = "800 64px 'Syne'"; x.fillText('punti', 90, 800);
-  if (inviato) { x.fillStyle = GIALLO; x.font = "700 40px 'Space Mono'"; x.fillText(inviato.posizione + '° IN CLASSIFICA · ' + inviato.iniziali, 90, 880); }
+  x.fillStyle = GIALLO; x.font = "700 40px 'Space Mono'";
+  if (inviato) x.fillText(inviato.posizione + '° IN CLASSIFICA · ' + inviato.iniziali, 90, 880);
+  x.fillStyle = 'rgba(244,243,240,.75)'; x.font = "700 30px 'Space Mono'"; x.fillText('PATENTINO: ' + livello(leggiPatentino()).nome.toUpperCase(), 90, inviato ? 932 : 880);
   // le quattro riprese
   const imgs = await Promise.all(S.got.map(src => src ? new Promise(ok => { const im = new Image(); im.onload = () => ok(im); im.onerror = () => ok(null); im.src = src; }) : null));
   const w4 = 215, h4 = 269, g4 = 18;
   SC.momenti.forEach((m, i) => {
-    const px = 90 + i * (w4 + g4), py = 960;
+    const px = 90 + i * (w4 + g4), py = 1000;
     x.save(); x.translate(px + w4 / 2, py + h4 / 2); x.rotate(i % 2 ? .035 : -.045);
     if (imgs[i]) {
       x.fillStyle = 'rgba(0,0,0,.5)'; x.fillRect(-w4 / 2 + 8, -h4 / 2 + 14, w4, h4);
@@ -446,8 +494,17 @@ function start() {
   reset(); $('start').hidden = true; $('end').hidden = true; $('sh').hidden = true; $('hint').classList.remove('off');
   resize(); S.mode = 'takeoff'; toast('Decollo');
 }
+// il nome da pilota si sceglie prima di decollare: così a fine partita si entra in classifica da soli
+function decolla() {
+  const v = $('nome').value.toUpperCase().replace(/[^A-Z]/g, '');
+  if (v.length && v.length !== 3) { $('nomemsg').textContent = 'Servono tre lettere, oppure lascia vuoto.'; $('nome').focus(); return; }
+  if (v.length === 3) scrivi('qz_gioco_iniziali', v); else { try { localStorage.removeItem('qz_gioco_iniziali'); } catch (_) {} }
+  $('nomemsg').textContent = '';
+  start();
+}
 async function primato() {
-  const rec = parseInt(leggi(chiaveRecord()) || '0', 10), righe = [];
+  const rec = parseInt(leggi(chiaveRecord()) || '0', 10), righe = [], L = livello(leggiPatentino());
+  if (L.stelle) righe.push('Patentino: <b>' + L.nome + '</b>');
   if (rec) righe.push('Il tuo record: <b>' + fmt(rec) + '</b> punti');
   try { const j = await chiama(); if (j.top && j.top[0]) righe.push('In testa: <b>' + j.top[0].iniziali + '</b> con ' + fmt(j.top[0].punti)); } catch (_) {}
   $('primato').innerHTML = righe.join('<br>');
@@ -456,9 +513,14 @@ async function primato() {
 function avvia(scenario) {
   SC = scenario; cv = $('cv'); ctx = cv.getContext('2d');
   addEventListener('resize', resize);
-  $('go').addEventListener('click', start); $('again').addEventListener('click', start);
-  $('lbf').addEventListener('submit', inviaPunteggio);
-  $('ini').addEventListener('input', e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3); });
+  $('go').addEventListener('click', decolla); $('again').addEventListener('click', start);
+  $('lbf').addEventListener('submit', e => inviaPunteggio(e));
+  const soloLettere = e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3); };
+  $('ini').addEventListener('input', soloLettere); $('nome').addEventListener('input', soloLettere);
+  $('nome').addEventListener('keydown', e => { if (e.key === 'Enter') decolla(); });
+  $('nome').value = leggi('qz_gioco_iniziali') || '';
+  // la barra "Seguimi" in fondo sparisce quando il blocco Seguimi grande è sullo schermo
+  if ('IntersectionObserver' in window) new IntersectionObserver(v => { $('barra').classList.toggle('via', v[0].isIntersecting); }, { root: $('end') }).observe($('segui'));
   $('share').addEventListener('click', apriCartolina);
   $('shgo').addEventListener('click', condividi);
   $('shclose').addEventListener('click', () => { $('sh').hidden = true; });

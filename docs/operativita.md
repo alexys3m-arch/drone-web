@@ -48,7 +48,7 @@ Una nuova variabile richiede un nuovo deploy per essere letta.
 
 Ogni minigioco è un evento con la sua classifica. `quotazerodrone.it/gioco/` mostra sempre quello in corso: è il link fisso delle storie in evidenza e della bio.
 
-- Motore comune: `public/gioco/motore.js`; regole del punteggio (usate anche dal server): `public/gioco/punteggio.js`.
+- Motore comune: `public/gioco/motore.js`; regole del punteggio (usate anche dal server): `public/gioco/punteggio.js`; serie degli eventi e timbri del patentino: `public/gioco/serie.js`.
 - Ogni evento è uno scenario in `public/gioco/scenari/<evento>.js` e va registrato in `src/gioco/dominio/classifica.js` (`EVENTI`).
 - Prova in locale con la classifica finta: dalla cartella sopra `sito/`, `node anteprime-sito/server-gioco.js` e poi http://localhost:4175/gioco/.
 
