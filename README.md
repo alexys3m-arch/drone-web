@@ -9,7 +9,7 @@ Pagina unica con modulo di contatto a step, filtri per pubblico, video accessibi
 | Cartella | Contenuto |
 |---|---|
 | `public/` | Tutto ciò che viene servito: pagine, immagini, font, script. |
-| `api/` | Le due funzioni Vercel: `contact.js` (modulo) e `like.js` (Mi piace). |
+| `api/` | Le funzioni Vercel: `contact.js` (modulo), `like.js` (Mi piace) e `classifica.js` (classifica dei minigiochi). |
 | `src/` | La logica delle funzioni, divisa per contesto e in livelli: `dominio`, `applicazione`, `infrastruttura`. |
 | `test/` | Test automatici (`npm test`). |
 | `docs/` | Linguaggio del dominio, mappa dei contesti, decisioni, operatività. |

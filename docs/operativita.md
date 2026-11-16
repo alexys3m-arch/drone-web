@@ -43,3 +43,13 @@ Una nuova variabile richiede un nuovo deploy per essere letta.
 - `public/sitemap.xml` e `public/robots.txt` raggiungibili.
 - Il file di verifica Google ancora presente.
 - Su Search Console: richiedere di nuovo l'indicizzazione della home.
+
+## Minigiochi
+
+Ogni minigioco è un evento con la sua classifica. `quotazerodrone.it/gioco/` mostra sempre quello in corso: è il link fisso delle storie in evidenza e della bio.
+
+- Motore comune: `public/gioco/motore.js`; regole del punteggio (usate anche dal server): `public/gioco/punteggio.js`.
+- Ogni evento è uno scenario in `public/gioco/scenari/<evento>.js` e va registrato in `src/gioco/dominio/classifica.js` (`EVENTI`).
+- Prova in locale con la classifica finta: dalla cartella sopra `sito/`, `node anteprime-sito/server-gioco.js` e poi http://localhost:4175/gioco/.
+
+Nuovo evento: si chiude il precedente (`aperta: false`), la sua pagina si sposta in `public/gioco/<evento>/` (resta giocabile con la classifica finale) e `public/gioco/index.html` carica il nuovo scenario.

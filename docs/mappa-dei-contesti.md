@@ -1,6 +1,6 @@
 # Mappa dei contesti
 
-Il sito è piccolo (una pagina e due funzioni), quindi i contesti sono leggeri: servono a sapere dove mettere le cose e cosa può dipendere da cosa.
+Il sito è piccolo (una pagina, i minigiochi e tre funzioni), quindi i contesti sono leggeri: servono a sapere dove mettere le cose e cosa può dipendere da cosa.
 
 ```
                        Presenza online (pagina, SEO, privacy)
@@ -10,13 +10,14 @@ Il sito è piccolo (una pagina e due funzioni), quindi i contesti sono leggeri: 
     notifica email)       Mi piace)
 ```
 
-## I quattro contesti
+## I contesti
 
 | Contesto | Responsabilità | Codice |
 |---|---|---|
 | **Contatto** | Ricevere una richiesta, validarla, archiviarla, avvisare Alessio. | `src/contatto/`, `api/contact.js`, `public/assets/js/contatto/` |
 | **Portfolio** | Mostrare i lavori e contare i Mi piace. | `src/portfolio/`, `api/like.js`, `public/assets/portfolio/`, `public/assets/js/portfolio/` |
 | **Consenso e misurazione** | Chiedere il consenso e applicare le regole di misurazione documentate nelle decisioni. | `public/assets/js/consenso/` |
+| **Gioco** | Minigiochi con il drone (uno per evento), punteggio e classifica dell'evento. | `public/gioco/` (motore, scenari, regole del punteggio condivise), `src/gioco/`, `api/classifica.js` |
 | **Presenza online** | Pagina, testi, immagine del marchio, SEO, privacy, scroll e animazioni. | `public/` (esclusi i contesti sopra), `public/assets/brand/`, `public/assets/home/`, `public/assets/js/presentazione/` |
 
 ## Relazioni
