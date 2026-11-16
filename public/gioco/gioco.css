@@ -227,3 +227,63 @@ button.link{background:none;border:0;padding:12px;margin-top:6px;font:600 14px '
 #end>*{flex-shrink:0}
 .cl-h span{white-space:nowrap}
 .cl-h b{font-size:18px}
+
+/* fine partita a pop-up: la mappa resta visibile dietro */
+.ov.fine{background:rgba(9,10,12,.58);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);padding:max(12px,env(safe-area-inset-top)) 10px max(12px,env(safe-area-inset-bottom))}
+.passo{flex:none;margin:auto 0;background:#0b0c0f;border:1.5px solid rgba(201,162,39,.5);border-radius:22px;padding:14px 14px 16px;box-shadow:0 24px 60px rgba(0,0,0,.65);animation:entra .38s cubic-bezier(.2,1.25,.4,1)}
+.passo[hidden]{display:none}
+@keyframes entra{from{transform:translateY(46px) scale(.95);opacity:0}}
+.ph{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1.5px solid rgba(201,162,39,.4)}
+.tag2{font:700 11px 'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:rgba(244,243,240,.65)}
+.dots{display:flex;gap:6px}
+.dots i{width:8px;height:8px;border-radius:50%;background:rgba(244,243,240,.25)}
+.dots i.on{background:var(--oro);width:20px;border-radius:5px}
+button.indietro{width:auto;background:none;border:0;padding:4px 0;font:700 12px 'Space Mono',monospace;letter-spacing:1px;color:rgba(244,243,240,.8)}
+.passo #punti{margin-top:12px}
+.passo .cl{margin-top:16px}
+.passo .due{display:grid;grid-template-columns:1fr 1.25fr;gap:10px;margin-top:14px}
+#end .due button.out{font-size:15px;padding:12px 8px}
+button.avanti{display:flex;align-items:center;gap:8px;padding:8px 10px 8px 8px;text-align:left;font-size:15px}
+.avanti .mini{flex:none;width:40px;height:40px}
+.avanti .mini svg{width:100%;height:100%;display:block}
+.avanti .tx{flex:1;display:flex;flex-direction:column;line-height:1.05}
+.avanti .tx small{font:700 9px 'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase;opacity:.75}
+.avanti .tx b{font:800 16px 'Syne',sans-serif;margin-top:2px}
+.avanti em{font-style:normal;font-size:20px;animation:spinta 1.4s ease-in-out infinite}
+@keyframes spinta{50%{transform:translateX(4px)}}
+.passo .next{margin-top:14px}
+.passo .vero{margin-top:26px}
+.passo button.link{margin-top:10px}
+
+/* pop-up più compatti */
+.passo #punti b{font-size:48px}
+.passo #punti span{font-size:17px}
+.passo #cards{gap:8px;margin-top:12px}
+.passo .card div{aspect-ratio:1/1;border-width:3px}
+.passo .card figcaption{margin-top:5px;font-size:10px}
+.passo #bonus{margin-top:6px;font-size:10px}
+.passo .cl{padding:12px 12px 12px}
+.passo .cl-h b{font-size:16px}
+.passo .podio{margin-top:10px}
+.passo .pd i{width:30px;height:30px;font-size:15px}
+.passo .pd.p1 i{width:38px;height:38px;font-size:19px}
+.passo .pd b{font-size:16px;margin-top:5px}.passo .pd.p1 b{font-size:19px}
+.passo .pd.p1 u{height:42px}.passo .pd.p2 u{height:28px}.passo .pd.p3 u{height:18px}
+.passo #lbl li{padding:4px 8px}
+.passo #sfida{margin-top:8px;font-size:13.5px}
+.passo #again{margin-top:10px;font-size:16px;padding:13px}
+.passo .cl .nota{margin-top:8px;font-size:11px}
+.passo .next .claim.big{font-size:40px;margin-top:14px}
+.passo .next .claim.big small{font-size:18px;white-space:normal}
+.passo .next-logo{width:88px;height:88px}
+.passo .next-t b{font-size:26px}
+.passo .next-d{font-size:13.5px;margin-top:10px}
+.passo .sez{margin-top:22px}
+.passo .pat{padding:12px 12px 14px}
+.passo .pat-l{font-size:22px;margin-top:9px}
+.passo .timbri{margin-top:10px}
+.passo .tb i{width:46px;height:46px;font-size:11px}
+.passo .vero{margin-top:22px;padding-top:16px}
+.passo .vero h2{font-size:21px}
+#end .next .claim.big{font-size:40px}
+#end .next .claim.big small{font-size:18px;white-space:normal}

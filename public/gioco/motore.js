@@ -345,8 +345,8 @@ function finish() {
   if (nuovo) scrivi(chiaveRecord(), String(r.totale));
   const n = r.riprese.filter(x => x.giudizio !== 'persa').length, perf = r.riprese.filter(x => x.giudizio === 'perfetta').length, tot = SC.momenti.length;
   $('punti').innerHTML = '<b>' + fmt(r.totale) + '</b><span>punti</span>';
-  $('res').innerHTML = perf === tot ? 'Tutte <em>perfette</em>.' : n === tot ? 'Tutte e <em>' + tot + '</em> le riprese.' : n === 0 ? 'Nessuna ripresa, <em>stavolta</em>.' : '<em>' + n + ' riprese</em> su ' + tot + '.';
-  $('resub').innerHTML = nuovo && prima > 0 ? '<span class="nuovo">Nuovo record!</span> Prima avevi ' + fmt(prima) + '.' : nuovo ? '<span class="nuovo">Primo record</span> Ora prova a batterlo.' : 'Il tuo record: ' + fmt(prima) + ' punti.';
+  const esito = perf === tot ? 'Tutte <b class="g">perfette</b>.' : n === tot ? 'Tutte e ' + tot + ' le riprese.' : n === 0 ? 'Nessuna ripresa, stavolta.' : n + ' riprese su ' + tot + '.';
+  $('resub').innerHTML = (nuovo && prima > 0 ? '<span class="nuovo">Nuovo record!</span> ' : nuovo ? '<span class="nuovo">Primo record</span> ' : '') + esito + (!nuovo ? ' Il tuo record: ' + fmt(prima) + '.' : '');
   const extra = [];
   if (r.batteria) extra.push('batteria +' + fmt(r.batteria));
   extra.push(S.atterraggio == null ? 'atterraggio automatico +0' : 'atterraggio +' + fmt(r.atterraggio));
@@ -365,7 +365,12 @@ function finish() {
   const nome = leggi('qz_gioco_iniziali');
   if (nome) { $('lbf').hidden = true; inviaPunteggio(null, nome); }
   else { $('lbf').hidden = false; caricaClassifica(); }
-  setTimeout(() => { $('end').hidden = false; $('end').scrollTop = 0; }, 500);
+  setTimeout(() => passo(1), 500);
+}
+
+// fine partita a pop-up: 1 punteggio e classifica, 2 prossimo minigioco e riprese vere
+function passo(n) {
+  $('end').hidden = false; $('p1').hidden = n !== 1; $('p2').hidden = n !== 2; $('end').scrollTop = 0;
 }
 
 // ---------- classifica dell'evento ----------
@@ -394,8 +399,10 @@ function mostraClassifica(top, mia) {
       ? '<div class="pd p' + posto + (e.tu ? ' tu' : '') + '"><i>' + e.n + '</i><b>' + e.iniziali + '</b><span>' + fmt(e.punti) + '</span><u></u></div>'
       : '<div class="pd p' + posto + ' libero"><i>' + posto + '</i><b>···</b><span>libero</span><u></u></div>');
   });
-  righe.slice(3).forEach(e => ol.insertAdjacentHTML('beforeend', '<li' + (e.tu ? ' class="tu"' : '') + '><span class="n">' + e.n + '</span><span class="i">' + e.iniziali + '</span><span class="p">' + fmt(e.punti) + '</span></li>'));
-  if (mia && !segnato && mia.posizione) ol.insertAdjacentHTML('beforeend', '<li class="gap">···</li><li class="tu"><span class="n">' + mia.posizione + '</span><span class="i">' + mia.iniziali + '</span><span class="p">' + fmt(mia.punti) + '</span></li>');
+  // nel pop-up bastano il podio e due righe; la tua posizione si aggiunge sempre
+  righe.slice(3, 5).forEach(e => ol.insertAdjacentHTML('beforeend', '<li' + (e.tu ? ' class="tu"' : '') + '><span class="n">' + e.n + '</span><span class="i">' + e.iniziali + '</span><span class="p">' + fmt(e.punti) + '</span></li>'));
+  const vista = righe.slice(0, 5).some(e => e.tu);
+  if (mia && !vista && mia.posizione) ol.insertAdjacentHTML('beforeend', '<li class="gap">···</li><li class="tu"><span class="n">' + mia.posizione + '</span><span class="i">' + mia.iniziali + '</span><span class="p">' + fmt(mia.punti) + '</span></li>');
 }
 // la frase che spinge a rigiocare: quanti punti mancano per superare chi ti sta sopra
 function sfida(top, mia) {
@@ -532,18 +539,17 @@ async function primato() {
 function avvia(scenario) {
   SC = scenario; cv = $('cv'); ctx = cv.getContext('2d');
   addEventListener('resize', resize);
-  $('go').addEventListener('click', decolla); $('again').addEventListener('click', start); $('again2').addEventListener('click', start);
+  $('go').addEventListener('click', decolla); $('again').addEventListener('click', start); $('again3').addEventListener('click', start);
+  $('avanti').addEventListener('click', () => passo(2)); $('indietro').addEventListener('click', () => passo(1));
   // scheda del prossimo minigioco, dalla serie
   const prossimo = SERIE.eventi.find(e => e.prossimo);
-  if (prossimo) { $('nextnome').textContent = prossimo.nome; $('nextdesc').textContent = prossimo.descrizione || ''; $('nextlogo').innerHTML = prossimo.logo || ''; }
+  if (prossimo) { $('nextnome').textContent = prossimo.nome; $('nextdesc').textContent = prossimo.descrizione || ''; $('nextlogo').innerHTML = $('minilogo').innerHTML = prossimo.logo || ''; }
   else $('segui').classList.add('senza');
   $('lbf').addEventListener('submit', e => inviaPunteggio(e));
   const soloLettere = e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3); };
   $('ini').addEventListener('input', soloLettere); $('nome').addEventListener('input', soloLettere);
   $('nome').addEventListener('keydown', e => { if (e.key === 'Enter') decolla(); });
   $('nome').value = leggi('qz_gioco_iniziali') || '';
-  // la barra "Seguimi" in fondo sparisce quando il blocco Seguimi grande è sullo schermo
-  if ('IntersectionObserver' in window) new IntersectionObserver(v => { $('barra').classList.toggle('via', v[0].isIntersecting); }, { root: $('end') }).observe($('segui'));
   $('share').addEventListener('click', apriCartolina);
   $('shgo').addEventListener('click', condividi);
   $('shclose').addEventListener('click', () => { $('sh').hidden = true; });
