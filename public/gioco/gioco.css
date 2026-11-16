@@ -287,3 +287,87 @@ button.avanti{display:flex;align-items:center;gap:8px;padding:8px 10px 8px 8px;t
 .passo .vero h2{font-size:21px}
 #end .next .claim.big{font-size:40px}
 #end .next .claim.big small{font-size:18px;white-space:normal}
+
+/* ===== fine partita: quattro pop-up che stanno nello schermo, senza scorrere ===== */
+#end.fine{overflow:hidden;padding:max(10px,env(safe-area-inset-top)) 10px 0;gap:8px}
+#end .passo{flex:0 1 auto;min-height:0;margin:auto 0;display:flex;flex-direction:column;padding:12px 14px 8px}
+#end .passo[hidden]{display:none}
+#end .pc{flex:1 1 auto;min-height:0;overflow:hidden;transform-origin:top center}
+.nav{flex:none;display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:6px;border-top:1px solid rgba(201,162,39,.3)}
+button.vai,button.indietro{width:auto;background:none;border:0;border-radius:8px;padding:8px 2px;font:700 12px 'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase;color:var(--oro)}
+button.indietro{color:rgba(244,243,240,.7);font-size:15px;padding:6px 10px 6px 0}
+button.vai em{font-style:normal;display:inline-block;margin-left:4px;font-size:15px;animation:spinta 1.4s ease-in-out infinite}
+#end .barra{position:relative;bottom:auto;flex:none;margin:0 -10px;padding:9px 12px calc(9px + env(safe-area-inset-bottom));border-top:2px solid var(--oro);background:#0b0c0f}
+#end .barra span{font-size:12.5px}
+
+/* pop-up 1 più fitto */
+#p1 #punti{margin-top:8px}
+#p1 #punti b{font-size:44px}
+#p1 #pos{margin-top:4px}
+#p1 #resub{font-size:13.5px;margin-top:6px}
+#p1 #resub .nuovo{font-size:11px;padding:4px 8px}
+#p1 #cards{margin-top:10px}
+#p1 .card div{aspect-ratio:4/3}
+#p1 #bonus{display:none}
+#p1 .cl{margin-top:12px;padding:10px 12px 10px}
+#p1 .cl-h b{font-size:15px}
+#p1 .podio{margin-top:8px}
+#p1 .pd.p1 u{height:30px}#p1 .pd.p2 u{height:20px}#p1 .pd.p3 u{height:12px}
+#p1 .due{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+#p1 .due button{font-size:15px;padding:12px 6px}
+#p1 #again{animation:respiro 2.4s ease-in-out infinite}
+#p1 .cl .nota{font-size:10.5px;margin-top:8px}
+
+/* pop-up 2 */
+#p2 .next{margin-top:10px;border:0;background:none;padding:0}
+#p2 .next-strip{margin:0;border-radius:6px}
+#p2 .next-logo{width:120px;height:120px}
+#p2 .next-t b{font-size:32px}
+#p2 .next-d{font-size:14.5px}
+#end #p2 .claim.big{font-size:52px;margin-top:18px}
+#end #p2 .claim.big small{font-size:20px}
+
+/* pop-up 3: grado e realtà */
+#p3 .pat{margin-top:12px}
+.scala{list-style:none;margin:16px 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:4px;counter-reset:g}
+.scala li{position:relative;text-align:center;font:700 10px 'Space Mono',monospace;letter-spacing:.5px;text-transform:uppercase;color:rgba(244,243,240,.55);padding:22px 0 0;border-top:3px solid rgba(201,162,39,.35)}
+.scala li::before{content:"";position:absolute;left:50%;top:-8px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#2a2b2f;border:2px solid rgba(201,162,39,.5)}
+.scala li.tu{color:var(--giallo)}
+.scala li.tu::before{background:var(--giallo);border-color:#fff;box-shadow:0 0 0 4px rgba(255,210,31,.25)}
+.scala li.pro{color:var(--crema)}
+.scala li.pro::before{background:var(--oro);border-color:var(--oro);width:16px;height:16px;top:-10px;margin-left:-8px}
+.scala li small{display:block;font-size:8.5px;color:rgba(244,243,240,.45);margin-top:2px}
+.realta{margin-top:16px;border-radius:14px;padding:12px 14px;background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.35)}
+.realta h2{font-size:19px}
+.realta ul{margin:8px 0 0;padding:0 0 0 18px;font-size:13.5px;line-height:1.38;color:rgba(244,243,240,.85)}
+.realta li{margin-top:4px}
+.realta li::marker{color:var(--oro)}
+.realta p{font-size:13.5px;margin-top:10px}
+
+/* pop-up 4 */
+#p4 .vero{margin-top:14px;padding-top:0;border:0}
+#p4 .vero h2{font-size:28px;line-height:1.02}
+#p4 .vero p{font-size:15.5px}
+#end #p4 .vero .claim{font-size:22px;margin-top:20px}
+#p4 .btn.out{margin-top:6px;background:var(--oro);color:var(--nero);font-size:19px;padding:16px}
+#end .pc{transform:none}
+#end .pc>.in{transform-origin:top center}
+#p1 .cl-h b{font-size:14px;white-space:nowrap}
+#p1 .card figcaption{font-size:0;margin-top:4px}
+#p1 .card figcaption b{font-size:9px}
+#p1 .podio{margin-top:6px}
+#p1 .pd i{width:26px;height:26px;font-size:13px;border-width:2.5px}
+#p1 .pd.p1 i{width:32px;height:32px;font-size:16px}
+#p1 .pd b{font-size:15px;margin-top:4px}#p1 .pd.p1 b{font-size:17px}
+#p1 .pd span{font-size:11px}
+#p1 .pd u{margin-top:5px}
+#p1 #lbl{padding-top:2px;margin-top:2px}
+#p1 #sfida{margin-top:6px;font-size:13px}
+#end .barra span{font-size:12px;line-height:1.15}
+#end .barra a{padding:9px 9px;font-size:12px}
+#p4 .nota{font-size:11px;margin-top:14px}
+#end .pc>.in{display:flow-root}
+#p1 .cl-h b{font-size:17px}
+#end .barra{gap:6px}
+#end .barra span{font-size:11.5px}
+#end .barra a{padding:9px 8px;font-size:11.5px}
