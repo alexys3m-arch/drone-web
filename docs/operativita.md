@@ -53,3 +53,13 @@ Ogni minigioco è un evento con la sua classifica. `quotazerodrone.it/gioco/` mo
 - Prova in locale con la classifica finta: dalla cartella sopra `sito/`, `node anteprime-sito/server-gioco.js` e poi http://localhost:4175/gioco/.
 
 Nuovo evento: si chiude il precedente (`aperta: false`), la sua pagina si sposta in `public/gioco/<evento>/` (resta giocabile con la classifica finale) e `public/gioco/index.html` carica il nuovo scenario.
+
+### Riconoscere il vincitore (codice segreto)
+
+Chi entra in classifica al primo posto riceve nel gioco un codice segreto di 5 caratteri (es. `FD74A`), coperto finché non lo tocca. Agli altri non viene mai mandato e la classifica pubblica non lo contiene. Il vincitore finale è per forza uno di loro.
+
+1. Vercel → Storage → il database Upstash del sito → Data Browser → chiave `gioco:classifica:<evento>` (es. `gioco:classifica:matrimonio`).
+2. Il primo della lista (punteggio più alto) ha un membro tipo `ALE:fd74a1b2c3`: il codice sono le prime 5 lettere dopo i due punti, in maiuscolo (`FD74A`).
+3. Nelle storie annuncia "Ha vinto ALE: scrivimi in DM con il tuo codice". Chi ti scrive il codice giusto è il vincitore.
+
+Chiudere un evento: in `src/gioco/dominio/classifica.js` metti `aperta: false` all'evento; la classifica resta visibile ma non accetta più punteggi.

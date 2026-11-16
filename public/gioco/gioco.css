@@ -395,3 +395,26 @@ button.vai.ricco{display:flex;align-items:center;gap:9px;padding:6px 10px 6px 6p
 #p3 .realta{padding:12px 12px}
 #p3 .realta ul{font-size:14px;padding-left:16px}
 #p3 .realta p{font-size:14px}
+
+/* codice segreto del primo posto */
+#segreto{margin-top:8px}
+#segreto[hidden]{display:none}
+#segreto button.chiuso{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:9px 10px;border-radius:12px;background:repeating-linear-gradient(-45deg,rgba(255,210,31,.12) 0 8px,rgba(255,210,31,.04) 8px 16px);border:1.5px dashed var(--giallo);color:var(--crema);font:600 13px 'Manrope',sans-serif}
+#segreto button.chiuso svg{flex:none;color:var(--giallo)}
+#segreto button.chiuso b{color:var(--giallo)}
+#segreto .aperto{margin:0;font-size:12.5px;line-height:1.4;text-align:center;color:rgba(244,243,240,.85);border:1.5px solid var(--giallo);border-radius:12px;padding:8px 10px}
+.cod{display:block;font:700 26px 'Space Mono',monospace;letter-spacing:6px;color:var(--giallo);margin-bottom:2px}
+button.link.segreto-start{display:inline-flex;align-items:center;gap:6px;width:auto;padding:4px 0;margin:0;font:700 12px 'Space Mono',monospace;color:var(--oro)}
+button.link.segreto-start svg{width:14px;height:14px}
+.cod-start{font:700 12px 'Space Mono',monospace;color:var(--crema)}
+.cod-start b{color:var(--giallo);letter-spacing:3px}
+
+/* schermata iniziale sui telefoni bassi: un po' più compatta, così non si scorre */
+@media (max-height:700px){
+  #start .drone{width:72px;margin-top:8px}
+  #start h1{font-size:32px;margin-top:10px}
+  #start .pill{margin-top:12px;font-size:16px}
+  #start ol.passi{margin-top:12px}
+  #start ol.passi li{margin-top:7px;font-size:14.5px}
+  #start .pilota{margin-top:12px}
+}

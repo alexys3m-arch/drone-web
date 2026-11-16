@@ -20,10 +20,17 @@ async function registraPunteggio(richiesta, { archivio, limite, nuovoId }) {
   if (!partita) return { errore: 'dettaglio' };
   if (limite && !(await limite.consenti(impronta || 'sconosciuto'))) return { errore: 'troppe' };
 
-  await archivio.aggiungi(evento, ini + ':' + nuovoId(), partita.punti);
+  const id = nuovoId();
+  await archivio.aggiungi(evento, ini + ':' + id, partita.punti);
   await archivio.taglia(evento, CONSERVA);
   const [sopra, classifica] = await Promise.all([archivio.quantiSopra(evento, partita.punti), leggiClassifica(evento, { archivio })]);
-  return { punti: partita.punti, posizione: sopra + 1, totale: classifica.totale, top: classifica.top };
+  const esito = { punti: partita.punti, posizione: sopra + 1, totale: classifica.totale, top: classifica.top };
+  // Codice segreto: solo a chi entra al primo posto. Il vincitore finale è per forza uno di loro.
+  // Sono le prime lettere dell'identificativo salvato in classifica ("ABC:<id>"), che la classifica pubblica non mostra mai.
+  if (esito.posizione === 1) esito.codice = codiceSegreto(id);
+  return esito;
 }
 
-module.exports = { leggiClassifica, registraPunteggio };
+const codiceSegreto = (id) => String(id).slice(0, 5).toUpperCase();
+
+module.exports = { leggiClassifica, registraPunteggio, codiceSegreto };

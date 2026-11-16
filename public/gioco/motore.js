@@ -367,7 +367,7 @@ function finish() {
   timbroNuovo = timbra(r.totale, n);
   $('patmsg').innerHTML = timbroNuovo ? 'Nuovo timbro <b class="g">' + timbroNuovo + '</b>' : 'Il tuo grado';
   $('pat').innerHTML = htmlPatentino(); $('scala').innerHTML = htmlScala(); $('vaigrado').textContent = livello(leggiPatentino()).nome;
-  inviato = null; $('lbmsg').textContent = ''; $('pos').textContent = '';
+  inviato = null; $('lbmsg').textContent = ''; $('pos').textContent = ''; $('segreto').hidden = true;
   $('lbf').querySelector('button').disabled = false; $('ini').value = '';
   const nome = leggi('qz_gioco_iniziali');
   if (nome) { $('lbf').hidden = true; inviaPunteggio(null, nome); }
@@ -457,6 +457,7 @@ async function inviaPunteggio(e, auto) {
     $('lbf').hidden = true; $('lbmsg').textContent = '';
     $('pos').innerHTML = j.posizione === 1 ? '<b>1°</b> in classifica: sei in testa, ' + ini + '!' : '<b>' + j.posizione + '°</b> in classifica su ' + fmt(j.totale) + ' · ' + ini;
     mostraClassifica(j.top || [], inviato);
+    if (j.codice) { scrivi('qz_gioco_codice_' + SC.id, JSON.stringify({ codice: j.codice, iniziali: ini, punti: j.punti })); mostraSegreto(j.codice); }
     $('pat').innerHTML = htmlPatentino(); adatta();
   } catch (err) {
     btn.disabled = false; $('lbf').hidden = false; $('pos').textContent = '';
@@ -547,12 +548,30 @@ function decolla() {
   $('nomemsg').textContent = '';
   start();
 }
+// codice segreto del primo posto: coperto, si scopre toccando; resta salvato sul telefono
+function htmlCodice(codice) {
+  return '<b class="cod">' + codice + '</b> Fai uno screen e tienilo per te. Se resti primo fino alla fine, mandamelo in DM: è la prova che sei tu.';
+}
+function mostraSegreto(codice) {
+  const el = $('segreto');
+  el.innerHTML = '<button class="chiuso">' + LUCCHETTO + '<span>Sei primo: tocca per il <b>codice segreto</b></span></button>';
+  el.hidden = false;
+  el.querySelector('button').addEventListener('click', () => { el.innerHTML = '<p class="aperto">' + htmlCodice(codice) + '</p>'; adatta(); });
+  adatta();
+}
 async function primato() {
   const rec = parseInt(leggi(chiaveRecord()) || '0', 10), righe = [], L = livello(leggiPatentino());
-  if (L.stelle) righe.push('Patentino: <b>' + L.nome + '</b>');
-  if (rec) righe.push('Il tuo record: <b>' + fmt(rec) + '</b> punti');
+  // al massimo tre righe, così la schermata iniziale non si scorre
+  const tuo = [L.stelle ? 'Patentino: <b>' + L.nome + '</b>' : '', rec ? 'record <b>' + fmt(rec) + '</b>' : ''].filter(Boolean).join(' · ');
+  if (tuo) righe.push(tuo);
   try { const j = await chiama(); if (j.top && j.top[0]) righe.push('In testa: <b>' + j.top[0].iniziali + '</b> con ' + fmt(j.top[0].punti)); } catch (_) {}
   $('primato').innerHTML = righe.join('<br>');
+  let mio = null; try { mio = JSON.parse(leggi('qz_gioco_codice_' + SC.id) || 'null'); } catch (_) {}
+  if (mio && mio.codice) {
+    $('primato').insertAdjacentHTML('beforeend', '<br><button class="link segreto-start">' + LUCCHETTO + ' Il tuo codice segreto da primo</button>');
+    const b = $('primato').querySelector('.segreto-start');
+    b.addEventListener('click', () => { b.outerHTML = '<span class="cod-start">' + mio.iniziali + ' · <b>' + mio.codice + '</b></span>'; });
+  }
 }
 
 function avvia(scenario) {

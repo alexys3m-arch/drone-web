@@ -114,6 +114,20 @@ test('registraPunteggio: salva e restituisce posizione e classifica', async () =
   assert.equal(l.top.length, 2);
 });
 
+test('codice segreto: solo a chi entra primo, e corrisponde al membro salvato', async () => {
+  const archivio = archivioFinto(); const ids = ['a1b2c3d4e5', 'f6f7f8f9fa', '0123456789']; let k = 0; const nuovoId = () => ids[k++];
+  const primo = await registraPunteggio({ evento: 'matrimonio', iniziali: 'ale', dettaglio: { riprese: [0.7, 0.7, 0.7, 0.7] } }, { archivio, nuovoId });
+  assert.equal(primo.codice, 'A1B2C');
+  assert.match(archivio.righe[0].membro, /^ALE:a1b2c/);
+  const secondo = await registraPunteggio({ evento: 'matrimonio', iniziali: 'bob', dettaglio: { riprese: [0.6, null, null, null] } }, { archivio, nuovoId });
+  assert.equal(secondo.posizione, 2);
+  assert.equal(secondo.codice, undefined);
+  const nuovoPrimo = await registraPunteggio({ evento: 'matrimonio', iniziali: 'zoe', dettaglio: PERFETTO }, { archivio, nuovoId });
+  assert.equal(nuovoPrimo.codice, '01234');
+  // la classifica pubblica non contiene mai gli identificativi
+  assert.ok(nuovoPrimo.top.every(e => Object.keys(e).join() === 'iniziali,punti'));
+});
+
 test('registraPunteggio: errori di dominio e limite', async () => {
   const archivio = archivioFinto(), nuovoId = () => 'x';
   assert.equal((await registraPunteggio({ evento: 'nessuno', iniziali: 'ALE', dettaglio: PERFETTO }, { archivio, nuovoId })).errore, 'evento');
