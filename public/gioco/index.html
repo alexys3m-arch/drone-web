@@ -81,25 +81,41 @@
       <button class="out" id="again">Rigioca</button>
       <button id="share">Sfida un amico</button>
     </div>
-    <details class="lb">
-      <summary>Vedi la classifica del matrimonio</summary>
+    <!-- 2 · classifica, in stile sala giochi -->
+    <section class="cl" aria-label="Classifica del matrimonio">
+      <div class="cl-h"><span>Hi-score</span><b>Classifica<br>del matrimonio</b><i>live</i></div>
+      <div class="podio" id="podio"></div>
       <ol id="lbl"></ol>
-      <p class="nota">Resta aperta fino al prossimo minigioco. Salvo solo le tre lettere e i punti. <a href="/privacy.html" target="_blank" rel="noopener">Privacy</a></p>
-    </details>
+      <p id="sfida" aria-live="polite"></p>
+      <button id="again2">Rigioca e scala la classifica</button>
+      <p class="nota">Resta aperta fino al prossimo minigioco: il primo lo annuncio nelle storie. Salvo solo le tre lettere e i punti. <a href="/privacy.html" target="_blank" rel="noopener">Privacy</a></p>
+    </section>
 
-    <!-- 2 · patentino e prossimo minigioco -->
-    <p class="sez" id="patmsg">Il tuo patentino</p>
-    <div class="pat" id="pat"></div>
-    <div id="segui">
-      <p class="claim big"><span class="g">Seguimi</span><small>per il prossimo timbro.</small></p>
-      <p class="fl">Il vincitore del matrimonio lo annuncio nelle storie. Poi esce un gioco nuovo: nuova classifica, nuovo timbro.</p>
+    <!-- 3 · il prossimo minigioco -->
+    <section class="next" id="segui">
+      <div class="next-strip" aria-hidden="true"></div>
+      <div class="next-top">
+        <div class="next-logo" id="nextlogo" aria-hidden="true"></div>
+        <div class="next-t">
+          <span class="next-k">Prossimo minigioco</span>
+          <b id="nextnome"></b>
+          <span class="next-in">In arrivo</span>
+        </div>
+      </div>
+      <p class="next-d" id="nextdesc"></p>
+      <p class="claim big"><span class="g">Seguimi</span><small>e giocaci per primo.</small></p>
+      <p class="fl">Esce nelle storie, con una classifica nuova di zecca e un timbro nuovo sul patentino.</p>
       <div class="soc">
       <a href="https://www.instagram.com/quota.zero.drone/" data-and="intent://www.instagram.com/quota.zero.drone/#Intent;scheme=https;package=com.instagram.android;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2Fquota.zero.drone%2F;end" target="_blank" rel="noopener">Instagram</a>
       <a href="https://www.tiktok.com/@quota.zero" data-and="intent://www.tiktok.com/@quota.zero#Intent;scheme=https;package=com.zhiliaoapp.musically;S.browser_fallback_url=https%3A%2F%2Fwww.tiktok.com%2F%40quota.zero;end" target="_blank" rel="noopener">TikTok</a>
       </div>
-    </div>
+    </section>
 
-    <!-- 3 · dal gioco alle riprese vere -->
+    <!-- 4 · patentino -->
+    <p class="sez" id="patmsg">Il tuo patentino</p>
+    <div class="pat" id="pat"></div>
+
+    <!-- 5 · dal gioco alle riprese vere -->
     <div class="vero">
       <h2>Hai visto quanto è difficile?</h2>
       <p>In un matrimonio vero non c'è Rigioca: un'orbita sbagliata intorno alla torta non si rifà.</p>

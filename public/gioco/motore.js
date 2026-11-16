@@ -376,27 +376,46 @@ async function chiama(opzioni) {
   if (!r.ok) { const e = new Error(j.error || 'errore'); e.codice = j.error; throw e; }
   return j;
 }
+// podio per i primi tre (2° · 1° · 3°), lista per gli altri; a pari punti stessa posizione
 function mostraClassifica(top, mia) {
-  const ol = $('lbl'); ol.innerHTML = '';
-  if (!top.length) { ol.innerHTML = '<li class="gap">Ancora nessuno: il primo posto è libero.</li>'; return; }
-  let segnato = false;
-  let n = 0;
-  top.forEach((e, k) => {
-    if (k === 0 || top[k - 1].punti !== e.punti) n = k + 1; // pari merito: stessa posizione
-    const tu = mia && !segnato && e.iniziali === mia.iniziali && e.punti === mia.punti;
+  const ol = $('lbl'), podio = $('podio'); ol.innerHTML = ''; podio.innerHTML = '';
+  $('sfida').innerHTML = sfida(top, mia);
+  if (!top.length) { podio.innerHTML = '<p class="vuoto">Ancora nessuno sul podio.<br><b>Il primo posto è libero.</b></p>'; return; }
+  let segnato = false, n = 0;
+  const righe = top.map((e, k) => {
+    if (k === 0 || top[k - 1].punti !== e.punti) n = k + 1;
+    const tu = !!(mia && !segnato && e.iniziali === mia.iniziali && e.punti === mia.punti);
     if (tu) segnato = true;
-    ol.insertAdjacentHTML('beforeend', '<li' + (tu ? ' class="tu"' : '') + '><span class="n">' + n + '</span><span class="i">' + e.iniziali + '</span><span class="p">' + fmt(e.punti) + '</span></li>');
+    return { ...e, n, tu };
   });
+  [righe[1], righe[0], righe[2]].forEach((e, k) => {
+    const posto = [2, 1, 3][k];
+    podio.insertAdjacentHTML('beforeend', e
+      ? '<div class="pd p' + posto + (e.tu ? ' tu' : '') + '"><i>' + e.n + '</i><b>' + e.iniziali + '</b><span>' + fmt(e.punti) + '</span><u></u></div>'
+      : '<div class="pd p' + posto + ' libero"><i>' + posto + '</i><b>···</b><span>libero</span><u></u></div>');
+  });
+  righe.slice(3).forEach(e => ol.insertAdjacentHTML('beforeend', '<li' + (e.tu ? ' class="tu"' : '') + '><span class="n">' + e.n + '</span><span class="i">' + e.iniziali + '</span><span class="p">' + fmt(e.punti) + '</span></li>'));
   if (mia && !segnato && mia.posizione) ol.insertAdjacentHTML('beforeend', '<li class="gap">···</li><li class="tu"><span class="n">' + mia.posizione + '</span><span class="i">' + mia.iniziali + '</span><span class="p">' + fmt(mia.punti) + '</span></li>');
 }
+// la frase che spinge a rigiocare: quanti punti mancano per superare chi ti sta sopra
+function sfida(top, mia) {
+  if (!mia) return top[0] ? 'Il primo è <b>' + top[0].iniziali + '</b> con ' + fmt(top[0].punti) + ' punti. Riesci a batterlo?' : 'Nessuno in classifica: <b>prendi tu il primo posto</b>.';
+  if (mia.posizione === 1) return '<b>Sei in testa!</b> Ora tutti devono battere te. Rigioca e alza l\'asticella.';
+  const sopra = top.filter(e => e.punti > mia.punti), vicino = sopra[sopra.length - 1], primo = top[0];
+  if (!vicino) return '';
+  let t = 'Ti mancano <b>' + fmt(vicino.punti - mia.punti + 1) + ' punti</b> per superare ' + vicino.iniziali;
+  if (mia.posizione > 3 && top[2] && top[2] !== vicino) t += ' e <b>' + fmt(top[2].punti - mia.punti + 1) + '</b> per salire sul podio';
+  else if (primo !== vicino) t += ' e <b>' + fmt(primo.punti - mia.punti + 1) + '</b> per il primo posto';
+  return t + '.';
+}
 async function caricaClassifica() {
-  $('lbl').innerHTML = '<li class="gap">Carico la classifica…</li>';
+  $('podio').innerHTML = '<p class="vuoto">Carico la classifica…</p>'; $('lbl').innerHTML = ''; $('sfida').innerHTML = '';
   try {
     statoLb = await chiama();
     mostraClassifica(statoLb.top || []);
     if (statoLb.aperta === false) { $('lbf').hidden = true; $('lbmsg').textContent = 'Classifica chiusa. ' + (statoLb.top && statoLb.top[0] ? 'Ha vinto ' + statoLb.top[0].iniziali + '.' : ''); }
   } catch (_) {
-    statoLb = null; $('lbl').innerHTML = '<li class="gap">Classifica non raggiungibile adesso.</li>';
+    statoLb = null; $('podio').innerHTML = '<p class="vuoto">Classifica non raggiungibile adesso.</p>';
   }
 }
 // e: invio dal modulo; auto: iniziali già scelte all'inizio della partita
@@ -513,7 +532,11 @@ async function primato() {
 function avvia(scenario) {
   SC = scenario; cv = $('cv'); ctx = cv.getContext('2d');
   addEventListener('resize', resize);
-  $('go').addEventListener('click', decolla); $('again').addEventListener('click', start);
+  $('go').addEventListener('click', decolla); $('again').addEventListener('click', start); $('again2').addEventListener('click', start);
+  // scheda del prossimo minigioco, dalla serie
+  const prossimo = SERIE.eventi.find(e => e.prossimo);
+  if (prossimo) { $('nextnome').textContent = prossimo.nome; $('nextdesc').textContent = prossimo.descrizione || ''; $('nextlogo').innerHTML = prossimo.logo || ''; }
+  else $('segui').classList.add('senza');
   $('lbf').addEventListener('submit', e => inviaPunteggio(e));
   const soloLettere = e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3); };
   $('ini').addEventListener('input', soloLettere); $('nome').addEventListener('input', soloLettere);
