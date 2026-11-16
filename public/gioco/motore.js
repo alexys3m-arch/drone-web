@@ -340,7 +340,7 @@ function htmlPatentino() {
 const CORTI = { 'Allievo': 'Allievo', 'Pilota': 'Pilota', 'Pilota esperto': 'Esperto', "Pilota d'oro": "D'oro" };
 function htmlScala() {
   const L = livello(leggiPatentino());
-  return LIVELLI.slice(1).map(l => '<li' + (l[1] === L.nome ? ' class="tu"' : '') + '>' + CORTI[l[1]] + '</li>').join('') + '<li class="pro">Pro<small>dal vero</small></li>';
+  return LIVELLI.slice(1).map(l => '<li' + (l[1] === L.nome ? ' class="tu"' : '') + '>' + CORTI[l[1]] + '</li>').join('') + '<li class="pro">Pro<small>dal vivo</small></li>';
 }
 
 // ---------- fine partita ----------
@@ -366,7 +366,7 @@ function finish() {
   }).join('');
   timbroNuovo = timbra(r.totale, n);
   $('patmsg').innerHTML = timbroNuovo ? 'Nuovo timbro <b class="g">' + timbroNuovo + '</b>' : 'Il tuo grado';
-  $('pat').innerHTML = htmlPatentino(); $('scala').innerHTML = htmlScala();
+  $('pat').innerHTML = htmlPatentino(); $('scala').innerHTML = htmlScala(); $('vaigrado').textContent = livello(leggiPatentino()).nome;
   inviato = null; $('lbmsg').textContent = ''; $('pos').textContent = '';
   $('lbf').querySelector('button').disabled = false; $('ini').value = '';
   const nome = leggi('qz_gioco_iniziali');
@@ -568,7 +568,7 @@ function avvia(scenario) {
   $('end').addEventListener('touchend', e => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; tx = null; if (Math.abs(dx) > 60 && Math.abs(dy) < 50) passo(passoOra + (dx < 0 ? 1 : -1)); }, { passive: true });
   // scheda del prossimo minigioco, dalla serie
   const prossimo = SERIE.eventi.find(e => e.prossimo);
-  if (prossimo) { $('nextnome').textContent = prossimo.nome; $('nextdesc').textContent = prossimo.descrizione || ''; $('nextlogo').innerHTML = prossimo.logo || ''; }
+  if (prossimo) { $('nextnome').textContent = prossimo.nome; $('nextdesc').textContent = prossimo.descrizione || ''; $('nextlogo').innerHTML = $('vailogo').innerHTML = prossimo.logo || ''; $('vainome').textContent = prossimo.nome; }
   else $('segui').classList.add('senza');
   $('lbf').addEventListener('submit', e => inviaPunteggio(e));
   const soloLettere = e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3); };

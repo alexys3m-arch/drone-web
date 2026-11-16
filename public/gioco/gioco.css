@@ -371,3 +371,19 @@ button.vai em{font-style:normal;display:inline-block;margin-left:4px;font-size:1
 #end .barra{gap:6px}
 #end .barra span{font-size:11.5px}
 #end .barra a{padding:9px 8px;font-size:11.5px}
+
+/* pulsanti "avanti" ricchi: logo, stella PRO, REC */
+button.vai.ricco{display:flex;align-items:center;gap:9px;padding:6px 10px 6px 6px;border:1.5px solid var(--oro);border-radius:16px;background:linear-gradient(135deg,rgba(201,162,39,.22),rgba(201,162,39,.06));text-transform:none;letter-spacing:0;text-align:left;color:var(--crema);animation:richiamo 2.6s ease-in-out infinite}
+@keyframes richiamo{0%,100%{box-shadow:0 0 0 0 rgba(255,210,31,0)}50%{box-shadow:0 0 0 5px rgba(255,210,31,.16)}}
+.vai.ricco .tx{display:flex;flex-direction:column;line-height:1.05}
+.vai.ricco .tx small{font:700 9px 'Space Mono',monospace;letter-spacing:1.2px;text-transform:uppercase;color:rgba(244,243,240,.65)}
+.vai.ricco .tx b{font:800 16px 'Syne',sans-serif;letter-spacing:-.01em;margin-top:3px;color:var(--crema)}
+.vai.ricco em{color:var(--oro);font-size:18px;margin-left:2px}
+.vai.ricco .ic{flex:none;width:42px;height:42px;display:flex;align-items:center;justify-content:center;position:relative}
+.vai.ricco .ic svg{width:100%;height:100%;display:block}
+.ic.stella svg{width:36px;height:36px;fill:var(--giallo);stroke:#111113;stroke-width:1.2;filter:drop-shadow(0 0 6px rgba(255,210,31,.55));animation:brilla 2s ease-in-out infinite}
+@keyframes brilla{50%{transform:rotate(-12deg) scale(1.08)}}
+.ic.stella i{position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);font:400 8px/1 'Archivo Black',sans-serif;font-style:normal;background:var(--carta);color:#111113;border:1.5px solid #111113;border-radius:6px;padding:2px 4px}
+.ic.rec{border:2px solid var(--crema);border-radius:9px;font:700 9px 'Space Mono',monospace;letter-spacing:.5px;color:var(--crema);gap:3px;flex-direction:column}
+.ic.rec i{width:11px;height:11px;border-radius:50%;background:#ff4a3a;box-shadow:0 0 8px #ff4a3a;animation:lampeggia 1s infinite}
+.nav{gap:8px}
