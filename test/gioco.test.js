@@ -8,7 +8,7 @@ const { registraPunteggio, leggiClassifica } = require('../src/gioco/applicazion
 const { coppie } = require('../src/gioco/infrastruttura/classifica-kv');
 
 // ---------- KV finto con insiemi ordinati, contatori e scadenze ----------
-const db = { z: {}, n: {}, falliscono: false };
+const db = { z: {}, n: {}, h: {}, falliscono: false };
 const kvFinto = {
   async zadd(k, { score, member }) { if (db.falliscono) throw new Error('kv giu'); (db.z[k] = db.z[k] || new Map()).set(member, score); return 1; },
   async zrange(k, a, b, o) {
@@ -23,6 +23,8 @@ const kvFinto = {
   },
   async incr(k) { db.n[k] = (db.n[k] || 0) + 1; return db.n[k]; },
   async expire() { return 1; },
+  async hincrby(k, f, n) { if (db.falliscono) throw new Error('kv giu'); const h = (db.h[k] = db.h[k] || {}); h[f] = (h[f] || 0) + n; return h[f]; },
+  async hgetall(k) { return db.h[k] ? { ...db.h[k] } : null; },
 };
 const caricaOriginale = Module._load;
 Module._load = function (richiesta, ...resto) {
@@ -38,7 +40,7 @@ function risposta() {
   return r;
 }
 const invia = async (req) => { const r = risposta(); await api(Object.assign({ headers: { 'x-forwarded-for': '10.0.0.1' } }, req), r); return r; };
-const azzera = () => { db.z = {}; db.n = {}; db.falliscono = false; };
+const azzera = () => { db.z = {}; db.n = {}; db.h = {}; db.falliscono = false; };
 const PERFETTO = { riprese: [1, 1, 1, 1], batteria: 15, atterraggio: 1 };
 
 // ---------- punteggio ----------
@@ -186,4 +188,39 @@ test('API classifica: codici di errore', async () => {
   const k = await invia({ method: 'POST', body: { evento: 'matrimonio', iniziali: 'ALE', dettaglio: PERFETTO } });
   console.error = consumo;
   assert.equal(k.stato, 503);
+});
+
+// ---------- statistiche anonime ----------
+const { giornoDi } = require('../src/gioco/dominio/statistiche');
+const { contaEvento, leggiStatistiche } = require('../src/gioco/applicazione/statistiche');
+const statApi = require('../api/statistiche');
+const inviaStat = async (req) => { const r = risposta(); await statApi(Object.assign({ headers: {} }, req), r); return r; };
+
+test('statistiche: giorno di Roma, anche a cavallo della mezzanotte', () => {
+  assert.equal(giornoDi(new Date('2026-11-18T22:30:00Z')), '2026-11-18');
+  assert.equal(giornoDi(new Date('2026-11-18T23:30:00Z')), '2026-11-19');
+});
+
+test('statistiche: conta solo tipi ed eventi validi', async () => {
+  const visti = []; const contatori = { incrementa: async (...a) => visti.push(a) };
+  assert.equal((await contaEvento({ evento: 'matrimonio', tipo: 'hack' }, { contatori })).errore, 'tipo');
+  assert.equal((await contaEvento({ evento: 'nessuno', tipo: 'fine' }, { contatori })).errore, 'tipo');
+  await contaEvento({ evento: 'matrimonio', tipo: 'fine' }, { contatori, adesso: new Date('2026-11-18T10:00:00Z') });
+  assert.deepEqual(visti, [['matrimonio', '2026-11-18', 'fine']]);
+});
+
+test('API statistiche: POST conta, GET restituisce totale e ultimi giorni, nessun dato personale', async () => {
+  azzera();
+  for (const tipo of ['apertura', 'apertura', 'decollo', 'fine', 'instagram']) assert.equal((await inviaStat({ method: 'POST', body: { evento: 'matrimonio', tipo } })).stato, 200);
+  assert.equal((await inviaStat({ method: 'POST', body: { evento: 'matrimonio', tipo: 'boh' } })).stato, 400);
+  const r = await inviaStat({ method: 'GET', query: { evento: 'matrimonio' } });
+  assert.equal(r.stato, 200);
+  assert.equal(r.corpo.totale.apertura, 2);
+  assert.equal(r.corpo.totale.decollo, 1);
+  assert.equal(r.corpo.totale.dm, 0);
+  assert.equal(r.corpo.giorni.length, 14);
+  assert.equal(r.corpo.giorni[0].apertura, 2);
+  assert.ok(Object.keys(db.h).every(k => /^gioco:stat:matrimonio:(totale|\d{4}-\d{2}-\d{2})$/.test(k)));
+  assert.equal((await inviaStat({ method: 'GET', query: {} })).stato, 400);
+  assert.equal((await inviaStat({ method: 'PUT' })).stato, 405);
 });

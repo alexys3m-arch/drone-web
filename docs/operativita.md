@@ -63,3 +63,7 @@ Chi entra in classifica al primo posto riceve nel gioco un codice segreto di 5 c
 3. Nelle storie annuncia "Ha vinto ALE: scrivimi in DM con il tuo codice". Chi ti scrive il codice giusto è il vincitore.
 
 Chiudere un evento: in `src/gioco/dominio/classifica.js` metti `aperta: false` all'evento; la classifica resta visibile ma non accetta più punteggi.
+
+### Quante persone giocano
+
+Pagina (nascosta, non indicizzata): https://quotazerodrone.it/gioco/statistiche/ — aperture, giocatori nuovi, partite iniziate e finite, entrate in classifica, clic su Instagram/TikTok/DM e "Sfida un amico", totale e ultimi 14 giorni. Conteggio anonimo dal 18 novembre 2026 (`api/statistiche.js`, chiavi `gioco:stat:<evento>:<giorno>` e `:totale` su KV). Le partite con `?auto`, `?demo`, `?rec` e quelle in locale non contano. Chi conosce l'indirizzo vede i totali: sono numeri aggregati, senza dati personali.

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#090a0c">
+<title>Statistiche minigioco · Quota Zero</title>
+<link rel="icon" href="/assets/brand/favicon-192.png" type="image/png">
+<style>
+@font-face{font-family:"Syne";font-weight:800;font-display:swap;src:url(/gioco/fonts/syne-800-latin.woff2) format("woff2")}
+@font-face{font-family:"Manrope";font-weight:300 800;font-display:swap;src:url(/gioco/fonts/manrope-latin.woff2) format("woff2")}
+@font-face{font-family:"Space Mono";font-weight:700;font-display:swap;src:url(/gioco/fonts/space-mono-700-latin.woff2) format("woff2")}
+:root{--oro:#c9a227;--nero:#090a0c;--crema:#f4f3f0;--giallo:#ffd21f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--nero);color:var(--crema);font-family:Manrope,system-ui,sans-serif}
+main{max-width:720px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) 16px 40px}
+.tag{font:700 11px 'Space Mono',monospace;letter-spacing:3px;text-transform:uppercase;color:rgba(244,243,240,.6);padding-bottom:12px;border-bottom:2px solid rgba(201,162,39,.5);display:flex;justify-content:space-between;align-items:center}
+.tag button{background:none;border:1.5px solid var(--oro);color:var(--oro);border-radius:10px;padding:6px 10px;font:700 11px 'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+h1{font:800 34px/1 Syne,sans-serif;letter-spacing:-.03em;margin:18px 0 0}
+h1 em{font-style:normal;color:var(--oro)}
+.nota{font-size:13px;color:rgba(244,243,240,.6);margin:8px 0 0}
+h2{font:700 11px 'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:var(--oro);margin:26px 0 10px}
+.kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media (min-width:560px){.kpi{grid-template-columns:repeat(3,1fr)}}
+.c{border:1.5px solid rgba(201,162,39,.35);border-radius:14px;padding:12px 14px;background:rgba(201,162,39,.05)}
+.c b{display:block;font:800 30px/1 Syne,sans-serif;letter-spacing:-.02em}
+.c span{display:block;font-size:12.5px;color:rgba(244,243,240,.7);margin-top:6px}
+.c small{display:block;font:700 11px 'Space Mono',monospace;color:var(--giallo);margin-top:4px}
+.c.forte{border-color:var(--oro);background:rgba(201,162,39,.14)}
+.tab{overflow-x:auto;border:1.5px solid rgba(201,162,39,.3);border-radius:14px}
+table{border-collapse:collapse;width:100%;font:700 12px 'Space Mono',monospace}
+th,td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid rgba(244,243,240,.08)}
+th:first-child,td:first-child{text-align:left}
+th{color:rgba(244,243,240,.55);font-size:10px;letter-spacing:1px;text-transform:uppercase}
+tr.oggi td{color:var(--giallo)}
+td.z{color:rgba(244,243,240,.25)}
+#err{color:#ff5a47;font-size:14px}
+</style>
+</head>
+<body>
+<main>
+  <div class="tag"><span>Quota Zero · statistiche</span><button id="agg">Aggiorna</button></div>
+  <h1>Minigioco <em>matrimonio</em></h1>
+  <p class="nota" id="quando">Carico…</p>
+  <p id="err"></p>
+
+  <h2>Da quando si conta</h2>
+  <div class="kpi" id="kpi"></div>
+
+  <h2>Ultimi 14 giorni</h2>
+  <div class="tab"><table id="tab"></table></div>
+
+  <p class="nota">Conteggio anonimo dal 18 novembre 2026: niente cookie, niente dati personali. Le partite automatiche di prova non contano. "Giocatori nuovi" = primo decollo da un telefono. In classifica ci sono anche i 30 piloti di base inseriti a mano.</p>
+</main>
+<script>
+(function () {
+  const fmt = n => Number(n || 0).toLocaleString('it-IT');
+  const pc = (a, b) => b ? Math.round(a / b * 100) + '%' : '–';
+  const COL = [['apertura', 'Aperture'], ['nuovo', 'Nuovi'], ['decollo', 'Partite'], ['fine', 'Finite'], ['classifica', 'Classif.'], ['instagram', 'IG'], ['tiktok', 'TikTok'], ['dm', 'DM'], ['condividi', 'Sfide']];
+  async function carica() {
+    document.getElementById('err').textContent = '';
+    try {
+      const [s, c] = await Promise.all([
+        fetch('/api/statistiche?evento=matrimonio', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+        fetch('/api/classifica?evento=matrimonio', { cache: 'no-store' }).then(r => r.json()).catch(() => null),
+      ]);
+      const t = s.totale, oggi = s.giorni[0], ieri = s.giorni[1];
+      const social = t.instagram + t.tiktok;
+      const carte = [
+        ['Aperture del gioco', t.apertura, 'oggi ' + fmt(oggi.apertura) + ' · ieri ' + fmt(ieri.apertura)],
+        ['Giocatori nuovi', t.nuovo, 'oggi ' + fmt(oggi.nuovo), true],
+        ['Partite iniziate', t.decollo, 'in media ' + (t.nuovo ? (t.decollo / t.nuovo).toFixed(1).replace('.', ',') : '–') + ' a testa'],
+        ['Partite finite', t.fine, pc(t.fine, t.decollo) + ' di quelle iniziate'],
+        ['Entrate in classifica', t.classifica, c ? fmt(c.totale) + ' righe in classifica (con i piloti di base)' : ''],
+        ['Clic su Instagram e TikTok', social, 'IG ' + fmt(t.instagram) + ' · TikTok ' + fmt(t.tiktok) + ' · ' + pc(social, t.fine) + ' di chi finisce', true],
+        ['Clic su "Apri i DM"', t.dm, pc(t.dm, t.fine) + ' di chi finisce', true],
+        ['"Sfida un amico" aperto', t.condividi, ''],
+      ];
+      document.getElementById('kpi').innerHTML = carte.map(k => '<div class="c' + (k[3] ? ' forte' : '') + '"><b>' + fmt(k[1]) + '</b><span>' + k[0] + '</span>' + (k[2] ? '<small>' + k[2] + '</small>' : '') + '</div>').join('');
+      document.getElementById('tab').innerHTML = '<tr><th>Giorno</th>' + COL.map(x => '<th>' + x[1] + '</th>').join('') + '</tr>' +
+        s.giorni.map((g, i) => '<tr' + (i === 0 ? ' class="oggi"' : '') + '><td>' + (i === 0 ? 'oggi' : i === 1 ? 'ieri' : g.data.slice(8, 10) + '/' + g.data.slice(5, 7)) + '</td>' + COL.map(x => '<td' + (g[x[0]] ? '' : ' class="z"') + '>' + fmt(g[x[0]]) + '</td>').join('') + '</tr>').join('');
+      document.getElementById('quando').textContent = 'Aggiornato alle ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    } catch (e) {
+      document.getElementById('err').textContent = 'Non riesco a leggere le statistiche adesso. Riprova tra poco.';
+      document.getElementById('quando').textContent = '';
+    }
+  }
+  document.getElementById('agg').addEventListener('click', carica);
+  carica();
+})();
+</script>
+</body>
+</html>

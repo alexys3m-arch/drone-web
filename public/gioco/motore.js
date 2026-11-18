@@ -300,6 +300,17 @@ function frame(now) {
   tick(dt); render(); requestAnimationFrame(frame);
 }
 
+// ---------- statistiche anonime: si contano solo eventi, nessun cookie e nessun dato personale ----------
+// le partite automatiche (?auto, ?demo, ?rec) e le prove in locale non contano
+function traccia(tipo) {
+  if (!tipo || AUTO || REC || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
+  try {
+    const corpo = JSON.stringify({ evento: SC.id, tipo });
+    if (navigator.sendBeacon) navigator.sendBeacon('/api/statistiche', new Blob([corpo], { type: 'application/json' }));
+    else fetch('/api/statistiche', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: corpo, keepalive: true }).catch(() => {});
+  } catch (_) {}
+}
+
 // ---------- patentino: un timbro per ogni evento, il livello cresce con le stelle ----------
 const SERIE = window.QZSerie || { eventi: [] };
 const STELLE = { bronzo: 1, argento: 2, oro: 3 };
@@ -346,6 +357,7 @@ function htmlScala() {
 // ---------- fine partita ----------
 const chiaveRecord = () => 'qz_gioco_record_' + SC.id;
 function finish() {
+  traccia('fine');
   const dettaglio = { riprese: qList(), batteria: S.batteria || 0, atterraggio: S.atterraggio };
   const r = P.calcola(dettaglio); S.risultato = { dettaglio, r };
   const prima = parseInt(leggi(chiaveRecord()) || '0', 10), nuovo = r.totale > prima;
@@ -452,7 +464,7 @@ async function inviaPunteggio(e, auto) {
   const btn = $('lbf').querySelector('button'); btn.disabled = true; $('pos').textContent = 'Entro in classifica…';
   try {
     const j = await chiama({ method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ evento: SC.id, iniziali: ini, dettaglio: S.risultato.dettaglio }) });
-    scrivi('qz_gioco_iniziali', ini);
+    scrivi('qz_gioco_iniziali', ini); traccia('classifica');
     inviato = { iniziali: ini, punti: j.punti, posizione: j.posizione, totale: j.totale };
     $('lbf').hidden = true; $('lbmsg').textContent = '';
     $('pos').innerHTML = j.posizione === 1 ? '<b>1°</b> in classifica: sei in testa, ' + ini + '!' : '<b>' + j.posizione + '°</b> in classifica su ' + fmt(j.totale) + ' · ' + ini;
@@ -517,6 +529,7 @@ async function cartolina() {
 }
 let fileCartolina = null, urlCartolina = null;
 async function apriCartolina() {
+  traccia('condividi');
   const btn = $('share'); btn.disabled = true;
   try {
     const blob = await cartolina();
@@ -537,6 +550,8 @@ async function condividi() {
 
 // ---------- avvio ----------
 function start() {
+  traccia('decollo');
+  if (!leggi('qz_gioco_giocato')) { scrivi('qz_gioco_giocato', '1'); traccia('nuovo'); }
   reset(); $('start').hidden = true; $('end').hidden = true; $('sh').hidden = true; $('hint').classList.remove('off');
   resize(); S.mode = 'takeoff'; toast('Decollo');
 }
@@ -605,6 +620,9 @@ function avvia(scenario) {
   addEventListener('keyup', e => keys.delete(e.key));
   document.addEventListener('touchmove', e => { if (e.target === cv) e.preventDefault(); }, { passive: false });
   reset(); resize(); primato();
+  traccia('apertura');
+  // clic verso i social e i DM
+  document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[href]'); if (!a) return; const h = a.href; traccia(h.includes('ig.me') ? 'dm' : h.includes('instagram.com') ? 'instagram' : h.includes('tiktok.com') ? 'tiktok' : ''); }, true);
   window.__gioco = { get S() { return S; }, SC, tick, render, start, cartolina };
   if (REC) render(); else requestAnimationFrame(frame);
 }
