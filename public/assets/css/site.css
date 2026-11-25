@@ -11,19 +11,13 @@
 .faq summary:focus-visible{outline:2px solid var(--qz-gold);outline-offset:4px}
 .faq p{margin:0 0 24px;max-width:62ch;font:400 clamp(14px,1vw,16px)/1.65 'Manrope',sans-serif;color:rgba(244,243,240,.75)}
 @media (max-width:1180px){.nav-phone span{display:none}}
-.qz-step{display:none}
-#qz-form[data-step="s0"] .qz-step[data-n="0"],#qz-form[data-step="s1"] .qz-step[data-n="1"],#qz-form[data-step="s2"] .qz-step[data-n="2"]{display:block;animation:qzStepIn .45s cubic-bezier(.2,.7,.2,1)}
-@keyframes qzStepIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){#qz-form .qz-step{animation:none!important}}
-.qz-q{margin:0 0 clamp(20px,2.4vw,28px);font:500 clamp(28px,3.6vw,40px)/1.05 'Syne',sans-serif;letter-spacing:-.02em;color:var(--qz-foreground)}
-.qz-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.qz-q{margin:0 0 clamp(20px,2.4vw,28px);font:500 clamp(28px,3.6vw,40px)/1.05 'Syne',sans-serif;letter-spacing:-.02em;color:var(--qz-foreground);text-wrap:balance}
 .qz-tile{text-align:left;display:flex;flex-direction:column;gap:8px;min-height:110px;padding:20px;background:transparent;border:1px solid rgba(255,255,255,.22);border-radius:6px;color:var(--qz-foreground);cursor:pointer;font:inherit;transition:border-color .25s ease,background .25s ease,transform .2s ease}
 .qz-tile:hover{border-color:var(--qz-gold);background:rgba(201,162,39,.07)}
 .qz-tile:active{transform:scale(.985)}
 .qz-tile[aria-pressed="true"]{border-color:var(--qz-gold);background:rgba(201,162,39,.13)}
 .qz-tile:focus-visible{outline:2px solid var(--qz-gold);outline-offset:3px}
 .qz-tile__t{font:500 clamp(19px,2vw,23px)/1.1 'Syne',sans-serif;letter-spacing:-.01em}
-.qz-tile__d{font:400 14px/1.45 'Manrope',sans-serif;color:rgba(244,243,240,.7)}
 .qz-big{display:block;width:100%;height:64px;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.3);color:var(--qz-foreground);font:400 clamp(20px,2.4vw,28px)/1 'Manrope',sans-serif;outline:none;padding:0;border-radius:0;transition:border-color .25s ease}
 .qz-big:focus{border-bottom-color:var(--qz-gold)}
 .qz-big:focus-visible{outline:2px solid var(--qz-gold);outline-offset:5px}
@@ -36,7 +30,7 @@
 .qz-nav{display:flex;align-items:center;gap:12px;margin-top:32px}
 .qz-back{min-height:48px;padding:0 14px 0 0;background:none;border:0;color:rgba(244,243,240,.72);font:600 12px/1 'Manrope',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:color .25s ease}
 .qz-back:hover{color:var(--qz-gold)}
-@media (max-width:520px){.qz-tiles{grid-template-columns:1fr}.qz-tile{min-height:88px}.qz-nav .qz-next{flex:1}}
+@media (max-width:520px){.qz-nav .qz-next{flex:1}}
 @media (prefers-reduced-motion:reduce){.faq summary,.faq summary::after{transition:none}}
 @media (max-width:767px){
 .qz-tap{min-height:48px}
@@ -136,13 +130,21 @@ input,textarea{caret-color:var(--qz-gold)}
 .qz-tile[aria-pressed=true]::after{opacity:1}
 .qz-field-hint{margin:12px 0 0;font-size:13px;line-height:1.6;color:var(--qz-muted)}
 .qz-big[aria-invalid=true]{border-bottom-color:var(--qz-error)}
-.qz-form-progress{flex:1;height:4px;background:var(--qz-rule);border-radius:var(--qz-radius);overflow:hidden}
-.qz-form-progress>div{height:100%;background:var(--qz-gold);transform-origin:left;transition:transform .35s var(--qz-ease)}
 .faq details[open] summary{color:var(--qz-gold)}
 
 #qz-form{scroll-margin-top:96px}
-.qz-step input,.qz-step textarea{scroll-margin-top:96px}
+#qz-form input,#qz-form textarea{scroll-margin-top:96px}
 .qz-message-label{font-size:13px;line-height:1.5;font-weight:600;color:var(--qz-muted)}
+/* Modulo a schermata unica: nome e recapito subito, servizio e messaggio facoltativi */
+.qz-form-lead{margin:calc(-1 * clamp(8px,1.2vw,14px)) 0 8px;max-width:48ch;font:400 15px/1.6 'Manrope',sans-serif;color:var(--qz-muted)}
+.qz-field{display:flex;flex-direction:column;gap:2px;margin-top:24px}
+#qz-form .qz-big{height:56px}
+.qz-optional{font-weight:400;color:rgba(244,243,240,.5)}
+.qz-chips__list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+#qz-form .qz-chips .qz-tile{min-height:44px;padding:10px 16px;border-radius:999px;justify-content:center;gap:0}
+#qz-form .qz-chips .qz-tile[aria-pressed=true]{padding-right:36px}
+#qz-form .qz-chips .qz-tile::after{right:16px;top:50%;width:6px;height:11px;margin-top:-7px}
+#qz-form .qz-chips .qz-tile__t{font:600 14px/1.2 'Manrope',sans-serif;letter-spacing:0}
 
 .qz-form-fields{min-width:0;margin:0;padding:0;border:0}
 

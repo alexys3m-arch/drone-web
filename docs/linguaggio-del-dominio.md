@@ -41,7 +41,7 @@ I termini che usiamo nel codice, nei testi e nei nomi delle cartelle. Se un term
 | **Evento** | Un'azione misurata, solo con consenso concesso e mai da localhost. |
 | **Conversione** | Un evento che conta come risultato: invio del modulo, clic su WhatsApp. |
 
-Eventi misurati: `video_aperto`, `video_progresso`, `mi_piace_video`, `click_contattami`, `click_whatsapp`, `click_youtube`, `click_telefono`, `faq_aperta`, `prossima_sezione`, `form_passo`, `generate_lead`.
+Eventi misurati: `video_aperto`, `video_progresso`, `mi_piace_video`, `click_contattami`, `click_whatsapp`, `click_youtube`, `click_telefono`, `faq_aperta`, `prossima_sezione`, `form_inizio` (primo tocco sul modulo, una volta per visita), `form_errore` (invio bloccato, con il campo da correggere), `generate_lead`. Fino al 25 novembre 2026 il modulo aveva 3 passi e mandava `form_passo`.
 
 ## Contesto Presenza online
 

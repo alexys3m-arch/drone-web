@@ -273,42 +273,36 @@ gtag('config','G-0RN6LP6RPF');
     </div>
     <div style="margin-top:28px;display:flex;flex-wrap:wrap;align-items:center;gap:4px 20px"><span style="font:600 11px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,243,240,.5)">Seguimi</span><span class="qz-social" style="margin-left:0"><a href="https://www.instagram.com/quota.zero.drone/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg class="qz-icon" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#instagram"></use></svg></a><a href="https://www.tiktok.com/@quota.zero" target="_blank" rel="noopener noreferrer" aria-label="TikTok"><svg class="qz-icon" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#tiktok"></use></svg></a><a href="https://www.facebook.com/p/Quota-Zero-Riprese-con-drone-a-Roma-61591053283993/" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg class="qz-icon" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#facebook"></use></svg></a><a href="https://www.youtube.com/@Ale_mazzetti" target="_blank" rel="noopener noreferrer" aria-label="YouTube"><svg class="qz-icon" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#youtube"></use></svg></a></span></div>
     <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
-      <form aria-busy="{{ sending }}" id="qz-form" data-step="{{ stepAttr }}" sc-camel-on-submit="{{ submit }}" novalidate="novalidate" style="margin-top:clamp(40px,5vw,64px);max-width:760px">
-        <div style="display:flex;align-items:center;gap:16px;margin-bottom:clamp(28px,3vw,40px)">
-          <div class="qz-form-progress" role="progressbar" aria-label="Avanzamento della richiesta" aria-valuemin="1" aria-valuemax="3" aria-valuenow="{{ stepNum }}"><div style="transform:scaleX({{ progressScale }})"></div></div>
-          <span role="status" style="font:600 12px/1 'Manrope',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:rgba(244,243,240,.6);white-space:nowrap">Passo {{ stepNum }} di 3</span>
-        </div>
+      <form aria-busy="{{ sending }}" id="qz-form" sc-camel-on-submit="{{ submit }}" sc-camel-on-focus="{{ startForm }}" novalidate="novalidate" style="margin-top:clamp(40px,5vw,64px);max-width:760px">
+        <h3 class="qz-q">Ti richiamo io?</h3>
+        <p class="qz-form-lead">Lascia nome e numero (o email): ti ricontatto io, senza impegno.</p>
         <fieldset class="qz-form-fields" disabled="{{ sending }}" aria-label="Dati della richiesta">
-        <sc-if value="{{ hasTipo }}" hint-placeholder-val="{{ false }}"><p style="margin:0 0 24px;font:400 15px/1.5 'Manrope',sans-serif;color:rgba(244,243,240,.8)">Servizio scelto: <strong style="color:var(--qz-gold)">{{ tipoLabel }}</strong> <button type="button" class="qz-back" style="padding:6px 10px;margin-left:8px;letter-spacing:.04em;text-transform:none" sc-camel-on-click="{{ back0 }}">Cambia</button></p></sc-if>
-        <div class="qz-step" data-n="0">
-          <h3 class="qz-q">Cosa ti serve?</h3>
-          <div class="qz-tiles">
-            <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="4">
-              <button type="button" class="qz-tile" data-value="{{ t.value }}" aria-pressed="{{ t.pressed }}" sc-camel-on-click="{{ t.onClick }}"><span class="qz-tile__t">{{ t.label }}</span><span class="qz-tile__d">{{ t.desc }}</span></button>
-            </sc-for>
+          <div class="qz-field">
+            <label for="qz-nome" class="qz-message-label">Nome</label>
+            <input id="qz-nome" class="qz-big" name="nome" maxlength="{{ fieldLimits.nome }}" autocomplete="name" required="required" aria-invalid="{{ nameInvalid }}" aria-describedby="{{ nameErrorId }}" placeholder="Il tuo nome" sc-camel-on-input="{{ clearNameError }}">
+            <sc-if value="{{ hasNameError }}" hint-placeholder-val="{{ false }}"><p id="qz-name-error" class="qz-field-error" role="alert">{{ nameError }}</p></sc-if>
           </div>
-        </div>
-        <div class="qz-step" data-n="1">
-          <h3 class="qz-q">Come ti chiami?</h3>
-          <input class="qz-big" name="nome" maxlength="{{ fieldLimits.nome }}" autocomplete="name" required="required" aria-invalid="{{ nameInvalid }}" aria-describedby="{{ nameErrorId }}" placeholder="Il tuo nome" aria-label="Il tuo nome">
-          <sc-if value="{{ hasNameError }}" hint-placeholder-val="{{ false }}"><p id="qz-name-error" class="qz-field-error" role="alert">{{ stepError }}</p></sc-if>
-          <div class="qz-nav">
-            <button type="button" class="qz-back" sc-camel-on-click="{{ back0 }}"><svg class="qz-icon qz-icon--back" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#arrow"></use></svg>Indietro</button>
-            <button type="button" class="qz-next" sc-camel-on-click="{{ next1 }}">Avanti<svg class="qz-icon" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#arrow"></use></svg></button>
+          <div class="qz-field">
+            <label for="qz-contatto" class="qz-message-label">Telefono o email</label>
+            <input id="qz-contatto" class="qz-big" name="contatto" maxlength="{{ fieldLimits.email }}" autocomplete="tel" autocapitalize="none" spellcheck="false" required="required" aria-invalid="{{ contactInvalid }}" aria-describedby="{{ contactErrorId }}" placeholder="Es. 333 123 4567" sc-camel-on-input="{{ clearContactError }}">
+            <sc-if value="{{ hasContactError }}" hint-placeholder-val="{{ false }}"><p id="qz-contact-error" class="qz-field-error" role="alert">{{ contactError }}</p></sc-if>
           </div>
-        </div>
-        <div class="qz-step" data-n="2">
-          <h3 class="qz-q">Dove ti ricontatto?</h3>
-          <input class="qz-big" name="contatto" maxlength="{{ fieldLimits.email }}" autocomplete="on" autocapitalize="none" spellcheck="false" required="required" aria-invalid="{{ contactInvalid }}" aria-describedby="{{ contactErrorId }}" placeholder="Telefono o email" aria-label="Telefono o email">
-          <p id="qz-contact-hint" class="qz-field-hint">Un’email o un numero di telefono a cui ricontattarti.</p>
-          <sc-if value="{{ hasContactError }}" hint-placeholder-val="{{ false }}"><p id="qz-contact-error" class="qz-field-error" role="alert">{{ stepError }}</p></sc-if>
-          <label style="display:flex;flex-direction:column;gap:8px;margin-top:28px"><span class="qz-message-label">Vuoi aggiungere qualcosa? <span style="letter-spacing:.04em;text-transform:none;font-weight:400;color:rgba(244,243,240,.5)">(facoltativo)</span></span><textarea name="messaggio" maxlength="{{ fieldLimits.messaggio }}" rows="2" placeholder="Dove, per cosa, entro quando… anche due righe vanno bene" style="background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.3);color:var(--qz-foreground);font:400 16px/1.5 'Manrope',sans-serif;padding:8px 0;resize:vertical;border-radius:0"></textarea></label>
+          <div class="qz-field qz-chips" role="group" aria-labelledby="qz-chips-label">
+            <span id="qz-chips-label" class="qz-message-label">Cosa ti serve? <span class="qz-optional">(facoltativo)</span></span>
+            <div class="qz-chips__list">
+              <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="4">
+                <button type="button" class="qz-tile" data-value="{{ t.value }}" aria-pressed="{{ t.pressed }}" sc-camel-on-click="{{ t.onClick }}"><span class="qz-tile__t">{{ t.label }}</span></button>
+              </sc-for>
+            </div>
+          </div>
+          <div class="qz-field">
+            <label for="qz-messaggio" class="qz-message-label">Due righe sul progetto <span class="qz-optional">(facoltativo)</span></label>
+            <textarea id="qz-messaggio" name="messaggio" maxlength="{{ fieldLimits.messaggio }}" rows="2" placeholder="Dove, per cosa, entro quando…" style="background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.3);color:var(--qz-foreground);font:400 16px/1.5 'Manrope',sans-serif;padding:8px 0;resize:vertical;border-radius:0"></textarea>
+          </div>
           <div class="qz-nav">
-            <button type="button" class="qz-back" sc-camel-on-click="{{ back1 }}"><svg class="qz-icon qz-icon--back" aria-hidden="true" focusable="false"><use href="assets/icons/ui.svg#arrow"></use></svg>Indietro</button>
             <button type="submit" class="qz-next" disabled="{{ sending }}" aria-busy="{{ sending }}">{{ submitLabel }}</button>
           </div>
           <p style="margin:18px 0 0;max-width:60ch;font:400 12px/1.5 'Manrope',sans-serif;color:rgba(244,243,240,.5)">Inviando accetti che i dati inseriti siano usati per rispondere alla tua richiesta. Leggi l'<a class="qz-inline" href="privacy.html" style="color:var(--qz-gold);text-decoration:underline">informativa privacy</a>.</p>
-        </div>
         </fieldset>
         <input name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
         <sc-if value="{{ sendError }}" hint-placeholder-val="{{ false }}">
@@ -406,7 +400,7 @@ function VideoLikeButton({ videoId }) {
 
 class Component extends DCLogic {
   player = window.QZVideo.createPlayer({ Hls: window.Hls, cdn: BUNNY_CDN });
-  state = { filter: 'Tutti', lb: null, mobile: (typeof window !== 'undefined' && window.innerWidth < 1100), scrolled: false, pastHero: false, menu: false, sent: false, sending: false, sendError: false, step: 0, tipoVal: '', stepError: '', contactVisible: false, inputFocused: false, consentOpen: false };
+  state = { filter: 'Tutti', lb: null, mobile: (typeof window !== 'undefined' && window.innerWidth < 1100), scrolled: false, pastHero: false, menu: false, sent: false, sending: false, sendError: false, tipoVal: '', nameError: '', contactError: '', contactVisible: false, inputFocused: false, consentOpen: false };
 
   componentDidMount() {
     if (window.qzMountConsent) window.qzMountConsent(document.querySelector('#qz-consent-slot'));
@@ -536,30 +530,31 @@ class Component extends DCLogic {
     });
   }
 
-  goStep = (n, tipo) => {
-    if (this.state.sending) return;
-    this.setState({ step: n, stepError: '', ...(tipo !== undefined ? { tipoVal: tipo } : {}) });
-    if (window.qzEvent) window.qzEvent('form_passo', { passo: n + 1, servizio: tipo !== undefined ? tipo : this.state.tipoVal });
-    clearTimeout(this.stepTimer);
-    this.stepTimer = setTimeout(() => {
-      const f = document.querySelector('#qz-form .qz-step[data-n="' + n + '"] input, #qz-form .qz-step[data-n="' + n + '"] button');
-      if (f) f.focus({ preventScroll: true });
-    }, 80);
+  // Un solo invio: nome + recapito obbligatori, servizio e messaggio facoltativi.
+  // form_inizio parte una volta sola, al primo tocco sul modulo.
+  startForm = () => {
+    if (this.formStarted) return;
+    this.formStarted = true;
+    if (window.qzEvent) window.qzEvent('form_inizio', {});
   };
-  checkName = () => {
+  selectTipo = tipo => {
+    if (this.state.sending) return;
+    this.setState({ tipoVal: tipo });
+  };
+  checkName = (focus = true) => {
     const el = document.querySelector('#qz-form [name="nome"]');
-    if (!el || !el.value.trim()) { this.setState({ stepError: 'Scrivi come ti chiami, basta il nome.' }); el?.focus(); return false; }
+    if (!el || !el.value.trim()) { this.setState({ nameError: 'Scrivi come ti chiami, basta il nome.' }); if (focus) el?.focus(); return false; }
     return true;
   };
-  checkContact = () => {
+  checkContact = (focus = true) => {
     const el = document.querySelector('#qz-form [name="contatto"]');
     const v = el ? el.value.trim() : '';
-    if (!window.QZContactRules.isContact(v)) { this.setState({ stepError: "Scrivi un numero di telefono o un'email valida." }); el?.focus(); return false; }
+    if (!window.QZContactRules.isContact(v)) { this.setState({ contactError: "Scrivi un numero di telefono o un'email valida." }); if (focus) el?.focus(); return false; }
     return true;
   };
 
   renderVals() {
-    const { mobile, scrolled, pastHero, menu, filter, lb, sent, sending, sendError, step, tipoVal, stepError } = this.state;
+    const { mobile, scrolled, pastHero, menu, filter, lb, sent, sending, sendError, tipoVal, nameError, contactError } = this.state;
     const p = this.props;
     const list = this.filtered();
     const cur = lb != null ? list[lb] : null;
@@ -622,32 +617,36 @@ class Component extends DCLogic {
 
       notSent: !sent, sent, sending, sendError,
       submitLabel: sending ? 'Invio in corso…' : 'Chiedi info',
-      stepAttr: 's' + step, stepNum: step + 1, progressScale: (step + 1) / 3,
-      tipoVal, tipoLabel: tipoVal === 'Video' ? 'Riprese da montare' : tipoVal, hasTipo: !!tipoVal, stepError,
-      hasNameError: step === 1 && !!stepError, hasContactError: step === 2 && !!stepError,
-      nameInvalid: step === 1 && !!stepError ? 'true' : 'false', nameErrorId: step === 1 && stepError ? 'qz-name-error' : '',
+      tipoVal, tipoLabel: tipoVal === 'Video' ? 'Riprese da montare' : tipoVal,
+      nameError, contactError,
+      hasNameError: !!nameError, hasContactError: !!contactError,
+      nameInvalid: nameError ? 'true' : 'false', nameErrorId: nameError ? 'qz-name-error' : '',
       fieldLimits: window.QZContactRules.LIMITI,
-      contactInvalid: step === 2 && !!stepError ? 'true' : 'false', contactErrorId: step === 2 && stepError ? 'qz-contact-hint qz-contact-error' : 'qz-contact-hint',
+      contactInvalid: contactError ? 'true' : 'false', contactErrorId: contactError ? 'qz-contact-error' : '',
+      startForm: this.startForm,
+      clearNameError: () => { if (this.state.nameError) this.setState({ nameError: '' }); },
+      clearContactError: () => { if (this.state.contactError) this.setState({ contactError: '' }); },
       tiles: [
-        { label: 'Foto aeree', desc: 'Scatti dall\'alto, curati e ritoccati' },
-        { label: 'Riprese da montare', value: 'Video', desc: 'Riprese del drone, tagliate nei punti morti' },
-        { label: 'Video completo', desc: 'Montato, con colore e musica' },
-        { label: 'Non so ancora', desc: 'Ne parliamo insieme' },
-      ].map(t => ({ ...t, value: t.value || t.label, pressed: tipoVal === (t.value || t.label) ? 'true' : 'false', onClick: () => this.goStep(1, t.value || t.label) })),
-      back0: () => this.goStep(0),
-      back1: () => this.goStep(1),
-      next1: () => { if (this.checkName()) this.goStep(2); },
+        { label: 'Foto aeree' },
+        { label: 'Riprese da montare', value: 'Video' },
+        { label: 'Video completo' },
+        { label: 'Non so ancora' },
+      ].map(t => ({ ...t, value: t.value || t.label, pressed: tipoVal === (t.value || t.label) ? 'true' : 'false', onClick: () => this.selectTipo(t.value || t.label) })),
       submit: e => {
         e.preventDefault();
         if (sending) return;
-        if (step === 0) return;
-        if (step === 1) { if (this.checkName()) this.goStep(2); return; }
-        if (!this.checkContact()) return;
+        this.startForm();
+        const nameOk = this.checkName(true);
+        const contactOk = this.checkContact(nameOk);
+        if (!nameOk || !contactOk) {
+          if (window.qzEvent) window.qzEvent('form_errore', { campo: !nameOk ? 'nome' : 'contatto' });
+          return;
+        }
         const form = e.target;
         const payload = {};
         new FormData(form).forEach((value, key) => { payload[key] = value; });
         payload.tipo = tipoVal;
-        this.setState({ sending: true, sendError: false, stepError: '' });
+        this.setState({ sending: true, sendError: false, nameError: '', contactError: '' });
         fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
           .then(r => r.ok ? r.json() : Promise.reject(new Error('send failed')))
           .then(res => {
