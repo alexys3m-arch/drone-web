@@ -67,3 +67,9 @@ Chiudere un evento: in `src/gioco/dominio/classifica.js` metti `aperta: false` a
 ### Quante persone giocano
 
 Pagina (nascosta, non indicizzata): https://quotazerodrone.it/gioco/statistiche/ — aperture, giocatori nuovi, partite iniziate e finite, entrate in classifica, clic su Instagram/TikTok/DM e "Sfida un amico", totale e ultimi 14 giorni. Conteggio anonimo dal 18 novembre 2026 (`api/statistiche.js`, chiavi `gioco:stat:<evento>:<giorno>` e `:totale` su KV). Le partite con `?auto`, `?demo`, `?rec` e quelle in locale non contano. Chi conosce l'indirizzo vede i totali: sono numeri aggregati, senza dati personali.
+
+Dal 27 novembre 2026 la pagina mostra anche: **da dove arrivano** (Instagram, TikTok, YouTube, link diretto o app di messaggi, altri siti; più "storie" e "diretta" se il link contiene `?da=storia` o `?da=live`, per esempio `quotazerodrone.it/gioco/?da=storia` nello sticker link delle storie), **fin dove arrivano** nei pop-up finali, missioni compiute, suoni spenti e una tabella **ora per ora** di oggi (utile durante le dirette; chiave `gioco:stat:<evento>:ore:<giorno>`, tenuta 14 giorni).
+
+**Suoni e missioni.** I suoni sono generati dal browser (`public/gioco/suoni.js`, nessun file audio) e si spengono col pulsante in basso a destra; la scelta resta sul telefono. Ogni evento ha 3 missioni (tutte le riprese, atterraggio perfetto, 3 perfette: definite in `motore.js`, uno scenario può sostituirle con `missioni`); ogni missione vale una stella sul patentino. La prima partita da un telefono mostra una mano che indica la leva e due consigli.
+
+**Pagina per le dirette:** https://quotazerodrone.it/gioco/diretta/ — classifica grande che si aggiorna ogni 5 secondi ed evidenzia chi entra. Con `?obiettivo=50` mostra una barra "se oggi arriviamo a 50 partite…"; il testo del premio si cambia con `&premio=...` (predefinito: "svelo il prossimo minigioco"). Si condivide in diretta come schermo del telefono o del PC.

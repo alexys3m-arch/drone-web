@@ -48,10 +48,20 @@ td.z{color:rgba(244,243,240,.25)}
   <h2>Da quando si conta</h2>
   <div class="kpi" id="kpi"></div>
 
+  <h2>Da dove arrivano</h2>
+  <div class="kpi" id="fonti"></div>
+
+  <h2>Fine partita: fin dove arrivano</h2>
+  <div class="kpi" id="imbuto"></div>
+
+  <h2>Oggi, ora per ora</h2>
+  <p class="nota">Utile durante le dirette: aperture, partite, partite finite ed entrate in classifica in ogni ora.</p>
+  <div class="tab"><table id="ore"></table></div>
+
   <h2>Ultimi 14 giorni</h2>
   <div class="tab"><table id="tab"></table></div>
 
-  <p class="nota">Conteggio anonimo dal 18 novembre 2026: niente cookie, niente dati personali. Le partite automatiche di prova non contano. "Giocatori nuovi" = primo decollo da un telefono. In classifica ci sono anche i 30 piloti di base inseriti a mano.</p>
+  <p class="nota">Conteggio anonimo dal 18 novembre 2026 (provenienza, pop-up, missioni e ore dal 27 novembre): niente cookie, niente dati personali. Le partite automatiche di prova non contano. "Giocatori nuovi" = primo decollo da un telefono. In classifica ci sono anche i 30 piloti di base inseriti a mano.</p>
 </main>
 <script>
 (function () {
@@ -78,6 +88,13 @@ td.z{color:rgba(244,243,240,.25)}
         ['"Sfida un amico" aperto', t.condividi, ''],
       ];
       document.getElementById('kpi').innerHTML = carte.map(k => '<div class="c' + (k[3] ? ' forte' : '') + '"><b>' + fmt(k[1]) + '</b><span>' + k[0] + '</span>' + (k[2] ? '<small>' + k[2] + '</small>' : '') + '</div>').join('');
+      const fonti = [['Instagram', t.da_instagram], ['Storie (link ?da=storia)', t.da_storia], ['TikTok', t.da_tiktok], ['YouTube', t.da_youtube], ['Diretta (link ?da=live)', t.da_live], ['Link diretto o app di messaggi', t.da_diretto], ['Altri siti', t.da_altro]];
+      const tf = fonti.reduce((a, f) => a + (f[1] || 0), 0);
+      document.getElementById('fonti').innerHTML = fonti.map(f => '<div class="c"><b>' + fmt(f[1]) + '</b><span>' + f[0] + '</span><small>' + pc(f[1] || 0, tf) + ' delle aperture con provenienza</small></div>').join('');
+      const imb = [['Partite finite', t.fine, ''], ['Pop-up "prossimo minigioco"', t.passo2, pc(t.passo2, t.fine) + ' di chi finisce'], ['Pop-up "il tuo grado"', t.passo3, pc(t.passo3, t.fine) + ' di chi finisce'], ['Pop-up "riprese vere" (DM)', t.passo4, pc(t.passo4, t.fine) + ' di chi finisce'], ['Missioni compiute', t.missione, ''], ['Suoni spenti', t.muto, pc(t.muto, t.decollo) + ' delle partite']];
+      document.getElementById('imbuto').innerHTML = imb.map(k => '<div class="c"><b>' + fmt(k[1]) + '</b><span>' + k[0] + '</span>' + (k[2] ? '<small>' + k[2] + '</small>' : '') + '</div>').join('');
+      const ore = s.ore || {}, hh = Object.keys(ore).sort();
+      document.getElementById('ore').innerHTML = hh.length ? '<tr><th>Ora</th><th>Aperture</th><th>Partite</th><th>Finite</th><th>Classif.</th></tr>' + hh.reverse().map(x => '<tr><td>' + x + ':00</td>' + ['apertura', 'decollo', 'fine', 'classifica'].map(k => '<td' + (ore[x][k] ? '' : ' class="z"') + '>' + fmt(ore[x][k]) + '</td>').join('') + '</tr>').join('') : '<tr><td>Ancora niente oggi (si conta dal 27 novembre).</td></tr>';
       document.getElementById('tab').innerHTML = '<tr><th>Giorno</th>' + COL.map(x => '<th>' + x[1] + '</th>').join('') + '</tr>' +
         s.giorni.map((g, i) => '<tr' + (i === 0 ? ' class="oggi"' : '') + '><td>' + (i === 0 ? 'oggi' : i === 1 ? 'ieri' : g.data.slice(8, 10) + '/' + g.data.slice(5, 7)) + '</td>' + COL.map(x => '<td' + (g[x[0]] ? '' : ' class="z"') + '>' + fmt(g[x[0]]) + '</td>').join('') + '</tr>').join('');
       document.getElementById('quando').textContent = 'Aggiornato alle ' + new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });

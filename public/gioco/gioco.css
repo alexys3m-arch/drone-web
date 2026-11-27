@@ -418,3 +418,21 @@ button.link.segreto-start svg{width:14px;height:14px}
   #start ol.passi li{margin-top:7px;font-size:14.5px}
   #start .pilota{margin-top:12px}
 }
+
+/* suoni: pulsante in alto a destra, sotto i punti; sparisce sulle schermate finali */
+.audio{position:absolute;z-index:6;right:12px;bottom:max(14px,env(safe-area-inset-bottom));width:36px;height:36px;border-radius:50%;display:grid;place-items:center;padding:0;background:rgba(9,10,12,.55);border:1.5px solid rgba(244,243,240,.3);color:var(--crema);cursor:pointer}
+.audio svg{width:19px;height:19px}.audio .croce{display:none}
+.audio.off{color:rgba(244,243,240,.5)}.audio.off .onde{display:none}.audio.off .croce{display:inline}
+#end:not([hidden])~.audio,#sh:not([hidden])~.audio{display:none}
+#start:not([hidden])~.audio{top:max(14px,env(safe-area-inset-top));bottom:auto}
+/* missioni dell'evento, sotto i timbri del patentino */
+.mis-t{margin:12px 0 6px;font:700 10px 'Space Mono',monospace;letter-spacing:1.5px;text-transform:uppercase;color:rgba(244,243,240,.6)}
+.mis-t b{color:var(--oro)}
+.mis{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.mis li{display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(244,243,240,.72)}
+.mis i{flex:none;width:18px;height:18px;border-radius:50%;border:1.5px dashed rgba(244,243,240,.4);display:grid;place-items:center;font-style:normal;font-size:11px;line-height:1}
+.mis li.ok{color:var(--crema)}.mis li.ok i{border:0;background:var(--oro);color:#111113}
+#resub .missione{display:block;margin-top:4px;color:var(--giallo);font-weight:700}
+.pat .mis-t{color:rgba(17,17,19,.55)}.pat .mis-t b{color:#8a6d10}
+.pat .mis li{color:rgba(17,17,19,.5)}.pat .mis li.ok{color:#111113;font-weight:600}
+.pat .mis i{border-color:rgba(17,17,19,.35)}.pat .mis li.ok i{background:var(--oro);color:#111113}

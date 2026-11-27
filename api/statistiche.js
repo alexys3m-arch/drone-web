@@ -24,7 +24,9 @@ module.exports = async function handler(req, res) {
     if (req.method === 'GET') {
       const evento = req.query && req.query.evento;
       if (!eventoValido(evento)) return res.status(400).json({ error: 'evento' });
-      return res.status(200).json(await leggiStatistiche(evento, { contatori }));
+      // ?giorni=1 legge solo oggi (la pagina delle dirette chiede spesso: meno letture sul database)
+      const giorni = Math.min(14, Math.max(1, parseInt(req.query.giorni, 10) || 14));
+      return res.status(200).json(await leggiStatistiche(evento, { contatori, giorni }));
     }
   } catch (e) {
     console.error('statistiche', e && e.message);

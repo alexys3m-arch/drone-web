@@ -206,7 +206,9 @@ test('statistiche: conta solo tipi ed eventi validi', async () => {
   assert.equal((await contaEvento({ evento: 'matrimonio', tipo: 'hack' }, { contatori })).errore, 'tipo');
   assert.equal((await contaEvento({ evento: 'nessuno', tipo: 'fine' }, { contatori })).errore, 'tipo');
   await contaEvento({ evento: 'matrimonio', tipo: 'fine' }, { contatori, adesso: new Date('2026-11-18T10:00:00Z') });
-  assert.deepEqual(visti, [['matrimonio', '2026-11-18', 'fine']]);
+  assert.deepEqual(visti, [['matrimonio', '2026-11-18', 'fine', '11']]);
+  await contaEvento({ evento: 'matrimonio', tipo: 'da_storia' }, { contatori, adesso: new Date('2026-11-18T10:00:00Z') });
+  assert.deepEqual(visti[1], ['matrimonio', '2026-11-18', 'da_storia', null]);
 });
 
 test('API statistiche: POST conta, GET restituisce totale e ultimi giorni, nessun dato personale', async () => {
@@ -220,7 +222,12 @@ test('API statistiche: POST conta, GET restituisce totale e ultimi giorni, nessu
   assert.equal(r.corpo.totale.dm, 0);
   assert.equal(r.corpo.giorni.length, 14);
   assert.equal(r.corpo.giorni[0].apertura, 2);
-  assert.ok(Object.keys(db.h).every(k => /^gioco:stat:matrimonio:(totale|\d{4}-\d{2}-\d{2})$/.test(k)));
+  assert.ok(Object.keys(db.h).every(k => /^gioco:stat:matrimonio:(totale|(ore:)?\d{4}-\d{2}-\d{2})$/.test(k)));
+  // ora per ora (per le dirette): solo aperture, partite, fine e classifica
+  const ore = Object.values(r.corpo.ore);
+  assert.equal(ore.reduce((a, o) => a + o.apertura, 0), 2);
+  assert.equal(ore.reduce((a, o) => a + o.decollo, 0), 1);
+  assert.ok(ore.every(o => !('instagram' in o)));
   assert.equal((await inviaStat({ method: 'GET', query: {} })).stato, 400);
   assert.equal((await inviaStat({ method: 'PUT' })).stato, 405);
 });

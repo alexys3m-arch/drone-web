@@ -11,8 +11,10 @@ const RISERVA = 10;     // secondi per riportare il drone sulla H
 const R_H = 16;         // raggio della piazzola di atterraggio
 const ORO = '#c9a227', NERO = '#090a0c', CREMA = '#f4f3f0', CARTA = '#f5eee0', GIALLO = '#ffd21f', ROSSO = '#ff5a47';
 const API = '/api/classifica';
+const suono = (k, ...a) => { const q = window.QZSuoni; if (q && q[k]) try { q[k](...a); } catch (_) {} };
 const P = window.QZPunteggio;
 const $ = id => document.getElementById(id);
+// se un momento si muove veloce (un'auto in pista), lo scenario può dire al pilota automatico dove andargli incontro (incontro)
 // parametri di servizio: ?auto pilota da solo, ?demo mostra la leva mentre lo fa, ?rec ferma il ciclo (lo guida chi registra), ?hq più nitido
 const QS = location.search, AUTO = /[?&](auto|demo)/.test(QS), DEMO = /[?&]demo/.test(QS), REC = /[?&]rec/.test(QS), HQ = /[?&]hq/.test(QS);
 
@@ -70,7 +72,7 @@ function input() {
     let t = null;
     if (S.mode === 'fly') {
       if (S.cur >= 0) { const m = SC.momenti[S.cur], s = S.man[S.cur]; t = m.guida(S, Math.min(m.dur, s.t + .22), s.st); }
-      else { const i = SC.momenti.findIndex((m, i) => S.man[i].stato === 'attesa' && S.T >= m.a && S.T < m.b); if (i >= 0) { const m = SC.momenti[i]; t = m.guida(S, 0, m.prepara ? m.prepara(S, S.drone) : {}); } }
+      else { const i = SC.momenti.findIndex((m, i) => S.man[i].stato === 'attesa' && S.T >= m.a && S.T < m.b); if (i >= 0) { const m = SC.momenti[i], st = m.prepara ? m.prepara(S, S.drone) : {}; t = m.incontro ? m.incontro(S, st, S.drone) : m.guida(S, 0, st); } }
     } else if (S.mode === 'ritorno') t = [SC.HOME.x, SC.HOME.y];
     if (t) { const dx = t[0] - S.drone.x, dy = t[1] - S.drone.y, d = Math.hypot(dx, dy) || 1, g = Math.min(1, d / 40); x = dx / d * g; y = dy / d * g; }
   }
@@ -101,17 +103,17 @@ function manovre(dt) {
     if (s.stato === 'rec') {
       const d = dist(dronePos(), m.guida(S, s.t, s.st)), tol = m.tolleranza || 34;
       s.live = 1 - cl((d - 8) / tol, 0, 1);
-      if (d < FUORI + tol - 34) { const t0 = s.t, ts = m.dur * (m.scatto == null ? .5 : m.scatto); s.t += dt; s.qs += s.live * dt; s.out = 0; if (t0 < ts && s.t >= ts) S.snapNow = i; }
-      else if ((s.out += dt) > ABBANDONO) { s.stato = 'attesa'; S.cur = -1; toast('Ripresa interrotta: rientra nel cerchio', true); return; }
+      if (d < FUORI + tol - 34) { const t0 = s.t, ts = m.dur * (m.scatto == null ? .5 : m.scatto); s.t += dt; s.qs += s.live * dt; s.out = 0; if (t0 < ts && s.t >= ts) { S.snapNow = i; suono('scatto'); } }
+      else if ((s.out += dt) > ABBANDONO) { s.stato = 'attesa'; S.cur = -1; toast('Ripresa interrotta: rientra nel cerchio', true); suono('interrotta'); return; }
       if (s.t >= m.dur) { s.stato = 'fatta'; s.q = cl(s.qs / m.dur, 0, 1); S.cur = -1; S.capNow = i; }
       return;
     }
-    if (S.T >= m.b) { s.stato = 'persa'; toast('Persa: ' + m.n.toLowerCase(), true); hud(); return; }
+    if (S.T >= m.b) { s.stato = 'persa'; toast('Persa: ' + m.n.toLowerCase(), true); suono('persa'); hud(); return; }
     if (S.T < m.a || S.cur >= 0) return;
     const st = m.prepara ? m.prepara(S, S.drone) : {};
     if (dist(dronePos(), m.guida(S, 0, st)) < R_PORTA) {
       Object.assign(s, { stato: 'rec', t: 0, qs: 0, out: 0, st, live: 1 }); S.cur = i;
-      toast(m.manovra + ': segui il punto'); vibra(15);
+      toast(m.manovra + ': segui il punto'); vibra(15); suono('rec'); S.guidaFatta = true;
     }
   });
 }
@@ -124,9 +126,10 @@ function tick(dt) {
   SC.mondo(S, dt, kit);
   if (S.mode === 'takeoff') {
     S.tk += dt; const p = ease(cl(S.tk / 2.2, 0, 1)); S.alt = ALT * p; S.zoom = lerp(2.5, ZOOM, p);
-    if (S.tk >= 2.2) { S.mode = 'fly'; toast('Si vola!'); }
+    suono('rotori', 0, S.alt);
+    if (S.tk >= 2.2) { S.mode = 'fly'; toast(S.prima ? 'Trascina il dito: è la leva del drone' : 'Si vola!'); }
   } else if (S.mode === 'fly') {
-    S.T += dt; const i = input(); fly(dt, i[0] * VMAX, i[1] * VMAX, .2); manovre(dt);
+    S.T += dt; const i = input(); fly(dt, i[0] * VMAX, i[1] * VMAX, .2); manovre(dt); suono('rotori', velocita(), S.alt); guida1(dt);
     const chiuse = S.man.every(m => m.stato === 'fatta' || m.stato === 'persa');
     if ((chiuse && S.capNow < 0 && !popEnd) || S.T >= SC.DUR) {
       const tutte = S.man.every(m => m.stato === 'fatta');
@@ -136,25 +139,47 @@ function tick(dt) {
       toast('Riporta il drone sulla H');
     }
   } else if (S.mode === 'ritorno') {
-    S.T += dt; S.ris += dt; const i = input(); fly(dt, i[0] * VMAX, i[1] * VMAX, .2);
+    S.T += dt; S.ris += dt; const i = input(); fly(dt, i[0] * VMAX, i[1] * VMAX, .2); suono('rotori', velocita(), S.alt);
     const d = dist(dronePos(), [SC.HOME.x, SC.HOME.y]);
     if (d < R_H && velocita() < 40) {
       S.atterraggio = 1 - cl((d - 2.5) / (R_H - 4), 0, 1); S.mode = 'land'; S.tl = 0;
       const pt = Math.round(500 * S.atterraggio);
-      pop(S.atterraggio >= .85 ? 'Atterraggio perfetto' : 'Atterrato', '+' + fmt(pt), S.atterraggio >= .85 ? '' : 'buona');
+      pop(S.atterraggio >= .85 ? 'Atterraggio perfetto' : 'Atterrato', '+' + fmt(pt), S.atterraggio >= .85 ? '' : 'buona'); suono('atterra', S.atterraggio >= .85);
     } else if (S.ris >= RISERVA) { S.mode = 'rth'; toast('Riserva finita: rientro automatico', true); }
   } else if (S.mode === 'rth') {
-    S.T += dt;
+    S.T += dt; suono('rotori', 120, S.alt);
     const dx = SC.HOME.x - S.drone.x, dy = SC.HOME.y - S.drone.y, d = Math.hypot(dx, dy) || 1, v = Math.min(240, d * 4);
     fly(dt, dx / d * v, dy / d * v, .12);
     if (d < 2.5) { S.mode = 'land'; S.tl = 0; }
   } else if (S.mode === 'land') {
     S.T += dt; S.vel.x *= .85; S.vel.y *= .85; S.drone.x += S.vel.x * dt; S.drone.y += S.vel.y * dt;
-    S.tl += dt; const p = ease(cl(S.tl / 1.6, 0, 1)); S.alt = ALT * (1 - p); S.zoom = lerp(ZOOM, 2.4, p);
+    S.tl += dt; const p = ease(cl(S.tl / 1.6, 0, 1)); S.alt = ALT * (1 - p); S.zoom = lerp(ZOOM, 2.4, p); suono('rotori', 0, S.alt);
     if (S.tl >= 1.6) { S.mode = 'done'; finish(); }
   }
   const look = S.mode === 'fly' || S.mode === 'ritorno' ? .2 : 0, k = 1 - Math.pow(.003, dt);
   S.cam.x = lerp(S.cam.x, S.drone.x + S.vel.x * look, k); S.cam.y = lerp(S.cam.y, S.drone.y + S.vel.y * look, k);
+}
+
+// ---------- prima partita: una mano che mostra la leva e due consigli al momento giusto ----------
+function guida1() {
+  if (!S.prima || S.guidaFatta) return;
+  const i = aperte()[0]; if (i == null) return;
+  const p = porta(i), d = dist(dronePos(), p);
+  if (!S.g1) { S.g1 = 1; toast('Segui la freccia gialla'); }
+  else if (S.g1 === 1 && d < 90) { S.g1 = 2; toast("Entra nel cerchio d'oro"); }
+}
+function manoFantasma() {
+  if (!S.prima || S.mosso || !(S.mode === 'takeoff' || S.mode === 'fly') || joy) return;
+  const cx = VW / 2, cy = VH - 150, a = S.A * 2.2, kx = cx + Math.cos(a) * 30, ky = cy + Math.sin(a * 2) * 18;
+  ctx.globalAlpha = .9; ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(244,243,240,.55)'; ctx.beginPath(); ctx.arc(cx, cy, 52, 0, 6.2832); ctx.stroke();
+  dot(cx, cy, 52, 'rgba(9,10,12,.25)'); dot(kx, ky, 22, 'rgba(201,162,39,.85)');
+  // il dito
+  ctx.save(); ctx.translate(kx, ky); ctx.rotate(-.45);
+  ctx.fillStyle = CREMA; ctx.strokeStyle = '#111113'; ctx.lineWidth = 2.5; rr(-9, -4, 18, 58, 9); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = 'rgba(17,17,19,.18)'; rr(-5, 0, 10, 11, 4); ctx.fill();   // unghia
+  ctx.restore();
+  dot(kx, ky, 6 + 3 * Math.abs(Math.sin(S.A * 4)), 'rgba(255,210,31,.5)');
+  ctx.globalAlpha = 1;
 }
 
 // ---------- disegno ----------
@@ -241,6 +266,7 @@ function freccia(wx, wy, testo) {
 function drawScreen() {
   aperte().forEach(i => { const p = porta(i); freccia(p[0], p[1], SC.momenti[i].n); });
   if (S.mode === 'ritorno') freccia(SC.HOME.x, SC.HOME.y, 'Torna alla H');
+  manoFantasma();
   const jj = joy || (DEMO ? { ox: VW / 2, oy: VH - 150, x: VW / 2 + demoIn[0] * 52, y: VH - 150 + demoIn[1] * 52 } : null);
   if (jj && (S.mode === 'fly' || S.mode === 'ritorno')) {
     let dx = jj.x - jj.ox, dy = jj.y - jj.oy; const m = Math.hypot(dx, dy); if (m > 52) { dx *= 52 / m; dy *= 52 / m; }
@@ -262,11 +288,14 @@ function capture(i) {
   const r = parziale().riprese[i], titolo = { perfetta: 'Perfetta!', buona: 'Buona', mossa: 'Mossa' }[r.giudizio];
   pop(titolo, '+' + fmt(r.punti) + (r.molt > 1 ? '  combo ×' + String(r.molt).replace('.', ',') : ''), r.giudizio);
   vibra(r.giudizio === 'perfetta' ? [20, 40, 20] : 25);
+  suono('esito', r.giudizio, comboAttuale());
   hud();
 }
 
 function toast(txt, miss) { const t = $('toast'); t.lastElementChild.textContent = txt; t.classList.toggle('miss', !!miss); t.classList.add('on'); toastEnd = S.A + 1.6; }
 function pop(titolo, sotto, tipo) { const p = $('pop'); p.className = tipo || ''; p.innerHTML = '<b>' + titolo + '</b><span>' + sotto + '</span>'; void p.offsetWidth; p.classList.add('on'); popEnd = S.A + 1.5; }
+// quante riprese buone di fila (per il suono della combo)
+function comboAttuale() { const r = parziale(); let c = 0; S.man.forEach((m, i) => { if (m.stato !== 'fatta') return; const g = r.riprese[i].giudizio; c = g === 'perfetta' || g === 'buona' ? c + 1 : 0; }); return c; }
 function hud() {
   const r = parziale(); let combo = 0;
   for (let i = 0; i < S.man.length; i++) {
@@ -311,6 +340,22 @@ function traccia(tipo) {
   } catch (_) {}
 }
 
+// da dove arriva chi apre il gioco: ?da=storia / ?da=live nei link, altrimenti l'app che lo apre o la pagina di provenienza
+function fonte() {
+  const q = new URLSearchParams(location.search), d = String(q.get('da') || q.get('utm_source') || '').toLowerCase();
+  if (/^(storia|stories|story)/.test(d)) return 'storia';
+  if (/^live|diretta/.test(d)) return 'live';
+  if (/^(ig|insta)/.test(d)) return 'instagram';
+  if (/^(tt|tiktok)/.test(d)) return 'tiktok';
+  if (/^(yt|youtube)/.test(d)) return 'youtube';
+  const ua = navigator.userAgent || '', ref = (() => { try { return new URL(document.referrer).hostname; } catch (_) { return ''; } })();
+  if (/Instagram/i.test(ua) || /instagram.com$/.test(ref)) return 'instagram';
+  if (/musical_ly|Bytedance|TikTok/i.test(ua) || /tiktok.com$/.test(ref)) return 'tiktok';
+  if (/youtube.com$|youtu.be$/.test(ref)) return 'youtube';
+  if (!ref) return 'diretto';
+  return 'altro';
+}
+
 // ---------- patentino: un timbro per ogni evento, il livello cresce con le stelle ----------
 const SERIE = window.QZSerie || { eventi: [] };
 const STELLE = { bronzo: 1, argento: 2, oro: 3 };
@@ -324,11 +369,29 @@ function timbra(punti, riprese) {
   if (!riprese) return false;
   const p = leggiPatentino(), g = grado(punti), prima = p[SC.id] && p[SC.id].grado;
   if (prima && STELLE[prima] >= STELLE[g]) return false;
-  p[SC.id] = { grado: g }; scrivi('qz_gioco_patentino', JSON.stringify(p));
+  p[SC.id] = Object.assign({}, p[SC.id], { grado: g }); scrivi('qz_gioco_patentino', JSON.stringify(p));
   return g;
 }
+// missioni dell'evento: obiettivi oltre al punteggio, ognuna vale una stella sul patentino
+const missioni = () => SC.missioni || [
+  { id: 'tutte', testo: 'Tutte e ' + SC.momenti.length + ' le riprese', ok: r => r.riprese.every(x => x.giudizio !== 'persa') },
+  { id: 'atterraggio', testo: 'Atterraggio perfetto', ok: (r, d) => d.atterraggio != null && d.atterraggio >= .85 },
+  { id: 'perfette', testo: '3 riprese perfette', ok: r => r.riprese.filter(x => x.giudizio === 'perfetta').length >= 3 },
+];
+const fatteDi = p => (p[SC.id] && p[SC.id].missioni) || [];
+// segna le missioni compiute in questa partita; restituisce quelle nuove
+function compiMissioni(r, dettaglio) {
+  const p = leggiPatentino(), gia = fatteDi(p), nuove = missioni().filter(x => !gia.includes(x.id) && x.ok(r, dettaglio));
+  if (!nuove.length) return [];
+  p[SC.id] = Object.assign({}, p[SC.id], { missioni: gia.concat(nuove.map(x => x.id)) }); scrivi('qz_gioco_patentino', JSON.stringify(p));
+  return nuove;
+}
+function htmlMissioni() {
+  const f = fatteDi(leggiPatentino());
+  return '<ul class="mis">' + missioni().map(x => '<li' + (f.includes(x.id) ? ' class="ok"' : '') + '><i>' + (f.includes(x.id) ? '★' : '') + '</i>' + x.testo + '</li>').join('') + '</ul>';
+}
 function livello(p) {
-  const stelle = Object.values(p).reduce((a, t) => a + (STELLE[t && t.grado] || 0), 0);
+  const stelle = Object.values(p).reduce((a, t) => a + (STELLE[t && t.grado] || 0) + ((t && t.missioni) || []).length, 0);
   let i = 0; LIVELLI.forEach((l, k) => { if (stelle >= l[0]) i = k; });
   const dopo = LIVELLI[i + 1];
   return { stelle, nome: LIVELLI[i][1], prossimo: dopo ? { nome: dopo[1], mancano: dopo[0] - stelle } : null };
@@ -336,7 +399,7 @@ function livello(p) {
 function htmlPatentino() {
   const p = leggiPatentino(), L = livello(p), nome = leggi('qz_gioco_iniziali') || '···';
   const timbri = SERIE.eventi.map(e => {
-    const t = e.id && p[e.id];
+    const t = e.id && p[e.id] && p[e.id].grado ? p[e.id] : null;
     if (t) return '<div class="tb ' + t.grado + (timbroNuovo && e.id === SC.id ? ' nuovo' : '') + '"><i>' + '★'.repeat(STELLE[t.grado]) + '</i><span>' + e.nome + '</span><small>' + t.grado + '</small></div>';
     if (e.prossimo) return '<div class="tb lock"><i>' + LUCCHETTO + '</i><span>' + e.nome + '</span><small>prossimo</small></div>';
     if (e.id === SC.id) return '<div class="tb vuoto"><i>?</i><span>' + e.nome + '</span><small>da prendere</small></div>';
@@ -344,7 +407,8 @@ function htmlPatentino() {
   }).join('');
   return '<div class="pat-t"><span>Patentino Quota Zero</span><b>' + nome + '</b></div>' +
     '<div class="pat-l">' + L.nome + '<small>' + L.stelle + ' stell' + (L.stelle === 1 ? 'a' : 'e') + (L.prossimo ? ' · ne mancano ' + L.prossimo.mancano + ' per ' + L.prossimo.nome : '') + '</small></div>' +
-    '<div class="timbri">' + timbri + '</div>';
+    '<div class="timbri">' + timbri + '</div>' +
+    '<div class="mis-t">Missioni · ' + SC.nome + ' <b>' + fatteDi(p).length + '/' + missioni().length + '</b></div>' + htmlMissioni();
 }
 
 // la scala dei gradi: in cima c'è il pilota vero, che nel gioco non si raggiunge
@@ -377,7 +441,11 @@ function finish() {
       : '<figure class="card no"><div>persa</div><figcaption><b>&nbsp;</b>' + m.s + '</figcaption></figure>';
   }).join('');
   timbroNuovo = timbra(r.totale, n);
-  $('patmsg').innerHTML = timbroNuovo ? 'Nuovo timbro <b class="g">' + timbroNuovo + '</b>' : 'Il tuo grado';
+  const nuove = compiMissioni(r, dettaglio);
+  if (nuove.length) { $('resub').insertAdjacentHTML('beforeend', '<span class="missione">★ Missione: ' + nuove.map(x => x.testo.toLowerCase()).join(', ') + '</span>'); nuove.forEach(() => traccia('missione')); }
+  passiVisti = new Set();
+  suono('fine', nuovo && prima > 0); if (nuove.length) setTimeout(() => suono('missione'), 900);
+  $('patmsg').innerHTML = timbroNuovo ? 'Nuovo timbro <b class="g">' + timbroNuovo + '</b>' : nuove.length ? 'Missione <b class="g">compiuta</b>' : 'Il tuo grado';
   $('pat').innerHTML = htmlPatentino(); $('scala').innerHTML = htmlScala(); $('vaigrado').textContent = livello(leggiPatentino()).nome;
   inviato = null; $('lbmsg').textContent = ''; $('pos').textContent = ''; $('segreto').hidden = true;
   $('lbf').querySelector('button').disabled = false; $('ini').value = '';
@@ -389,9 +457,10 @@ function finish() {
 
 // fine partita a pop-up: 1 punteggio e classifica, 2 prossimo minigioco e riprese vere
 // niente scorrimento: ogni pop-up sta nello schermo; se lo schermo è piccolo il contenuto si rimpicciolisce
-let passoOra = 1;
+let passoOra = 1, passiVisti = new Set();
 function passo(n) {
   passoOra = cl(n, 1, 4); $('end').hidden = false;
+  if (passoOra > 1 && !passiVisti.has(passoOra)) { passiVisti.add(passoOra); traccia('passo' + passoOra); }
   for (let k = 1; k <= 4; k++) $('p' + k).hidden = k !== passoOra;
   adatta();
 }
@@ -469,7 +538,7 @@ async function inviaPunteggio(e, auto) {
     $('lbf').hidden = true; $('lbmsg').textContent = '';
     $('pos').innerHTML = j.posizione === 1 ? '<b>1°</b> in classifica: sei in testa, ' + ini + '!' : '<b>' + j.posizione + '°</b> in classifica su ' + fmt(j.totale) + ' · ' + ini;
     mostraClassifica(j.top || [], inviato);
-    if (j.codice) { scrivi('qz_gioco_codice_' + SC.id, JSON.stringify({ codice: j.codice, iniziali: ini, punti: j.punti })); mostraSegreto(j.codice); }
+    if (j.codice) { suono('primo'); scrivi('qz_gioco_codice_' + SC.id, JSON.stringify({ codice: j.codice, iniziali: ini, punti: j.punti })); mostraSegreto(j.codice); }
     $('pat').innerHTML = htmlPatentino(); adatta();
   } catch (err) {
     btn.disabled = false; $('lbf').hidden = false; $('pos').textContent = '';
@@ -551,8 +620,10 @@ async function condividi() {
 // ---------- avvio ----------
 function start() {
   traccia('decollo');
+  const prima = !leggi('qz_gioco_giocato') && !AUTO;
   if (!leggi('qz_gioco_giocato')) { scrivi('qz_gioco_giocato', '1'); traccia('nuovo'); }
-  reset(); $('start').hidden = true; $('end').hidden = true; $('sh').hidden = true; $('hint').classList.remove('off');
+  reset(); S.prima = prima;
+  suono('sblocca'); suono('decollo'); $('start').hidden = true; $('end').hidden = true; $('sh').hidden = true; $('hint').classList.remove('off');
   resize(); S.mode = 'takeoff'; toast('Decollo');
 }
 // il nome da pilota si sceglie prima di decollare: così a fine partita si entra in classifica da soli
@@ -579,6 +650,8 @@ async function primato() {
   // al massimo tre righe, così la schermata iniziale non si scorre
   const tuo = [L.stelle ? 'Patentino: <b>' + L.nome + '</b>' : '', rec ? 'record <b>' + fmt(rec) + '</b>' : ''].filter(Boolean).join(' · ');
   if (tuo) righe.push(tuo);
+  const ms = missioni(), f = fatteDi(leggiPatentino()), prox = ms.find(x => !f.includes(x.id));
+  righe.push('Missioni <b>' + f.length + '/' + ms.length + '</b>' + (prox ? ' · prossima: ' + prox.testo.toLowerCase() : ' · tutte fatte!'));
   try { const j = await chiama(); if (j.top && j.top[0]) righe.push('In testa: <b>' + j.top[0].iniziali + '</b> con ' + fmt(j.top[0].punti)); } catch (_) {}
   $('primato').innerHTML = righe.join('<br>');
   let mio = null; try { mio = JSON.parse(leggi('qz_gioco_codice_' + SC.id) || 'null'); } catch (_) {}
@@ -594,7 +667,7 @@ function avvia(scenario) {
   addEventListener('resize', resize);
   $('go').addEventListener('click', decolla); $('again').addEventListener('click', start); $('again3').addEventListener('click', start);
   document.querySelectorAll('#end .pc').forEach(pc => { const d = document.createElement('div'); d.className = 'in'; while (pc.firstChild) d.appendChild(pc.firstChild); pc.appendChild(d); });
-  document.querySelectorAll('[data-vai]').forEach(b => b.addEventListener('click', () => passo(+b.dataset.vai)));
+  document.querySelectorAll('[data-vai]').forEach(b => b.addEventListener('click', () => { suono('tic'); passo(+b.dataset.vai); }));
   addEventListener('resize', adatta);
   // anche con il dito: scorri a sinistra per andare avanti, a destra per tornare indietro
   let tx = null, ty = 0;
@@ -609,18 +682,21 @@ function avvia(scenario) {
   $('ini').addEventListener('input', soloLettere); $('nome').addEventListener('input', soloLettere);
   $('nome').addEventListener('keydown', e => { if (e.key === 'Enter') decolla(); });
   $('nome').value = leggi('qz_gioco_iniziali') || '';
+  // suoni: si accendono e spengono con il pulsante in alto a destra (la scelta resta salvata)
+  const au = $('audio');
+  if (au) { const mostra = () => { const on = !window.QZSuoni || window.QZSuoni.attivo; au.classList.toggle('off', !on); au.setAttribute('aria-label', on ? 'Suoni attivi: tocca per spegnerli' : 'Suoni spenti: tocca per accenderli'); }; mostra(); au.addEventListener('click', () => { if (window.QZSuoni) window.QZSuoni.cambia(); if (!window.QZSuoni || !window.QZSuoni.attivo) traccia('muto'); mostra(); }); }
   $('share').addEventListener('click', apriCartolina);
   $('shgo').addEventListener('click', condividi);
   $('shclose').addEventListener('click', () => { $('sh').hidden = true; });
   const pos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) / scale, (e.clientY - r.top) / scale]; };
   cv.addEventListener('pointerdown', e => { const p = pos(e); joy = { ox: p[0], oy: p[1], x: p[0], y: p[1] }; try { cv.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); });
-  cv.addEventListener('pointermove', e => { if (!joy) return; const p = pos(e); joy.x = p[0]; joy.y = p[1]; if (S.mode === 'fly' && Math.hypot(joy.x - joy.ox, joy.y - joy.oy) > 12) $('hint').classList.add('off'); e.preventDefault(); });
+  cv.addEventListener('pointermove', e => { if (!joy) return; const p = pos(e); joy.x = p[0]; joy.y = p[1]; if (S.mode === 'fly' && Math.hypot(joy.x - joy.ox, joy.y - joy.oy) > 12) { $('hint').classList.add('off'); S.mosso = true; } e.preventDefault(); });
   ['pointerup', 'pointercancel'].forEach(n => cv.addEventListener(n, () => { joy = null; }));
-  addEventListener('keydown', e => { if (e.key.startsWith('Arrow') && e.target.tagName !== 'INPUT') { keys.add(e.key); $('hint').classList.add('off'); e.preventDefault(); } });
+  addEventListener('keydown', e => { if (e.key.startsWith('Arrow') && e.target.tagName !== 'INPUT') { keys.add(e.key); $('hint').classList.add('off'); S.mosso = true; e.preventDefault(); } });
   addEventListener('keyup', e => keys.delete(e.key));
   document.addEventListener('touchmove', e => { if (e.target === cv) e.preventDefault(); }, { passive: false });
   reset(); resize(); primato();
-  traccia('apertura');
+  traccia('apertura'); traccia('da_' + fonte());
   // clic verso i social e i DM
   document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[href]'); if (!a) return; const h = a.href; traccia(h.includes('ig.me') ? 'dm' : h.includes('instagram.com') ? 'instagram' : h.includes('tiktok.com') ? 'tiktok' : ''); }, true);
   window.__gioco = { get S() { return S; }, SC, tick, render, start, cartolina };
