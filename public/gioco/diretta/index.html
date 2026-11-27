@@ -60,7 +60,7 @@
 </main>
 <script>
 (function () {
-  const q = new URLSearchParams(location.search), evento = q.get('evento') || 'matrimonio';
+  const q = new URLSearchParams(location.search), evento = q.get('evento') || 'sfida';
   const obiettivo = Math.max(0, parseInt(q.get('obiettivo') || '0', 10)), premio = q.get('premio') || 'svelo il prossimo minigioco';
   const fmt = n => Number(n || 0).toLocaleString('it-IT');
   const $ = id => document.getElementById(id);

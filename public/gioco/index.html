@@ -5,182 +5,190 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#090a0c">
-<title>Porta a casa le riprese · Quota Zero</title>
-<meta name="description" content="Un minigioco: pilota il drone sopra un matrimonio, segui le manovre e scala la classifica. Quota Zero, riprese con drone a Roma e non solo.">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Porta a casa le riprese · minigioco con il drone">
-<meta property="og:description" content="Decolla da quota zero, segui le manovre sopra il matrimonio e scala la classifica. Si gioca dal telefono.">
+<title>La sfida del pilota · minigioco · Quota Zero</title>
+<meta name="description" content="Tre round con il drone: riprese di un matrimonio, volo radente sul mare, atterraggio su un catamarano. Un solo punteggio, una classifica.">
 <meta property="og:url" content="https://quotazerodrone.it/gioco/">
+<meta property="og:title" content="La sfida del pilota · minigioco con il drone">
+<meta property="og:description" content="Tre round, un solo punteggio. Si gioca dal telefono.">
 <meta property="og:image" content="https://quotazerodrone.it/gioco/anteprima.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://quotazerodrone.it/gioco/anteprima.png">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
-<link rel="icon" href="/assets/brand/favicon-192.png" type="image/png" sizes="192x192">
-<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
 <link rel="preload" href="/gioco/fonts/syne-800-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/gioco/gioco.css">
+<style>
+  /* ---- solo per la sfida in tre round ---- */
+  #hud.via{opacity:0}
+  /* anteprima dello scatto: la foto vista dal drone entra in basso a sinistra */
+  #scatto{position:absolute;z-index:4;left:14px;bottom:calc(max(18px,env(safe-area-inset-bottom)) + 62px);width:46%;max-width:190px;margin:0;padding:6px 6px 0;background:#f5eee0;border-radius:4px;box-shadow:0 0 0 3px #fff,0 14px 30px rgba(0,0,0,.6);transform:translate(-130%,0) rotate(-8deg);transition:transform .45s cubic-bezier(.2,1.4,.4,1);pointer-events:none}
+  #scatto.on{transform:translate(0,0) rotate(-4deg)}
+  #scatto[hidden]{display:none}
+  #scatto canvas{position:static;display:block;width:100%;height:auto;aspect-ratio:4/5;background:#111}
+  #scatto figcaption{font:700 11px 'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase;color:#111113;padding:6px 2px 7px}
+  #scatto figcaption b{color:#8a6d10}
+  #rnd{white-space:nowrap;font-size:10px}
+  #fine:not([hidden])~.audio{display:none}
+  #bat span{min-width:64px}
+  #tel b{color:var(--oro)}
+  #start .round3{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:8px}
+  #start .round3 li{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:14px;background:rgba(244,243,240,.05);border:1px solid rgba(201,162,39,.3)}
+  #start .round3 i{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font:800 15px 'Syne',sans-serif;font-style:normal;background:var(--oro);color:#111113}
+  #start .round3 b{display:block;font:800 15px/1.15 'Syne',sans-serif}
+  #start .round3 small{display:block;font-size:12.5px;color:rgba(244,243,240,.68);margin-top:2px}
+  #start h1{font-size:38px}
+  #start .sub{margin:10px 0 0;font-size:15px;color:rgba(244,243,240,.8)}
+  /* cartellone tra un round e l'altro */
+  #intro{justify-content:center;gap:12px;background:rgba(9,10,12,.86);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  #intro .prec:empty{display:none}
+  #intro .prec{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:2px 12px;padding:12px 14px;border-radius:14px;border:1.5px solid rgba(201,162,39,.5);background:rgba(201,162,39,.1)}
+  #intro .prec span{font:700 11px 'Space Mono',monospace;letter-spacing:2px;text-transform:uppercase;color:rgba(244,243,240,.7)}
+  #intro .prec b{font:800 30px/1 'Syne',sans-serif;color:var(--giallo);text-align:right}
+  #intro .prec small{grid-column:1/-1;font-size:13px;color:rgba(244,243,240,.8)}
+  #intro .num{font:700 12px 'Space Mono',monospace;letter-spacing:3px;text-transform:uppercase;color:var(--oro);margin-top:8px}
+  #intro h2{font:800 34px/1 'Syne',sans-serif;letter-spacing:-.03em;margin:0}
+  #intro .obi{margin:0;font-size:16px;line-height:1.4}
+  #intro .com{display:flex;align-items:center;gap:10px;margin:0;font:700 13px 'Space Mono',monospace;letter-spacing:.5px;color:var(--giallo)}
+  #intro .com::before{content:"";flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--giallo);background:radial-gradient(circle,var(--giallo) 0 5px,transparent 6px)}
+  #intro .com.tieni::before{animation:premi 1s ease-in-out infinite}
+  @keyframes premi{50%{transform:scale(.82);background:radial-gradient(circle,var(--giallo) 0 9px,transparent 10px)}}
+  #intro .tot{margin:0;font:700 13px 'Space Mono',monospace;color:rgba(244,243,240,.7)}#intro .tot b{color:var(--oro)}
+  #intro .tot:empty{display:none}
+  #intro button{margin-top:6px}
+  /* fine sfida: tutto in una schermata, senza scorrere */
+  #fine{background:rgba(9,10,12,.92);padding:max(14px,env(safe-area-inset-top)) 14px max(12px,env(safe-area-inset-bottom));overflow:hidden}
+  #fine .in{transform-origin:top center}
+  #fine .testa{display:flex;gap:12px;align-items:stretch}
+  #video{position:static;flex:none;width:104px;height:130px;border-radius:10px;border:2px solid var(--oro);background:#000}
+  #fine .tot{flex:1;min-width:0}
+  #ftot b{display:block;font:800 38px/1 'Syne',sans-serif;letter-spacing:-.04em;color:var(--oro)}
+  #ftot span{font:800 16px 'Syne',sans-serif}
+  #frec{margin:6px 0 0;font:700 11.5px 'Space Mono',monospace}#frec b{color:var(--oro)}
+  #frec .nuovo{background:var(--giallo);color:#111113;padding:3px 8px;border-radius:20px}
+  #frighe{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:4px}
+  #frighe li{display:flex;align-items:center;gap:8px;font-size:12px}
+  #frighe i{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font:800 11px 'Syne',sans-serif;font-style:normal;background:rgba(201,162,39,.25);color:var(--giallo)}
+  #frighe span{flex:1;min-width:0}#frighe span b{display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #frighe small{display:block;color:rgba(244,243,240,.6);font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #frighe em{flex:none;font:700 12px 'Space Mono',monospace;font-style:normal;color:var(--crema)}
+  #fine .cl{margin-top:12px;padding:12px}
+  #fine .podio{margin-top:10px}
+  #pos{margin:8px 0 0;font:700 12px 'Space Mono',monospace;text-align:center}#pos b{color:var(--giallo)}
+  #pos:empty,#lbmsg:empty{display:none}
+  #sfida{margin:8px 0 0;font-size:13px;text-align:center;line-height:1.35}
+  #lbmsg{margin:6px 0 0;font-size:13px;color:var(--giallo)}
+  #fine .azioni{display:flex;gap:10px;margin-top:12px}
+  #fine .azioni>*{flex:1}
+  #fine .vero{margin:12px 0 0;font-size:13.5px;text-align:center;line-height:1.4}
+  #fine .vero a{color:var(--giallo);font-weight:700}
+  #fine .social{display:flex;gap:8px;margin-top:10px;align-items:center}
+  #fine .social span{flex:1;font:800 12.5px/1.1 'Syne',sans-serif}
+  #fine .social a{flex:none;border-radius:12px;padding:9px 11px;text-decoration:none;background:var(--oro);color:var(--nero);font:800 12.5px/1 'Syne',sans-serif}
+</style>
 </head>
 <body>
 <div id="app">
   <canvas id="cv"></canvas>
-  <header id="hud">
-    <div id="bat"><i><u></u></i><span>100%</span></div>
-    <div id="tel">quota <b id="alt">0</b> m<small><span id="spd">0</span> km/h</small></div>
+  <header id="hud" class="via">
+    <div id="bat"><i><u></u></i><span id="rnd">Round 1/3</span></div>
+    <div id="tel"></div>
     <div id="cnt">punti <b id="pt">0</b><small id="cb"></small></div>
   </header>
   <div id="toast"><i></i><span></span></div>
   <div id="pop"></div>
-  <footer id="hint">Tieni premuto e trascina: è la leva del drone.</footer>
+  <footer id="hint" class="off"></footer>
+  <figure id="scatto" hidden><canvas width="240" height="300" aria-label="Lo scatto visto dal drone"></canvas><figcaption></figcaption></figure>
 
   <section id="start" class="ov">
     <div class="tag">Quota Zero · minigioco</div>
-    <svg class="drone" viewBox="0 0 150 96" aria-hidden="true">
-      <g fill="none" stroke="#d7d9dc" stroke-width="5"><circle cx="42" cy="26" r="20"/><circle cx="108" cy="26" r="20"/><circle cx="42" cy="70" r="20"/><circle cx="108" cy="70" r="20"/></g>
-      <g stroke="#f4f3f0" stroke-width="3" stroke-linecap="round" opacity=".7"><path d="M27 20 57 32M93 32 123 20M27 76 57 64M93 64 123 76"/></g>
-      <rect x="58" y="14" width="34" height="68" rx="12" fill="#e6e8ea"/><rect x="62" y="30" width="26" height="30" rx="7" fill="#2a2d32"/>
-      <rect x="65" y="6" width="20" height="14" rx="5" fill="#15161a"/><circle cx="75" cy="13" r="4" fill="#c9a227"/>
-    </svg>
-    <h1>Porta<br>a casa<br>le <em>riprese</em>.</h1>
-    <div class="pill"><i></i>matrimonio</div>
-    <ol class="passi">
-      <li>Tieni premuto e trascina: è la leva del drone.</li>
-      <li>Entra nel cerchio d'oro e segui il punto. Più sei preciso, più punti fai.</li>
-      <li>Alla fine riporta il drone sulla H.</li>
+    <h1>La sfida<br>del <em>pilota</em>.</h1>
+    <p class="sub">Tre prove con il drone, un solo punteggio in classifica.</p>
+    <ol class="round3">
+      <li><i>1</i><span><b>Le riprese del matrimonio</b><small>Segui le manovre, senza scatti</small></span></li>
+      <li><i>2</i><span><b>Troppo vicino</b><small>Radente sul mare, e l'arco di roccia</small></span></li>
+      <li><i>3</i><span><b>Il catamarano</b><small>Atterra sulla barca, con il vento</small></span></li>
     </ol>
     <div class="pilota">
       <label for="nome">Il tuo nome da pilota</label>
       <div class="riga">
         <input id="nome" maxlength="3" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go">
-        <small>Tre lettere, per la classifica. Se lo lasci vuoto giochi lo stesso.</small>
+        <small>Tre lettere per la classifica. Facoltativo.</small>
       </div>
       <p id="nomemsg" aria-live="polite"></p>
     </div>
     <p class="primato" id="primato"></p>
     <div class="sp"></div>
-    <button id="go">Decolla</button>
+    <button id="go">Inizia la sfida</button>
   </section>
 
-  <section id="end" class="ov fine" hidden>
+  <section id="intro" class="ov" hidden>
+    <div class="prec" id="iprec"></div>
+    <div class="num" id="inum"></div>
+    <h2 id="inome"></h2>
+    <p class="obi" id="iobi"></p>
+    <p class="com" id="icom"></p>
+    <p class="tot" id="itot"></p>
+    <button id="ivia">Via!</button>
+  </section>
 
-    <!-- pop-up 1 · punteggio e classifica -->
-    <div class="passo" id="p1">
-      <div class="ph"><span class="tag2">Matrimonio · risultato</span><span class="dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></span></div>
-      <div class="pc">
-        <div id="punti"></div>
+  <section id="fine" class="ov" hidden>
+    <div class="in">
+      <div class="tag">La sfida del pilota · risultato</div>
+      <div class="testa" style="margin-top:12px">
+        <canvas id="video" width="236" height="296" aria-label="Le tue riprese"></canvas>
+        <div class="tot">
+          <div id="ftot"></div>
+          <p id="frec"></p>
+          <ol id="frighe"></ol>
+        </div>
+      </div>
+      <section class="cl" aria-label="Classifica della sfida">
+        <div class="cl-h"><span>Hi-score</span><b>Classifica</b><i>live</i></div>
         <p id="pos" aria-live="polite"></p>
-        <p id="resub"></p>
-        <div id="cards"></div>
-        <p id="bonus"></p>
         <form id="lbf" autocomplete="off" hidden>
           <input id="ini" maxlength="3" placeholder="ABC" aria-label="Le tue iniziali, tre lettere" autocapitalize="characters" spellcheck="false" enterkeyhint="send">
           <button type="submit">Entra in classifica</button>
         </form>
         <p id="lbmsg" aria-live="polite"></p>
-        <section class="cl" aria-label="Classifica del matrimonio">
-          <div class="cl-h"><span>Hi-score</span><b>Classifica</b><i>live</i></div>
-          <div class="podio" id="podio"></div>
-          <ol id="lbl"></ol>
-          <p id="sfida" aria-live="polite"></p>
-          <div id="segreto" hidden></div>
-          <div class="due">
-            <button id="again">Rigioca</button>
-            <button class="out" id="share">Sfida un amico</button>
-          </div>
-        </section>
+        <div class="podio" id="podio"></div>
+        <ol id="lbl"></ol>
+        <p id="sfida" aria-live="polite"></p>
+        <div id="segreto" hidden></div>
+      </section>
+      <div class="azioni"><button id="again">Rigioca la sfida</button></div>
+      <p class="vero">Hai visto quanto è difficile? Le riprese vere le faccio io: <a href="https://ig.me/m/quota.zero.drone" target="_blank" rel="noopener">scrivimi in DM</a>.</p>
+      <div class="social">
+        <span>Seguimi per le prossime sfide</span>
+        <a href="https://www.instagram.com/quota.zero.drone/" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.tiktok.com/@quota.zero" target="_blank" rel="noopener">TikTok</a>
       </div>
-      <div class="nav"><span></span><button class="vai ricco" data-vai="2"><span class="ic" id="vailogo" aria-hidden="true"></span><span class="tx"><small>Prossimo minigioco</small><b id="vainome">Scoprilo</b></span><em aria-hidden="true">→</em></button></div>
-    </div>
-
-    <!-- pop-up 2 · il prossimo minigioco -->
-    <div class="passo" id="p2" hidden>
-      <div class="ph"><span class="tag2">Prossimo minigioco</span><span class="dots" aria-hidden="true"><i></i><i class="on"></i><i></i><i></i></span></div>
-      <div class="pc">
-        <section class="next" id="segui">
-          <div class="next-strip" aria-hidden="true"></div>
-          <div class="next-top">
-            <div class="next-logo" id="nextlogo" aria-hidden="true"></div>
-            <div class="next-t">
-              <span class="next-k">In arrivo</span>
-              <b id="nextnome"></b>
-              <span class="next-in">Presto nelle storie</span>
-            </div>
-          </div>
-          <p class="next-d" id="nextdesc"></p>
-          <p class="claim big"><span class="g">Seguimi</span><small>e giocaci per primo.</small></p>
-          <p class="fl">Nelle storie annuncio chi ha vinto il matrimonio e quando esce il prossimo: nuova classifica, nuovo timbro.</p>
-        </section>
-      </div>
-      <div class="nav"><button class="indietro" data-vai="1">←</button><button class="vai ricco" data-vai="3"><span class="ic stella" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3 1.7 9.3l7.2-.9z"/></svg><i>PRO</i></span><span class="tx"><small>Il tuo grado</small><b id="vaigrado">Patentino</b></span><em aria-hidden="true">→</em></button></div>
-    </div>
-
-    <!-- pop-up 3 · il tuo grado, e quanto è difficile dal vivo -->
-    <div class="passo" id="p3" hidden>
-      <div class="ph"><span class="tag2" id="patmsg">Il tuo grado</span><span class="dots" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span></div>
-      <div class="pc">
-        <div class="pat" id="pat"></div>
-        <ol class="scala" id="scala" aria-label="I gradi del patentino"></ol>
-        <div class="realta">
-          <h2>E dal vivo?</h2>
-          <ul>
-            <li>Il momento succede <b>una volta sola</b>: niente Rigioca.</li>
-            <li>Vento, luce e persone in movimento <b>non aspettano</b>.</li>
-            <li>Servono il <b>patentino</b> e il rispetto di zone e distanze di sicurezza.</li>
-          </ul>
-          <p>Il grado <b class="g">Pro</b> è il mio: pilota con patentino A1/A3, riprese vere.</p>
-        </div>
-      </div>
-      <div class="nav"><button class="indietro" data-vai="2">←</button><button class="vai ricco" data-vai="4"><span class="ic rec" aria-hidden="true"><i></i>REC</span><span class="tx"><small>E nella realtà?</small><b>Riprese dal vivo</b></span><em aria-hidden="true">→</em></button></div>
-    </div>
-
-    <!-- pop-up 4 · dal gioco alle riprese vere -->
-    <div class="passo" id="p4" hidden>
-      <div class="ph"><span class="tag2">Dal gioco alla realtà</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i><i class="on"></i></span></div>
-      <div class="pc">
-        <div class="vero">
-          <h2>Hai visto quanto è difficile?</h2>
-          <p>Con il drone vero non c'è Rigioca: matrimonio, evento o azienda, ogni ripresa va presa al primo colpo.</p>
-          <p class="claim">Vuoi riprese col drone vere? Scrivimi in <span class="g">DM</span>.</p>
-          <p class="sub">Eventi, matrimoni, aziende e luoghi, a Roma e non solo.</p>
-          <a class="btn out" id="cta" href="https://ig.me/m/quota.zero.drone" data-and="intent://ig.me/m/quota.zero.drone#Intent;scheme=https;package=com.instagram.android;S.browser_fallback_url=https%3A%2F%2Fig.me%2Fm%2Fquota.zero.drone;end" target="_blank" rel="noopener">Apri i DM</a>
-          <p class="nota">La classifica resta aperta fino al prossimo minigioco e salva solo tre lettere e punti. <a href="/privacy.html" target="_blank" rel="noopener">Privacy</a></p>
-        </div>
-      </div>
-      <div class="nav"><button class="indietro" data-vai="3">←</button><button class="vai" id="again3">Rigioca <em>↺</em></button></div>
-    </div>
-
-    <!-- sempre visibile, sotto ogni pop-up -->
-    <div class="barra" id="barra">
-      <span>Seguimi per il<br>prossimo minigioco</span>
-      <a href="https://www.instagram.com/quota.zero.drone/" data-and="intent://www.instagram.com/quota.zero.drone/#Intent;scheme=https;package=com.instagram.android;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2Fquota.zero.drone%2F;end" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://www.tiktok.com/@quota.zero" data-and="intent://www.tiktok.com/@quota.zero#Intent;scheme=https;package=com.zhiliaoapp.musically;S.browser_fallback_url=https%3A%2F%2Fwww.tiktok.com%2F%40quota.zero;end" target="_blank" rel="noopener">TikTok</a>
     </div>
   </section>
 
-  <section id="sh" class="ov" hidden>
-    <div class="tag" style="width:100%;text-align:left">Sfida un amico</div>
-    <img id="shimg" alt="La tua cartolina con il punteggio">
-    <p>Mettila nelle storie e tagga <b class="g">@quota.zero.drone</b>.<br>Se non si apre la condivisione, tieni premuto sull'immagine per salvarla.</p>
-    <div class="due">
-      <button id="shgo">Condividi</button>
-      <a class="btn out" id="shsave" href="#" download>Salva</a>
-    </div>
-    <button class="link" id="shclose">Torna ai risultati</button>
-  </section>
   <button id="audio" class="audio" type="button" aria-label="Suoni"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="onde" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="croce" d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
 </div>
 
 <script src="/gioco/suoni.js"></script>
 <script src="/gioco/punteggio.js"></script>
-<script src="/gioco/serie.js"></script>
-<script src="/gioco/motore.js"></script>
-<script src="/gioco/scenari/matrimonio.js"></script>
 <script>
-// Su Android prova ad aprire direttamente l'app; se non c'è (o il browser lo blocca) si apre il sito web.
-// Su iPhone restano i link normali: Safari apre l'app da solo quando c'è.
-(function(){if(!/Android/i.test(navigator.userAgent))return;
-document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[data-and]");if(!a)return;e.preventDefault();location.href=a.getAttribute("data-and");});})();
+// lo scenario del matrimonio si registra qui invece di avviare il vecchio motore
+window.QZScenari = {};
+window.QZMotore = {
+  kit: {
+    cl: (v, a, b) => Math.max(a, Math.min(b, v)), lerp: (a, b, p) => a + (b - a) * p,
+    ease: p => p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2,
+    toward(o, tx, ty, sp, dt) { const dx = tx - o.x, dy = ty - o.y, d = Math.hypot(dx, dy); if (d < .01) return; const s = Math.min(d, sp * dt); o.x += dx / d * s; o.y += dy / d * s; },
+  },
+  avvia(sc) { window.QZScenari[sc.id] = sc; },
+};
+</script>
+<script src="/gioco/scenari/matrimonio.js"></script>
+<script src="/gioco/sfida/vista3d.js"></script>
+<script src="/gioco/sfida/sfida.js"></script>
+<script>
+// Android: i link ai social provano ad aprire direttamente l'app
+(function(){if(!/Android/i.test(navigator.userAgent))return;var m={"instagram.com":"com.instagram.android","ig.me":"com.instagram.android","tiktok.com":"com.zhiliaoapp.musically"};
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("#fine a[href]");if(!a)return;var u=new URL(a.href),p=null;for(var k in m)if(u.hostname.endsWith(k))p=m[k];if(!p)return;e.preventDefault();location.href="intent://"+u.host+u.pathname+"#Intent;scheme=https;package="+p+";S.browser_fallback_url="+encodeURIComponent(a.href)+";end";});})();
+// la schermata finale si rimpicciolisce se il telefono è basso, così non si scorre mai
+(function(){function adatta(){var f=document.getElementById("fine"),i=f.querySelector(".in");if(f.hidden)return;i.style.transform="";var s=Math.min(1,(f.clientHeight-24)/i.offsetHeight);if(s<.995)i.style.transform="scale("+s.toFixed(3)+")";}
+var t=0;function presto(){cancelAnimationFrame(t);t=requestAnimationFrame(adatta);}new MutationObserver(presto).observe(document.getElementById("fine"),{attributes:true,attributeFilter:["hidden"],childList:true,subtree:true});addEventListener("resize",presto);})();
 </script>
 </body>
 </html>

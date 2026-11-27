@@ -65,7 +65,7 @@ td.z{color:rgba(244,243,240,.25)}
 </main>
 <script>
 (function () {
-  const EV = new URLSearchParams(location.search).get('evento') || 'matrimonio';
+  const EV = new URLSearchParams(location.search).get('evento') || 'sfida';
   document.querySelector('h1 em').textContent = EV === 'sfida' ? 'sfida in 3 round' : EV;
   const fmt = n => Number(n || 0).toLocaleString('it-IT');
   const pc = (a, b) => b ? Math.round(a / b * 100) + '%' : '–';

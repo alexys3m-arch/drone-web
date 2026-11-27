@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#090a0c">
+<title>Porta a casa le riprese · Quota Zero</title>
+<meta name="description" content="Un minigioco: pilota il drone sopra un matrimonio, segui le manovre e scala la classifica. Quota Zero, riprese con drone a Roma e non solo.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Porta a casa le riprese · minigioco con il drone">
+<meta property="og:description" content="Decolla da quota zero, segui le manovre sopra il matrimonio e scala la classifica. Si gioca dal telefono.">
+<meta property="og:url" content="https://quotazerodrone.it/gioco/matrimonio/">
+<meta property="og:image" content="https://quotazerodrone.it/gioco/anteprima.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://quotazerodrone.it/gioco/anteprima.png">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" href="/assets/brand/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="/assets/brand/apple-touch-icon.png">
+<link rel="preload" href="/gioco/fonts/syne-800-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/gioco/gioco.css">
+</head>
+<body>
+<div id="app">
+  <canvas id="cv"></canvas>
+  <header id="hud">
+    <div id="bat"><i><u></u></i><span>100%</span></div>
+    <div id="tel">quota <b id="alt">0</b> m<small><span id="spd">0</span> km/h</small></div>
+    <div id="cnt">punti <b id="pt">0</b><small id="cb"></small></div>
+  </header>
+  <div id="toast"><i></i><span></span></div>
+  <div id="pop"></div>
+  <footer id="hint">Tieni premuto e trascina: è la leva del drone.</footer>
+
+  <section id="start" class="ov">
+    <div class="tag">Quota Zero · minigioco</div>
+    <svg class="drone" viewBox="0 0 150 96" aria-hidden="true">
+      <g fill="none" stroke="#d7d9dc" stroke-width="5"><circle cx="42" cy="26" r="20"/><circle cx="108" cy="26" r="20"/><circle cx="42" cy="70" r="20"/><circle cx="108" cy="70" r="20"/></g>
+      <g stroke="#f4f3f0" stroke-width="3" stroke-linecap="round" opacity=".7"><path d="M27 20 57 32M93 32 123 20M27 76 57 64M93 64 123 76"/></g>
+      <rect x="58" y="14" width="34" height="68" rx="12" fill="#e6e8ea"/><rect x="62" y="30" width="26" height="30" rx="7" fill="#2a2d32"/>
+      <rect x="65" y="6" width="20" height="14" rx="5" fill="#15161a"/><circle cx="75" cy="13" r="4" fill="#c9a227"/>
+    </svg>
+    <h1>Porta<br>a casa<br>le <em>riprese</em>.</h1>
+    <div class="pill"><i></i>matrimonio</div>
+    <ol class="passi">
+      <li>Tieni premuto e trascina: è la leva del drone.</li>
+      <li>Entra nel cerchio d'oro e segui il punto. Più sei preciso, più punti fai.</li>
+      <li>Alla fine riporta il drone sulla H.</li>
+    </ol>
+    <div class="pilota">
+      <label for="nome">Il tuo nome da pilota</label>
+      <div class="riga">
+        <input id="nome" maxlength="3" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" enterkeyhint="go">
+        <small>Tre lettere, per la classifica. Se lo lasci vuoto giochi lo stesso.</small>
+      </div>
+      <p id="nomemsg" aria-live="polite"></p>
+    </div>
+    <p class="primato" id="primato"></p>
+    <div class="sp"></div>
+    <button id="go">Decolla</button>
+  </section>
+
+  <section id="end" class="ov fine" hidden>
+
+    <!-- pop-up 1 · punteggio e classifica -->
+    <div class="passo" id="p1">
+      <div class="ph"><span class="tag2">Matrimonio · risultato</span><span class="dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></span></div>
+      <div class="pc">
+        <div id="punti"></div>
+        <p id="pos" aria-live="polite"></p>
+        <p id="resub"></p>
+        <div id="cards"></div>
+        <p id="bonus"></p>
+        <form id="lbf" autocomplete="off" hidden>
+          <input id="ini" maxlength="3" placeholder="ABC" aria-label="Le tue iniziali, tre lettere" autocapitalize="characters" spellcheck="false" enterkeyhint="send">
+          <button type="submit">Entra in classifica</button>
+        </form>
+        <p id="lbmsg" aria-live="polite"></p>
+        <section class="cl" aria-label="Classifica del matrimonio">
+          <div class="cl-h"><span>Hi-score</span><b>Classifica</b><i>live</i></div>
+          <div class="podio" id="podio"></div>
+          <ol id="lbl"></ol>
+          <p id="sfida" aria-live="polite"></p>
+          <div id="segreto" hidden></div>
+          <div class="due">
+            <button id="again">Rigioca</button>
+            <button class="out" id="share">Sfida un amico</button>
+          </div>
+        </section>
+      </div>
+      <div class="nav"><span></span><button class="vai ricco" data-vai="2"><span class="ic" id="vailogo" aria-hidden="true"></span><span class="tx"><small>Prossimo minigioco</small><b id="vainome">Scoprilo</b></span><em aria-hidden="true">→</em></button></div>
+    </div>
+
+    <!-- pop-up 2 · il prossimo minigioco -->
+    <div class="passo" id="p2" hidden>
+      <div class="ph"><span class="tag2">Prossimo minigioco</span><span class="dots" aria-hidden="true"><i></i><i class="on"></i><i></i><i></i></span></div>
+      <div class="pc">
+        <section class="next" id="segui">
+          <div class="next-strip" aria-hidden="true"></div>
+          <div class="next-top">
+            <div class="next-logo" id="nextlogo" aria-hidden="true"></div>
+            <div class="next-t">
+              <span class="next-k">In arrivo</span>
+              <b id="nextnome"></b>
+              <span class="next-in">Presto nelle storie</span>
+            </div>
+          </div>
+          <p class="next-d" id="nextdesc"></p>
+          <p class="claim big"><span class="g">Seguimi</span><small>e giocaci per primo.</small></p>
+          <p class="fl">Nelle storie annuncio chi ha vinto il matrimonio e quando esce il prossimo: nuova classifica, nuovo timbro.</p>
+        </section>
+      </div>
+      <div class="nav"><button class="indietro" data-vai="1">←</button><button class="vai ricco" data-vai="3"><span class="ic stella" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5L7 14.3 1.7 9.3l7.2-.9z"/></svg><i>PRO</i></span><span class="tx"><small>Il tuo grado</small><b id="vaigrado">Patentino</b></span><em aria-hidden="true">→</em></button></div>
+    </div>
+
+    <!-- pop-up 3 · il tuo grado, e quanto è difficile dal vivo -->
+    <div class="passo" id="p3" hidden>
+      <div class="ph"><span class="tag2" id="patmsg">Il tuo grado</span><span class="dots" aria-hidden="true"><i></i><i></i><i class="on"></i><i></i></span></div>
+      <div class="pc">
+        <div class="pat" id="pat"></div>
+        <ol class="scala" id="scala" aria-label="I gradi del patentino"></ol>
+        <div class="realta">
+          <h2>E dal vivo?</h2>
+          <ul>
+            <li>Il momento succede <b>una volta sola</b>: niente Rigioca.</li>
+            <li>Vento, luce e persone in movimento <b>non aspettano</b>.</li>
+            <li>Servono il <b>patentino</b> e il rispetto di zone e distanze di sicurezza.</li>
+          </ul>
+          <p>Il grado <b class="g">Pro</b> è il mio: pilota con patentino A1/A3, riprese vere.</p>
+        </div>
+      </div>
+      <div class="nav"><button class="indietro" data-vai="2">←</button><button class="vai ricco" data-vai="4"><span class="ic rec" aria-hidden="true"><i></i>REC</span><span class="tx"><small>E nella realtà?</small><b>Riprese dal vivo</b></span><em aria-hidden="true">→</em></button></div>
+    </div>
+
+    <!-- pop-up 4 · dal gioco alle riprese vere -->
+    <div class="passo" id="p4" hidden>
+      <div class="ph"><span class="tag2">Dal gioco alla realtà</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i><i class="on"></i></span></div>
+      <div class="pc">
+        <div class="vero">
+          <h2>Hai visto quanto è difficile?</h2>
+          <p>Con il drone vero non c'è Rigioca: matrimonio, evento o azienda, ogni ripresa va presa al primo colpo.</p>
+          <p class="claim">Vuoi riprese col drone vere? Scrivimi in <span class="g">DM</span>.</p>
+          <p class="sub">Eventi, matrimoni, aziende e luoghi, a Roma e non solo.</p>
+          <a class="btn out" id="cta" href="https://ig.me/m/quota.zero.drone" data-and="intent://ig.me/m/quota.zero.drone#Intent;scheme=https;package=com.instagram.android;S.browser_fallback_url=https%3A%2F%2Fig.me%2Fm%2Fquota.zero.drone;end" target="_blank" rel="noopener">Apri i DM</a>
+          <p class="nota">La classifica resta aperta fino al prossimo minigioco e salva solo tre lettere e punti. <a href="/privacy.html" target="_blank" rel="noopener">Privacy</a></p>
+        </div>
+      </div>
+      <div class="nav"><button class="indietro" data-vai="3">←</button><button class="vai" id="again3">Rigioca <em>↺</em></button></div>
+    </div>
+
+    <!-- sempre visibile, sotto ogni pop-up -->
+    <div class="barra" id="barra">
+      <span>Seguimi per il<br>prossimo minigioco</span>
+      <a href="https://www.instagram.com/quota.zero.drone/" data-and="intent://www.instagram.com/quota.zero.drone/#Intent;scheme=https;package=com.instagram.android;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2Fquota.zero.drone%2F;end" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.tiktok.com/@quota.zero" data-and="intent://www.tiktok.com/@quota.zero#Intent;scheme=https;package=com.zhiliaoapp.musically;S.browser_fallback_url=https%3A%2F%2Fwww.tiktok.com%2F%40quota.zero;end" target="_blank" rel="noopener">TikTok</a>
+    </div>
+  </section>
+
+  <section id="sh" class="ov" hidden>
+    <div class="tag" style="width:100%;text-align:left">Sfida un amico</div>
+    <img id="shimg" alt="La tua cartolina con il punteggio">
+    <p>Mettila nelle storie e tagga <b class="g">@quota.zero.drone</b>.<br>Se non si apre la condivisione, tieni premuto sull'immagine per salvarla.</p>
+    <div class="due">
+      <button id="shgo">Condividi</button>
+      <a class="btn out" id="shsave" href="#" download>Salva</a>
+    </div>
+    <button class="link" id="shclose">Torna ai risultati</button>
+  </section>
+  <button id="audio" class="audio" type="button" aria-label="Suoni"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="onde" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path class="croce" d="M16.5 9.5l5 5M21.5 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+</div>
+
+<script src="/gioco/suoni.js"></script>
+<script src="/gioco/punteggio.js"></script>
+<script src="/gioco/serie.js"></script>
+<script src="/gioco/motore.js"></script>
+<script src="/gioco/scenari/matrimonio.js"></script>
+<script>
+// Su Android prova ad aprire direttamente l'app; se non c'è (o il browser lo blocca) si apre il sito web.
+// Su iPhone restano i link normali: Safari apre l'app da solo quando c'è.
+(function(){if(!/Android/i.test(navigator.userAgent))return;
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a[data-and]");if(!a)return;e.preventDefault();location.href=a.getAttribute("data-and");});})();
+</script>
+</body>
+</html>
