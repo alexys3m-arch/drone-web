@@ -81,6 +81,14 @@ function fotografa(sx, sy, w, h, titolo) {
   const k = scale * dpr, c = document.createElement('canvas'); c.width = 240; c.height = 300;
   try { c.getContext('2d').drawImage(cv, (sx - w / 2) * k, (sy - h / 2) * k, w * k, h * k, 0, 0, 240, 300); G.foto.push({ src: c.toDataURL('image/jpeg', .85), titolo }); } catch (_) {}
 }
+// grana da pellicola: una piccola trama di rumore che si sposta a ogni fotogramma
+let grana = null;
+function trama() {
+  if (grana) return grana;
+  const c = document.createElement('canvas'); c.width = c.height = 96; const x = c.getContext('2d'), d = x.createImageData(96, 96);
+  for (let i = 0; i < d.data.length; i += 4) { const v = Math.random() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 255; }
+  x.putImageData(d, 0, 0); grana = ctx.createPattern(c, 'repeat'); return grana;
+}
 // luce calda da tramonto e vignettatura su tutto
 function luce(caldo) {
   ctx.save(); ctx.setTransform(scale * dpr, 0, 0, scale * dpr, 0, 0);
@@ -89,6 +97,7 @@ function luce(caldo) {
   const g = ctx.createRadialGradient(VW / 2, VH / 2, VH * .3, VW / 2, VH / 2, VH * .75); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.45)');
   ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH);
   if (G.flash > 0) { ctx.fillStyle = 'rgba(255,255,255,' + G.flash * .5 + ')'; ctx.fillRect(0, 0, VW, VH); }
+  try { ctx.globalAlpha = .045; ctx.globalCompositeOperation = 'overlay'; ctx.translate((Math.random() * 96) | 0, (Math.random() * 96) | 0); ctx.fillStyle = trama(); ctx.fillRect(-96, -96, VW + 192, VH + 192); } catch (_) {}
   ctx.restore();
 }
 function schianto(forza) { G.scossa = forza; G.slow = .6; G.flash = .6; vibra([40, 30, 80]); }
@@ -406,7 +415,14 @@ function creaR2() {
     STELLE.forEach(s => { ctx.globalAlpha = cl(.55 - s[1] / 500 + .25 * Math.sin(S.A * 1.5 + s[2]), 0, 1); ctx.fillStyle = CREMA; ctx.fillRect(s[0], s[1], 1.3, 1.3); }); ctx.globalAlpha = 1;
     const sx = 205, sy = SEA - 24;
     g = ctx.createRadialGradient(sx, sy, 10, sx, sy, 150); g.addColorStop(0, 'rgba(255,210,31,.5)'); g.addColorStop(1, 'rgba(255,210,31,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W2, SEA);
+    // raggi che ruotano piano dietro al sole
+    ctx.save(); ctx.translate(sx, sy); ctx.rotate(S.A * .03); ctx.globalCompositeOperation = 'lighter';
+    for (let j = 0; j < 12; j++) { const a = j * .5236, l = 260 + (j % 3) * 60; ctx.fillStyle = 'rgba(255,190,60,' + (.035 + .02 * Math.sin(S.A + j)) + ')'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a - .05) * l, Math.sin(a - .05) * l); ctx.lineTo(Math.cos(a + .05) * l, Math.sin(a + .05) * l); ctx.fill(); }
+    ctx.restore();
     ctx.fillStyle = GIALLO; ctx.beginPath(); ctx.arc(sx, sy, 44, 0, 6.2832); ctx.fill();
+    ctx.fillStyle = 'rgba(255,245,200,.5)'; ctx.beginPath(); ctx.arc(sx - 8, sy - 8, 30, 0, 6.2832); ctx.fill();
+    // stormo lontano
+    for (let j = 0; j < 5; j++) { const bx = ((140 + j * 18 - S.A * 12) % 360 + 360) % 360 - 30, by = SEA - 190 + j * 7 + Math.sin(S.A * 2 + j) * 3, ap = Math.sin(S.A * 7 + j) * 2.5; ctx.strokeStyle = 'rgba(20,15,10,.7)'; ctx.lineWidth = 1.1; ctx.beginPath(); ctx.moveTo(bx - 4, by - ap); ctx.lineTo(bx, by); ctx.lineTo(bx + 4, by - ap); ctx.stroke(); }
     const far = (vel, col, forme) => { ctx.fillStyle = col; forme.forEach(fm => { const per = 1100, x = ((fm[0] - S.cam * vel) % per + per) % per - 150; ctx.beginPath(); ctx.moveTo(x, SEA + 2); fm[1].forEach(pt => ctx.lineTo(x + pt[0], SEA - pt[1])); ctx.lineTo(x + fm[1][fm[1].length - 1][0], SEA + 2); ctx.fill(); }); };
     far(.05, '#2a1f14', [[100, [[0, 10], [40, 40], [90, 52], [160, 46], [240, 30], [330, 12], [380, 0]]], [650, [[0, 6], [60, 26], [140, 20], [200, 0]]]]);
     far(.12, '#16110c', [[300, [[0, 0], [6, 48], [18, 58], [30, 50], [36, 0], [52, 0], [56, 36], [66, 42], [74, 30], [78, 0]]], [900, [[0, 0], [10, 38], [22, 44], [30, 0]]]]);
@@ -416,6 +432,8 @@ function creaR2() {
     for (let r = 0; r < 26; r++) { const y = SEA + 10 + r * r * .55, w = (30 - r * .6) * (.6 + .4 * Math.sin(S.A * 3 + r * 1.7)); if (y > H) break; ctx.fillStyle = 'rgba(255,210,31,' + (.45 - r * .015) + ')'; ctx.fillRect(sx - w / 2 + Math.sin(S.A * 2 + r) * 6, y, w, 2); }
     S.ost.forEach(o => ostacolo(o));
     ctx.strokeStyle = 'rgba(244,243,240,.55)'; ctx.lineWidth = 1.5; ctx.beginPath(); sup.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.stroke();
+    // schiuma sulle creste: dove l'onda è più alta
+    for (let i = 1; i < sup.length - 1; i++) if (sup[i][1] < sup[i - 1][1] && sup[i][1] <= sup[i + 1][1] && sup[i][1] < SEA - 3) for (let j = 0; j < 4; j++) { ctx.fillStyle = 'rgba(244,243,240,' + (.5 - j * .1) + ')'; ctx.fillRect(sup[i][0] - 6 + j * 4 + Math.sin(S.A * 5 + j + i) * 1.5, sup[i][1] - 1 + (j % 2), 2.2, 1.4); }
     const w0 = onda(S.cam + DX), h = w0 - fondo();
     ctx.fillStyle = 'rgba(0,0,0,' + cl(.5 - h / 200, .08, .5) + ')'; ctx.beginPath(); ctx.ellipse(DX, w0 + 2, 18 + h * .08, 3, 0, 0, 6.2832); ctx.fill();
     if (h < 30 && S.mode === 'volo') { ctx.strokeStyle = 'rgba(207,227,236,' + (.5 - h / 60) + ')'; ctx.lineWidth = 1.2; for (let j = 0; j < 2; j++) { const r = ((S.A * 60 + j * 20) % 40) + 14; ctx.beginPath(); ctx.ellipse(DX, w0 + 1, r, r * .18, 0, 0, 6.2832); ctx.stroke(); } }
@@ -578,17 +596,29 @@ function creaR3() {
   function camera(dt) { const k = 1 - Math.pow(.004, dt), m = [lerp(S.drone.x, S.barca.x, .35), lerp(S.drone.y, S.barca.y + PADY, .35)]; S.cam.x = lerp(S.cam.x, m[0], k); S.cam.y = lerp(S.cam.y, m[1], k); }
   // ---- disegno del round 3 ----
   const ONDE = Array.from({ length: 70 }, (_, i) => [rnd() * 700 - 350, rnd() * 1400 - 700, 6 + rnd() * 14, rnd() * 6.28]);
+  const LUNGHE = Array.from({ length: 9 }, () => [rnd() * 700 - 350, rnd() * 1400 - 700, 90 + rnd() * 120]);
+  const SCHIUMA = [];
   function disegna() {
     const k = scale * dpr, z = 1.45, ox = VW / 2 - S.cam.x * z, oy = VH / 2 - S.cam.y * z;
     let sx = 0, sy = 0; if (G.scossa > 0) { sx = (rnd() - .5) * G.scossa * 3; sy = (rnd() - .5) * G.scossa * 3; }
     ctx.setTransform(k, 0, 0, k, 0, 0);
-    const g = ctx.createLinearGradient(0, 0, 0, VH); g.addColorStop(0, '#0c2230'); g.addColorStop(1, '#071520'); ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH);
+    const g = ctx.createLinearGradient(0, 0, VW, VH); g.addColorStop(0, '#12303e'); g.addColorStop(.55, '#0a2230'); g.addColorStop(1, '#06131c'); ctx.fillStyle = g; ctx.fillRect(0, 0, VW, VH);
+    // il sole basso a destra accende un angolo del mare
+    const sole = ctx.createRadialGradient(VW * .95, VH * .08, 10, VW * .95, VH * .08, VH * .8); sole.addColorStop(0, 'rgba(255,200,90,.32)'); sole.addColorStop(.4, 'rgba(255,170,60,.08)'); sole.addColorStop(1, 'rgba(255,170,60,0)');
+    ctx.fillStyle = sole; ctx.fillRect(0, 0, VW, VH);
     ctx.setTransform(k * z, 0, 0, k * z, k * (ox + sx), k * (oy + sy));
+    // onde lunghe: chiazze di luce che scorrono piano
+    LUNGHE.forEach(o => { const x = ((o[0] - S.cam.x * .9 + S.A * 6) % 700 + 1050) % 700 - 350 + S.cam.x, y = ((o[1] - S.cam.y * .9 + S.A * 9) % 1400 + 2100) % 1400 - 700 + S.cam.y; const lg = ctx.createRadialGradient(x, y, 4, x, y, o[2]); lg.addColorStop(0, 'rgba(90,150,175,.13)'); lg.addColorStop(1, 'rgba(90,150,175,0)'); ctx.fillStyle = lg; ctx.fillRect(x - o[2], y - o[2], o[2] * 2, o[2] * 2); });
     // onde che scorrono (si ripetono intorno alla camera)
     ctx.lineCap = 'round';
     ONDE.forEach(o => { const x = ((o[0] - S.cam.x) % 700 + 1050) % 700 - 350 + S.cam.x, y = ((o[1] - S.cam.y + S.A * 10) % 1400 + 2100) % 1400 - 700 + S.cam.y; ctx.strokeStyle = 'rgba(207,227,236,' + (.08 + .06 * Math.sin(S.A * 2 + o[3])) + ')'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(x - o[2], y); ctx.quadraticCurveTo(x, y - 3, x + o[2], y); ctx.stroke(); });
     // riflessi d'oro del tramonto
-    for (let j = 0; j < 18; j++) { const x = S.cam.x - 150 + ((j * 53 + S.A * 6) % 300), y = S.cam.y - 260 + j * 31; ctx.fillStyle = 'rgba(255,210,31,' + (.05 + .05 * Math.sin(S.A * 3 + j)) + ')'; ctx.fillRect(x, y, 16 + (j % 4) * 6, 1.6); }
+    for (let j = 0; j < 30; j++) { const x = S.cam.x - 150 + ((j * 53 + S.A * 6) % 300), y = S.cam.y - 260 + j * 19, vic = 1 - cl(Math.hypot(x - S.cam.x - 110, y - S.cam.y + 250) / 380, 0, 1); ctx.fillStyle = 'rgba(255,215,120,' + (.04 + .14 * vic) * (.6 + .4 * Math.sin(S.A * 3 + j * 1.3)) + ')'; ctx.fillRect(x, y, 10 + (j % 4) * 7, 1.6); }
+    // schiuma della scia: nasce dietro gli scafi e si allarga
+    if (rnd() < .9) SCHIUMA.push([S.barca.x + (rnd() < .5 ? -24 : 24) + (rnd() - .5) * 6, S.barca.y + 58, 1 + rnd() * 1.5, 1]);
+    for (let j = SCHIUMA.length - 1; j >= 0; j--) { const f = SCHIUMA[j]; f[3] -= .006; f[2] += .03; if (f[3] <= 0) { SCHIUMA.splice(j, 1); continue; } dot(f[0], f[1], f[2], 'rgba(244,243,240,' + f[3] * .35 + ')'); }
+    // onda di prua
+    [-24, 24].forEach(sx2 => { for (let j = 0; j < 5; j++) dot(S.barca.x + sx2 + (j - 2) * 3, S.barca.y - 62 + Math.abs(j - 2) * 2 + Math.sin(S.A * 6 + j) * .8, 1.3, 'rgba(244,243,240,.45)'); });
     barca();
     // strisce di vento
     if (Math.hypot(S.vento.x, S.vento.y) > 12) { const a = Math.atan2(S.vento.y, S.vento.x), n = Math.hypot(S.vento.x, S.vento.y); for (let j = 0; j < 14; j++) { const t = ((S.A * 2.2 + j * .37) % 1), x = S.cam.x - 160 + ((j * 71) % 320) + Math.cos(a) * t * 120, y = S.cam.y - 300 + ((j * 113) % 600) + Math.sin(a) * t * 120; ctx.strokeStyle = 'rgba(244,243,240,' + (.25 * Math.sin(t * Math.PI) * n / 90) + ')'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * 26, y + Math.sin(a) * 26); ctx.stroke(); } }
@@ -622,6 +652,11 @@ function creaR3() {
     ctx.strokeStyle = 'rgba(244,243,240,.18)'; ctx.lineWidth = .8; for (let j = 0; j < 8; j++) { ctx.beginPath(); ctx.moveTo(-16, -LUNG / 2 + 18 + j * 5); ctx.lineTo(16, -LUNG / 2 + 18 + j * 5); ctx.stroke(); }
     ctx.fillStyle = '#c9b38a'; ctx.fillRect(-16, -2, 32, 58);
     ctx.strokeStyle = 'rgba(90,70,40,.5)'; for (let j = 0; j < 7; j++) { ctx.beginPath(); ctx.moveTo(-16, j * 8); ctx.lineTo(16, j * 8); ctx.stroke(); }
+    // cuscini e timone
+    ctx.fillStyle = '#e9e1cf'; rr(-15, -1, 8, 14, 2); ctx.fill(); rr(7, -1, 8, 14, 2); ctx.fill(); ctx.fillStyle = ORO; ctx.fillRect(-15, 5, 8, 1); ctx.fillRect(7, 5, 8, 1);
+    ctx.strokeStyle = '#3a2a22'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.arc(-24, 30, 3.2, 0, 6.2832); ctx.stroke();
+    // due persone sui cuscini che salutano il drone
+    [[-11, 6, '#e2483d'], [11, 6, '#3f8fd1']].forEach((q, k) => { const sv = Math.sin(S.A * 8 + k * 2) * .6; ctx.strokeStyle = '#e8c4a0'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(q[0] + (k ? 2.5 : -2.5), q[1]); ctx.lineTo(q[0] + (k ? 5 : -5) + sv, q[1] - 5); ctx.stroke(); dot(q[0] + 1, q[1] + 1.5, 3.6, 'rgba(0,0,0,.25)'); dot(q[0], q[1], 3.3, q[2]); dot(q[0], q[1] - .4, 1.7, '#2a1d16'); });
     ctx.restore();
     // piazzola H (oscilla con il mare) e anello che si riempie mentre scendi
     const pu = 1 + .06 * Math.sin(S.A * 6);

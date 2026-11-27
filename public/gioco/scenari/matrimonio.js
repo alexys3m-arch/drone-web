@@ -34,6 +34,22 @@ for (let i = 0; i < 44; i++) {
   guests.push({ x: p0[0], y: p0[1], c: COL[i % COL.length], ph: rnd() * 6.28,
     P: [p0, [PORTA.x + side * (30 + col * 8), PORTA.y + 14 + row * 7.5], tav, i % 2 === 0 ? [DANCE.x + Math.cos(da) * 70, DANCE.y + Math.sin(da) * 70] : tav] });
 }
+// decorazioni: hanno un generatore loro, così invitati e petali restano dove erano
+let seme2 = 99;
+const rnd2 = () => { seme2 = (seme2 * 1664525 + 1013904223) >>> 0; return seme2 / 4294967296; };
+const FIORI = ['#f4f3f0', '#e7b8a8', '#ffd21f', '#c9a2d8', '#f0a3a3'];
+const ERBA = Array.from({ length: 650 }, () => [rnd2() * W, rnd2() * H, rnd2(), FIORI[Math.floor(rnd2() * FIORI.length)]]);
+// siepe ai lati del viale
+const SIEPE = [];
+for (let u = .02; u < .97; u += .022) { const p = bez(u), q = bez(u + .01), a = Math.atan2(q[1] - p[1], q[0] - p[0]); [-27, 27].forEach(o => SIEPE.push([p[0] - Math.sin(a) * o, p[1] + Math.cos(a) * o, 6 + rnd2() * 2.5])); }
+// luci appese sopra i tavoli: pali e fili a festone
+const PALI = [[268, 500], [470, 548], [482, 735], [300, 760], [242, 640]];
+const FILI = [[0, 1], [1, 2], [2, 3], [3, 4], [4, 0], [0, 2], [1, 3]];
+// petali che volano nell'aria intorno alla camera
+const VOLO = Array.from({ length: 34 }, () => [rnd2() * 300, rnd2() * 520, rnd2() * 6.28, rnd2() < .5 ? '#f4f3f0' : '#f0b8b0']);
+const CAPELLI = ['#2a1d16', '#5a3a22', '#b78a4a', '#1b1b1d', '#8a6a4a'];
+guests.forEach((g, i) => { g.cap = CAPELLI[(i * 3) % 5]; g.a = 1.57; });
+
 const phase = T => T < 11 ? 0 : T < 20.4 ? 1 : T < 29.4 ? 2 : 3;
 const sposi = S => [(S.sc.sposa.x + S.sc.sposo.x) / 2, (S.sc.sposa.y + S.sc.sposo.y) / 2];
 const angolo = (c, d) => Math.atan2(d.y - c.y, d.x - c.x);
@@ -78,14 +94,49 @@ function mondo(S, dt) {
   sc.rice.forEach(r => { r.x += r.vx * dt; r.y += r.vy * dt; r.l -= dt; }); sc.rice = sc.rice.filter(r => r.l > 0);
 }
 
+// una persona vista dall'alto: ombra, spalle (vestito), testa (capelli). a = direzione verso cui guarda
+function persona(g, x, y, a, vestito, cap, sc) {
+  const ctx = g.ctx; sc = sc || 1;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(a + 1.5708); ctx.scale(sc, sc);
+  ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.beginPath(); ctx.ellipse(1.6, 2.2, 4.4, 2.9, 0, 0, 6.2832); ctx.fill();
+  ctx.fillStyle = vestito; ctx.beginPath(); ctx.ellipse(0, .6, 4.3, 2.7, 0, 0, 6.2832); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.16)'; ctx.beginPath(); ctx.ellipse(-1, 0, 2.6, 1.2, 0, 0, 6.2832); ctx.fill();
+  ctx.fillStyle = cap; ctx.beginPath(); ctx.arc(0, -.3, 1.95, 0, 6.2832); ctx.fill();
+  ctx.restore();
+}
+// la sposa: abito ampio, strascico e velo che seguono il movimento
+function sposa(g, x, y, a, t) {
+  const ctx = g.ctx;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(a + 1.5708);
+  ctx.fillStyle = 'rgba(0,0,0,.28)'; ctx.beginPath(); ctx.ellipse(2, 4, 7, 9, 0, 0, 6.2832); ctx.fill();
+  ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.beginPath(); ctx.moveTo(-4, 2); ctx.quadraticCurveTo(0, 15 + Math.sin(t * 3) * 1.2, 4, 2); ctx.fill();
+  ctx.fillStyle = '#fbf8f2'; ctx.beginPath(); ctx.arc(0, 1.2, 6.2, 0, 6.2832); ctx.fill();
+  ctx.strokeStyle = 'rgba(201,162,39,.55)'; ctx.lineWidth = .6; ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,.7)'; ctx.beginPath(); ctx.ellipse(0, 3.5, 3.2, 6, 0, 0, 6.2832); ctx.fill();
+  ctx.fillStyle = '#6a4a30'; ctx.beginPath(); ctx.arc(0, -.6, 2.1, 0, 6.2832); ctx.fill();
+  ctx.fillStyle = '#ffd21f'; ctx.beginPath(); ctx.arc(0, -3.6, 1.3, 0, 6.2832); ctx.fill();
+  ctx.restore();
+}
+function sposo(g, x, y, a) {
+  persona(g, x, y, a, '#1d2230', '#2a1d16', 1.15);
+  const ctx = g.ctx; ctx.save(); ctx.translate(x, y); ctx.rotate(a + 1.5708); ctx.fillStyle = '#f4f3f0'; ctx.fillRect(-.7, -2.4, 1.4, 1.6); ctx.restore();
+}
+function direzione(o, px, py) { const dx = o.x - px, dy = o.y - py; if (dx * dx + dy * dy > .02) o.a = Math.atan2(dy, dx); }
+
 function disegna(S, g) {
   const ctx = g.ctx, { dot, rr, poly } = g, T = S.T, A = S.A, cx = S.cam.x, cy = S.cam.y, sc = S.sc;
   ctx.fillStyle = PRATO; ctx.fillRect(cx - 500, cy - 700, 1000, 1400);
   for (let i = -26; i < 40; i += 2) poly([[i * 46, -300], [i * 46 + 46, -300], [i * 46 + 46 + 560, H + 300], [i * 46 + 560, H + 300]], 'rgba(255,255,255,.035)');
+  ERBA.forEach(e => {
+    if (Math.abs(e[0] - cx) > 200 || Math.abs(e[1] - cy) > 330) return;
+    if (e[2] < .14) { dot(e[0], e[1], 1.3, e[3]); dot(e[0], e[1], .5, '#ffd21f'); }
+    else { ctx.strokeStyle = e[2] < .6 ? 'rgba(10,20,12,.35)' : 'rgba(150,190,120,.16)'; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(e[0], e[1]); ctx.lineTo(e[0] - 1, e[1] - 2.6); ctx.moveTo(e[0] + 1.2, e[1]); ctx.lineTo(e[0] + 1.6, e[1] - 2.2); ctx.stroke(); }
+  });
   // viale e piazzale davanti alla villa
   const viale = () => { ctx.beginPath(); ctx.moveTo(B0[0], B0[1] + 400); ctx.lineTo(B0[0], B0[1]); ctx.quadraticCurveTo(B1[0], B1[1], B2[0], B2[1]); };
   ctx.lineCap = 'round'; ctx.strokeStyle = GHIAIA; ctx.lineWidth = 30; viale(); ctx.stroke();
   dot(PIAZZALE.x, PIAZZALE.y, PIAZZALE.r, GHIAIA);
+  SIEPE.forEach(q => { if (Math.abs(q[0] - cx) > 220 || Math.abs(q[1] - cy) > 350) return; dot(q[0] + 2.5, q[1] + 3, q[2], 'rgba(0,0,0,.3)'); dot(q[0], q[1], q[2], '#24402a'); dot(q[0] - q[2] * .3, q[1] - q[2] * .3, q[2] * .55, '#2f5536'); });
   ctx.strokeStyle = 'rgba(244,243,240,.13)'; ctx.lineWidth = 1; ctx.setLineDash([3, 5]); viale(); ctx.stroke(); ctx.setLineDash([]);
   // vialetti di pietre: villa -> tavoli, cappella -> tavoli
   ctx.fillStyle = 'rgba(244,243,240,.2)';
@@ -124,7 +175,12 @@ function disegna(S, g) {
   ctx.fillStyle = ORO; ctx.fillRect(C.x + C.w / 2 - 1.6, C.y + 8, 3.2, 18); ctx.fillRect(C.x + C.w / 2 - 6, C.y + 13, 12, 3.2);
   ctx.restore();
   // tavoli
-  TABLES.forEach(t => { dot(t[0] + 3, t[1] + 4, 11, 'rgba(0,0,0,.3)'); dot(t[0], t[1], 10.5, '#efe6d2'); dot(t[0], t[1], 2.6, ORO); });
+  TABLES.forEach(t => {
+    for (let k = 0; k < 8; k++) { const a = k * .785 + .39; ctx.fillStyle = '#e9dfc9'; rr(t[0] + Math.cos(a) * 15 - 2.2, t[1] + Math.sin(a) * 15 - 2.2, 4.4, 4.4, 1.4); ctx.fill(); }
+    dot(t[0] + 3, t[1] + 4, 11.5, 'rgba(0,0,0,.3)'); dot(t[0], t[1], 11.2, '#f6f1e6'); ctx.strokeStyle = 'rgba(201,162,39,.5)'; ctx.lineWidth = .7; ctx.stroke();
+    for (let k = 0; k < 8; k++) { const a = k * .785 + .39; dot(t[0] + Math.cos(a) * 8, t[1] + Math.sin(a) * 8, 1.5, '#fff'); }
+    dot(t[0], t[1], 3.4, '#4f7a45'); [[-1.4, -1, '#f0a3a3'], [1.5, -.6, '#fbf8f2'], [0, 1.6, '#ffd21f'], [-.6, .6, '#e7b8a8']].forEach(f => dot(t[0] + f[0], t[1] + f[1], 1.1, f[2]));
+  });
   // pista da ballo a scacchi
   const d = DANCE, c = d.s / 6, px = d.x - d.s / 2, py = d.y - d.s / 2;
   ctx.fillStyle = 'rgba(0,0,0,.3)'; ctx.fillRect(px + 4, py + 5, d.s, d.s);
@@ -136,23 +192,56 @@ function disegna(S, g) {
   // tavolo della torta
   ctx.fillStyle = 'rgba(0,0,0,.3)'; rr(CAKE.x - 12, CAKE.y - 5, 30, 18, 3); ctx.fill();
   ctx.fillStyle = '#efe6d2'; rr(CAKE.x - 15, CAKE.y - 9, 30, 18, 3); ctx.fill();
-  dot(CAKE.x, CAKE.y, 6.5, '#fff'); ctx.strokeStyle = ORO; ctx.lineWidth = .8; ctx.stroke(); dot(CAKE.x, CAKE.y, 4.2, '#fff'); ctx.stroke(); dot(CAKE.x, CAKE.y, 1.9, ORO);
+  dot(CAKE.x + 1.5, CAKE.y + 2, 7.5, 'rgba(0,0,0,.2)'); [[7, '#fffaf0'], [5.2, '#fff'], [3.4, '#fffaf0']].forEach(c => { dot(CAKE.x, CAKE.y, c[0], c[1]); ctx.strokeStyle = ORO; ctx.lineWidth = .8; ctx.stroke(); }); dot(CAKE.x - .8, CAKE.y - .8, 1.3, '#f0a3a3'); dot(CAKE.x + .9, CAKE.y - .3, 1.1, '#fbf8f2');
   // brindisi ai tavoli
   if (T > 20.4 && T < 29.4) TABLES.forEach((t, i) => { for (let k = 0; k < 3; k++) { const a = A * 3 + i * 2 + k * 2.1; ctx.globalAlpha = .5 + .5 * Math.sin(A * 9 + i + k * 2); dot(t[0] + Math.cos(a) * 7, t[1] + Math.sin(a) * 7, 1.3, GIALLO); } ctx.globalAlpha = 1; });
   // auto
   ctx.save(); ctx.translate(sc.car.x, sc.car.y); ctx.rotate(sc.car.a + 1.5708);
-  ctx.fillStyle = 'rgba(0,0,0,.35)'; rr(-4, -8, 12, 22, 3.5); ctx.fill();
-  ctx.fillStyle = '#f1ece0'; rr(-6, -11, 12, 22, 3.5); ctx.fill();
-  ctx.fillStyle = '#23262b'; rr(-4.5, -6, 9, 5, 1.5); ctx.fill(); rr(-4.5, 4, 9, 3.5, 1.2); ctx.fill();
-  ctx.strokeStyle = ORO; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, -11); ctx.lineTo(-4.5, -6); ctx.moveTo(0, -11); ctx.lineTo(4.5, -6); ctx.stroke();
+  const corre = T > 3 && T < 11.2, sb = corre ? Math.sin(A * 22) : 0;
+  // lattine legate dietro: ballano quando l'auto corre
+  ctx.strokeStyle = 'rgba(244,243,240,.6)'; ctx.lineWidth = .5;
+  [[-3, 1.2], [0, -.8], [3, .9]].forEach((l, k) => { const lx = l[0] + sb * (k - 1) * .8, ly = 21 + k % 2 * 3 + Math.abs(sb) * 1.5; ctx.beginPath(); ctx.moveTo(l[0] * .5, 12); ctx.lineTo(lx, ly); ctx.stroke(); dot(lx, ly, 1.4, '#b9bec4'); });
+  ctx.fillStyle = 'rgba(0,0,0,.35)'; rr(-4.5, -10, 14, 26, 5); ctx.fill();
+  ctx.fillStyle = '#15161a'; [[-7.6, -8], [5.4, -8], [-7.6, 5], [5.4, 5]].forEach(w => { rr(w[0], w[1], 2.4, 5, 1); ctx.fill(); });
+  ctx.fillStyle = '#f3ecdc'; rr(-6.5, -13, 13, 26, 5); ctx.fill(); ctx.strokeStyle = 'rgba(0,0,0,.25)'; ctx.lineWidth = .6; ctx.stroke();
+  ctx.fillStyle = '#e4dccb'; rr(-5, -4, 10, 9, 3); ctx.fill();
+  ctx.fillStyle = '#2a3038'; rr(-4.6, -7.5, 9.2, 3.6, 1.2); ctx.fill(); rr(-4.2, 5.4, 8.4, 2.6, 1); ctx.fill();
+  ctx.fillStyle = '#c7cdd3'; ctx.fillRect(-5.5, -13.2, 11, 1.2); ctx.fillRect(-5.5, 12.2, 11, 1.2);
+  ctx.strokeStyle = ORO; ctx.lineWidth = 1.1; ctx.beginPath(); ctx.moveTo(-5.5, -12.5); ctx.lineTo(0, -8.5); ctx.lineTo(5.5, -12.5); ctx.stroke();
+  dot(0, -9, 1.7, '#fbf8f2'); dot(0, -9, .8, '#f0a3a3');
   ctx.restore();
   // invitati e sposi
-  guests.forEach(gu => { dot(gu.x + 1.2, gu.y + 1.6, 3.2, 'rgba(0,0,0,.35)'); dot(gu.x, gu.y, 3.1, gu.c); });
+  const fase = phase(T);
+  guests.forEach(gu => {
+    direzione(gu, gu.lx == null ? gu.x : gu.lx, gu.ly == null ? gu.y : gu.ly); gu.lx = gu.x; gu.ly = gu.y;
+    // fermi guardano qualcosa: la porta della cappella, la pista o il proprio tavolo
+    let a = gu.a; const m = gu.P[fase];
+    if (Math.hypot(gu.x - m[0], gu.y - m[1]) < 2) { const c = fase === 1 ? [PORTA.x, PORTA.y] : fase === 3 && Math.hypot(m[0] - DANCE.x, m[1] - DANCE.y) < 80 ? [DANCE.x, DANCE.y] : TABLES.reduce((b, t) => Math.hypot(t[0] - gu.x, t[1] - gu.y) < Math.hypot(b[0] - gu.x, b[1] - gu.y) ? t : b); a = Math.atan2(c[1] - gu.y, c[0] - gu.x); }
+    persona(g, gu.x, gu.y, a, gu.c, gu.cap);
+  });
   if (T > 12.8) {
-    dot(sc.sposo.x + 1.2, sc.sposo.y + 1.6, 3.8, 'rgba(0,0,0,.35)'); dot(sc.sposo.x, sc.sposo.y, 3.7, '#15161a'); ctx.strokeStyle = CREMA; ctx.lineWidth = 1; ctx.stroke();
-    ctx.globalAlpha = .45; dot(sc.sposa.x, sc.sposa.y + 2, 7.5, '#fff'); ctx.globalAlpha = 1; dot(sc.sposa.x, sc.sposa.y, 4.3, '#fff');
+    const so = sc.sposo, sa = sc.sposa;
+    direzione(so, so.lx == null ? so.x : so.lx, so.ly == null ? so.y : so.ly); so.lx = so.x; so.ly = so.y;
+    direzione(sa, sa.lx == null ? sa.x : sa.lx, sa.ly == null ? sa.y : sa.ly); sa.lx = sa.x; sa.ly = sa.y;
+    sposo(g, so.x, so.y, so.a == null ? 1.57 : so.a); sposa(g, sa.x, sa.y, sa.a == null ? 1.57 : sa.a, A);
   }
   sc.rice.forEach(r => { ctx.globalAlpha = cl(r.l * 2, 0, 1); dot(r.x, r.y, 1, '#fff'); }); ctx.globalAlpha = 1;
+  // festoni di luci tra i pali: si accendono di più verso sera
+  const sera = cl((T - 18) / 10, .35, 1);
+  PALI.forEach(p => { dot(p[0] + 2, p[1] + 3, 2.2, 'rgba(0,0,0,.3)'); dot(p[0], p[1], 2, '#3a2a22'); });
+  FILI.forEach(([i, j]) => {
+    const a = PALI[i], b = PALI[j], mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2 + 12;
+    ctx.strokeStyle = 'rgba(30,25,20,.35)'; ctx.lineWidth = .45; ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.quadraticCurveTo(mx, my, b[0], b[1]); ctx.stroke();
+    const n = Math.floor(Math.hypot(b[0] - a[0], b[1] - a[1]) / 13);
+    for (let k = 1; k < n; k++) {
+      const u = k / n, x = (1 - u) * (1 - u) * a[0] + 2 * (1 - u) * u * mx + u * u * b[0], y = (1 - u) * (1 - u) * a[1] + 2 * (1 - u) * u * my + u * u * b[1], fl = .75 + .25 * Math.sin(A * 3 + k * 1.7 + i);
+      ctx.globalCompositeOperation = 'lighter'; ctx.globalAlpha = .16 * sera * fl; dot(x, y, 3.2, '#ffb347'); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = .55 + .45 * sera * fl; dot(x, y, .95, '#fff4c2');
+    }
+    ctx.globalAlpha = 1;
+  });
+  // petali portati dal vento intorno a chi guarda
+  VOLO.forEach(v => { const x = cx - 150 + ((v[0] + A * 9) % 300 + 300) % 300, y = cy - 260 + ((v[1] + A * 14) % 520 + 520) % 520; ctx.save(); ctx.translate(x, y); ctx.rotate(v[2] + A * 1.5); ctx.fillStyle = v[3]; ctx.globalAlpha = .8; ctx.beginPath(); ctx.ellipse(0, 0, 1.6, .8, 0, 0, 6.2832); ctx.fill(); ctx.restore(); });
+  ctx.globalAlpha = 1;
   // alberi: la chioma si sposta rispetto al tronco, come vista dall'alto in movimento
   TREES.forEach(t => {
     if (Math.abs(t[0] - cx) > 330 || Math.abs(t[1] - cy) > 520) return;
