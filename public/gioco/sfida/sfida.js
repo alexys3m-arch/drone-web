@@ -100,6 +100,19 @@ function luce(caldo) {
   try { ctx.globalAlpha = .045; ctx.globalCompositeOperation = 'overlay'; ctx.translate((Math.random() * 96) | 0, (Math.random() * 96) | 0); ctx.fillStyle = trama(); ctx.fillRect(-96, -96, VW + 192, VH + 192); } catch (_) {}
   ctx.restore();
 }
+let scattoTimer = 0;
+function nascondiScatto() { clearTimeout(scattoTimer); const el = $('scatto'); if (el) { el.classList.remove('on'); el.hidden = true; } }
+function mostraScatto(src, titolo, giudizio) {
+  if (!src || G.fase !== 'round') return;
+  const el = $('scatto'); if (!el) return;
+  const tela = el.querySelector('canvas'), tx = tela.getContext('2d');
+  if (src instanceof HTMLCanvasElement) tx.drawImage(src, 0, 0, tela.width, tela.height); else { const im = new Image(); im.onload = () => tx.drawImage(im, 0, 0, tela.width, tela.height); im.src = src; }
+  el.querySelector('figcaption').innerHTML = titolo + (giudizio ? ' · <b>' + giudizio + '</b>' : '');
+  el.hidden = false; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+  clearTimeout(scattoTimer); scattoTimer = setTimeout(() => { el.classList.remove('on'); setTimeout(() => { el.hidden = true; }, 350); }, 2300);
+}
+// vista inclinata, protetta: se qualcosa va storto si torna alla foto dall'alto
+function foto3d(opz) { try { return window.QZVista3D ? window.QZVista3D(opz) : null; } catch (_) { return null; } }
 function schianto(forza) { G.scossa = forza; G.slow = .6; G.flash = .6; vibra([40, 30, 80]); }
 
 // =====================================================================================
@@ -175,7 +188,7 @@ function creaR1() {
       }
     } else if (S.mode === 'fine') {
       S.fine += dt; S.vel.x *= .9; S.vel.y *= .9; suono('rotori', 0, S.alt);
-      if (S.fine > 1.6) R.finito = true;
+      if (S.fine > 2.6) R.finito = true;
     }
     const look = S.mode === 'fly' ? .2 : 0, k = 1 - Math.pow(.003, dt);
     S.cam.x = lerp(S.cam.x, S.drone.x + S.vel.x * look, k); S.cam.y = lerp(S.cam.y, S.drone.y + S.vel.y * look, k);
@@ -186,12 +199,27 @@ function creaR1() {
     const c = proj(S.drone.x, S.drone.y), w = FW * S.zoom, h = FH * S.zoom, k = scale * dpr, t = document.createElement('canvas'); t.width = 240; t.height = 300;
     try { t.getContext('2d').drawImage(cv, (c[0] - w / 2) * k, (c[1] - h / 2) * k, w * k, h * k, 0, 0, 240, 300); S.got[i] = t.toDataURL('image/jpeg', .85); } catch (_) {}
   }
+  const giudizi = [];
+  function scatta3d(i) {
+    const m = SC.momenti[i], sog = m.soggetto ? m.soggetto(S) : [S.drone.x, S.drone.y];
+    let dx = sog[0] - S.drone.x, dy = sog[1] - S.drone.y, d = Math.hypot(dx, dy);
+    if (d < 25) { dx = Math.sin(S.head); dy = -Math.cos(S.head); d = 1; }
+    dx /= d; dy /= d;
+    return foto3d({
+      cam: [sog[0] - dx * 105, sog[1] - dy * 105, 56], target: [sog[0], sog[1], 3], lato: 560, sole: true,
+      cielo: ['#3a2a3a', '#f0b060'], collineLontane: '#3a3326', fondo: '#1c2a1f', scritta: m.s.toUpperCase(),
+      suolo: tc => { const v = ctx; ctx = tc; try { SC.disegna(Object.assign({}, S, { piatto: true, cam: { x: sog[0] + dx * 160, y: sog[1] + dy * 160 } }), kit); } finally { ctx = v; } },
+      oggetti: SC.scena3d ? SC.scena3d(S) : [],
+    });
+  }
   function capture(i) {
     if (!S.got[i]) scatta(i);
+    setTimeout(() => { if (G.round !== R) return; const f3 = scatta3d(i); if (f3) S.got[i] = f3; mostraScatto(S.got[i], SC.momenti[i].s, giudizi[i]); }, 60);
     S.flash = 1;
     const r = parziale().riprese[i], titolo = { perfetta: 'Perfetta!', buona: 'Buona', mossa: S.man[i].mosso ? 'Mossa: troppi scatti' : 'Mossa' }[r.giudizio];
     pop(titolo, '+' + fmt(r.punti) + (r.molt > 1 ? '  combo ×' + String(r.molt).replace('.', ',') : ''), r.giudizio);
     vibra(r.giudizio === 'perfetta' ? [20, 40, 20] : 25); suono('esito', r.giudizio, combo());
+    giudizi[i] = r.giudizio;
     if (r.giudizio === 'perfetta') { G.slow = .35; G.scossa = 2; }
   }
   // ---- disegno del round 1 ----
@@ -441,7 +469,20 @@ function creaR2() {
     S.part.forEach(p => { ctx.globalAlpha = cl(p.l * 2, 0, 1); ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, 2, 2); }); ctx.globalAlpha = 1;
     droneLato(false);
     if (S.mode === 'volo') { altimetro(h, H); avvisoArco(); }
-    if (S.fotoOra) { S.fotoOra = false; fotografa(DX * f(), S.y * f(), 150, 188, "Dentro l'arco"); S.foto = true; }
+    if (S.fotoOra) {
+      S.fotoOra = false; S.foto = true;
+      const img = foto3d({
+        cam: [10, 78, 24], target: [0, -40, 16], lato: 600, sole: true, cielo: ['#2a1c18', '#f0a040'], fondo: '#0c2230', foschia: 'rgba(240,170,80,.8)', scritta: "DENTRO L'ARCO",
+        suolo: tc => { tc.fillStyle = '#0d2534'; tc.fillRect(-400, -500, 800, 900); tc.fillStyle = 'rgba(255,200,90,.35)'; for (let j = 0; j < 90; j++) tc.fillRect(-14 + Math.sin(j * 7.1) * 14, -20 - j * 5, 8 + (j % 5) * 3, 1.4); tc.strokeStyle = 'rgba(200,230,240,.14)'; tc.lineWidth = 1; for (let j = 0; j < 160; j++) { const x0 = Math.sin(j * 12.9) * 300, y0 = Math.cos(j * 4.3) * 400; tc.beginPath(); tc.moveTo(x0 - 6, y0); tc.quadraticCurveTo(x0, y0 - 2, x0 + 6, y0); tc.stroke(); } },
+        oggetti: [
+          { t: 'box', x: -30, y: -40, w: 18, d: 34, h: 52, col: '#4a3d30', top: '#5a4a3a' }, { t: 'box', x: 30, y: -40, w: 18, d: 34, h: 52, col: '#4a3d30', top: '#5a4a3a' },
+          { t: 'box', x: 0, y: -40, w: 78, d: 34, h: 26, z0: 44, col: '#433628', top: '#6b5a44' },
+          { t: 'box', x: -60, y: -120, w: 30, d: 30, h: 70, col: '#3a3128', top: '#4a3f33' }, { t: 'box', x: 70, y: -160, w: 26, d: 26, h: 48, col: '#3a3128', top: '#4a3f33' },
+          { t: 'drone', x: 0, y: -12, z: 9 },
+        ],
+      });
+      if (img) { G.foto.push({ src: img, titolo: "Dentro l'arco" }); mostraScatto(img, "Dentro l'arco", '+2.500'); } else fotografa(DX * f(), S.y * f(), 150, 188, "Dentro l'arco");
+    }
     luce(.16);
   }
   function ostacolo(o) {
@@ -494,15 +535,33 @@ function creaR2() {
     if (x > W2 - 10) { const pu = 1 + .1 * Math.sin(S.A * 7); ctx.fillStyle = GIALLO; ctx.beginPath(); ctx.arc(W2 - 22, y, 14 * pu, 0, 6.2832); ctx.fill(); ctx.fillStyle = '#111113'; ctx.font = "400 9px 'Archivo Black', sans-serif"; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('ARCO', W2 - 22, y + 1); ctx.textAlign = 'left'; }
     else if (x > DX + 30) { ctx.strokeStyle = 'rgba(255,210,31,' + (.5 + .4 * Math.sin(S.A * 8)) + ')'; ctx.setLineDash([4, 5]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x - ARCO.w / 2 + 6, y); ctx.lineTo(x + ARCO.w / 2 - 6, y); ctx.stroke(); ctx.setLineDash([]); }
   }
+  // drone moderno di profilo: scocca affusolata color grafite con filetto d'oro, bracci sottili, eliche sfocate, gimbal con lente
   function droneLato(riflesso) {
-    const tilt = cl(-.1 - S.vy * .0006, -.3, .15);
-    ctx.save(); ctx.translate(DX, S.y); ctx.rotate(S.mode === 'schianto' ? S.fine * 2.4 : tilt);
-    ctx.strokeStyle = '#8f949b'; ctx.lineWidth = 2.4; ctx.beginPath(); ctx.moveTo(-15, -4); ctx.lineTo(15, -4); ctx.stroke();
-    [-15, 15].forEach(px => { ctx.fillStyle = '#d7d9dc'; ctx.fillRect(px - 1.5, -8, 3, 5); const s = Math.abs(Math.sin(S.A * 40 + px)); ctx.fillStyle = 'rgba(244,243,240,' + (.25 + .3 * s) + ')'; ctx.fillRect(px - 11, -9.5, 22, 1.8); });
-    ctx.fillStyle = '#e6e8ea'; rr(-11, -6, 22, 8, 3); ctx.fill();
-    ctx.fillStyle = '#2a2d32'; ctx.fillRect(-6, -4, 10, 3);
-    dot(9, 4.5, 3.4, '#15161a'); dot(11, 4.5, 1.4, ORO);
-    if (Math.sin(S.A * 10) > 0) { ctx.fillStyle = '#ff4a3a'; ctx.fillRect(-12, -2, 2, 2); }
+    const tilt = cl(-.12 - S.vy * .0006, -.32, .15);
+    ctx.save(); ctx.translate(DX, S.y); ctx.rotate(S.mode === 'schianto' ? S.fine * 2.4 : tilt); ctx.scale(1.12, 1.12);
+    // bracci e motori
+    ctx.strokeStyle = '#2b2f36'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(-6, -2); ctx.lineTo(-17, -6); ctx.moveTo(6, -2); ctx.lineTo(16, -6); ctx.stroke();
+    [-17, 16].forEach(px => { ctx.fillStyle = '#1b1e23'; rr(px - 2.6, -9, 5.2, 4.2, 1.2); ctx.fill(); ctx.fillStyle = ORO; ctx.fillRect(px - 2.6, -6.2, 5.2, .9); });
+    // eliche: dischi sfocati con una pala che gira
+    [-17, 16].forEach((px, k) => {
+      const g = ctx.createLinearGradient(px - 13, 0, px + 13, 0); g.addColorStop(0, 'rgba(230,235,240,0)'); g.addColorStop(.5, 'rgba(230,235,240,.42)'); g.addColorStop(1, 'rgba(230,235,240,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(px, -9.8, 13, 1.5, 0, 0, 6.2832); ctx.fill();
+      const p = Math.sin(S.A * 46 + k * 1.3); ctx.fillStyle = 'rgba(30,33,38,.55)'; ctx.beginPath(); ctx.ellipse(px + p * 6, -9.8, 3.6 * Math.abs(p) + .6, 1, 0, 0, 6.2832); ctx.fill();
+    });
+    // scocca
+    const gb = ctx.createLinearGradient(0, -6, 0, 5); gb.addColorStop(0, '#5a626d'); gb.addColorStop(.45, '#353b43'); gb.addColorStop(1, '#1a1d22');
+    ctx.fillStyle = gb; ctx.beginPath(); ctx.moveTo(14, 1.2); ctx.quadraticCurveTo(12, -4.5, 3, -5.5); ctx.lineTo(-10, -4.6); ctx.quadraticCurveTo(-15, -3.5, -15.5, .2); ctx.quadraticCurveTo(-14, 3.6, -9, 3.8); ctx.lineTo(7, 3.9); ctx.quadraticCurveTo(12.5, 3.6, 14, 1.2); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(10, -3.2); ctx.quadraticCurveTo(4, -5.3, -9, -4.3); ctx.stroke();   // riflesso sul dorso
+    ctx.strokeStyle = ORO; ctx.lineWidth = .9; ctx.beginPath(); ctx.moveTo(12, .6); ctx.lineTo(-13.5, .4); ctx.stroke();   // filetto d'oro
+    ctx.fillStyle = '#0d0f12'; dot(12.2, -1.6, 1, '#0d0f12'); dot(9.8, -2.6, .9, '#0d0f12');   // sensori
+    // gimbal e camera
+    ctx.fillStyle = '#1b1e23'; ctx.fillRect(8.4, 3.4, 2.2, 2.4);
+    dot(10.5, 7.2, 3.3, '#14161a');
+    const gl = ctx.createRadialGradient(11.6, 6.6, .2, 11.8, 7.2, 2); gl.addColorStop(0, '#9fe3ff'); gl.addColorStop(.5, '#2a6f8f'); gl.addColorStop(1, '#0b1a22');
+    ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(11.8, 7.2, 1.8, 0, 6.2832); ctx.fill(); dot(12.4, 6.5, .45, '#fff');
+    // luci di navigazione
+    dot(13.4, 1.8, .8, '#39d27a'); if (Math.sin(S.A * 9) > 0) { dot(-15, -.4, 1.2, '#ff4a3a'); ctx.globalAlpha = .35; dot(-15, -.4, 3, '#ff4a3a'); ctx.globalAlpha = 1; }
     ctx.restore();
     if (S.mode === 'volo' && !riflesso) {
       const z = ZONE[S.zona];
@@ -533,7 +592,7 @@ function creaR2() {
 // ROUND 3 · il catamarano: atterrare sulla barca in movimento, con le raffiche di vento
 // =====================================================================================
 function creaR3() {
-  const DUR = 22, VMAX = 150, PAD = 15, ALT0 = 30, DISCESA = 6.5, SALITA = 3, VREL = 48;
+  const DUR = 26, VMAX = 150, PAD = 15, ALT0 = 30, DISCESA = 8, SALITA = 2.4, VREL = 58;
   const S = { mode: 'volo', T: 0, A: 0, drone: { x: 0, y: 260 }, vel: { x: 0, y: 0 }, alt: ALT0, head: 0, cam: { x: 0, y: 150 },
     barca: { x: 0, y: 0, vx: 0, vy: -26 }, vento: { x: 0, y: 0 }, raffica: null, prossima: 2.2, fine: 0, motivo: '', part: [], esito: null, vela: 0, foto: false, scia: [] };
   // geometria della barca, in coordinate della barca (prua verso l'alto)
@@ -565,8 +624,8 @@ function creaR3() {
     if (S.mode === 'fine') { S.fine += dt; S.drone.x += S.barca.vx * dt; S.drone.y += S.barca.vy * dt; if (S.fine > 2) R.finito = true; camera(dt); return; }
     S.T += dt;
     // raffiche: sempre più forti, ognuna annunciata dalle strisce di vento
-    if (S.T > S.prossima && !S.raffica) { const forza = 45 + 45 * cl(S.T / DUR, 0, 1), a = (rnd() < .5 ? 0 : Math.PI) + (rnd() - .5) * .9; S.raffica = { t: 0, dur: 1.3 + rnd() * .8, x: Math.cos(a) * forza, y: Math.sin(a) * forza * .6 }; suono('vento', forza / 90); }
-    if (S.raffica) { const r = S.raffica; r.t += dt; const k = Math.sin(Math.PI * cl(r.t / r.dur, 0, 1)); S.vento.x = r.x * k; S.vento.y = r.y * k; if (r.t >= r.dur) { S.raffica = null; S.prossima = S.T + 1.4 + rnd() * 1.4; } }
+    if (S.T > S.prossima && !S.raffica) { const forza = 32 + 34 * cl(S.T / DUR, 0, 1), a = (rnd() < .5 ? 0 : Math.PI) + (rnd() - .5) * .9; S.raffica = { t: -.8, dur: 1.3 + rnd() * .8, x: Math.cos(a) * forza, y: Math.sin(a) * forza * .6 }; suono('vento', forza / 90); if (!S.avvisato) { S.avvisato = true; toast('Guarda la manica: spingi contro il vento'); } }
+    if (S.raffica) { const r = S.raffica; r.t += dt; const k = r.t < 0 ? 0 : Math.sin(Math.PI * cl(r.t / r.dur, 0, 1)); S.vento.x = r.x * k; S.vento.y = r.y * k; if (r.t >= r.dur) { S.raffica = null; S.prossima = S.T + 1.6 + rnd() * 1.6; } }
     else { S.vento.x *= .9; S.vento.y *= .9; }
     const i = AUTO ? auto() : leva(), k = 1 - Math.exp(-dt / .22);
     S.vel.x = lerp(S.vel.x, i[0] * VMAX, k); S.vel.y = lerp(S.vel.y, i[1] * VMAX, k);
@@ -577,7 +636,7 @@ function creaR3() {
     suono('rotori', v, S.alt);
     // si scende solo sopra la H e con poca velocità rispetto alla barca
     const p = padPos(), d = dist([S.drone.x, S.drone.y], p), rel = Math.hypot(S.vel.x + S.vento.x - S.barca.vx, S.vel.y + S.vento.y - S.barca.vy);
-    S.sopra = d < PAD + 4; S.lento = rel < VREL;
+    S.sopra = d < PAD + 7; S.lento = rel < VREL;
     if (S.sopra && S.lento) S.alt = Math.max(0, S.alt - DISCESA * dt); else S.alt = Math.min(ALT0, S.alt + SALITA * dt);
     if (S.alt < 13 && sullaVela([S.drone.x, S.drone.y])) return cade('Hai preso la vela', true);
     if (S.alt <= 0) {
@@ -592,6 +651,28 @@ function creaR3() {
     camera(dt);
     const raff = S.raffica ? 'raffica!' : '';
     hud(1 - S.T / DUR, 'quota <b>' + S.alt.toFixed(0) + '</b> m', S.sopra ? (S.lento ? 'scendi…' : 'troppo veloce') : raff);
+  }
+  function manica() {
+    if (S.mode !== 'volo') return;
+    const cx = VW / 2, cy = VH - 118, R = S.raffica, prossimo = R && R.t < 0;
+    const vx = prossimo ? R.x : S.vento.x, vy = prossimo ? R.y : S.vento.y, forza = cl(Math.hypot(vx, vy) / 66, 0, 1), a = Math.atan2(vy, vx);
+    ctx.fillStyle = 'rgba(9,10,12,.55)'; rr(cx - 74, cy - 34, 148, 68, 18); ctx.fill(); ctx.strokeStyle = prossimo ? GIALLO : 'rgba(244,243,240,.25)'; ctx.lineWidth = prossimo ? 2 : 1; ctx.stroke();
+    // palo e manica a strisce
+    const px = cx - 38, py = cy;
+    ctx.strokeStyle = '#d9d4c8'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(px, py + 22); ctx.lineTo(px, py - 4); ctx.stroke(); dot(px, py - 4, 2.4, '#d9d4c8');
+    ctx.save(); ctx.translate(px, py - 4); ctx.rotate(forza > .08 ? a : 1.4 + Math.sin(G.A * 2) * .15);
+    const L = 14 + 26 * Math.max(forza, .25), cad = (1 - forza) * 10;
+    for (let k = 0; k < 4; k++) { const x0 = k * L / 4, x1 = (k + 1) * L / 4, h0 = 6 - k * 1.1, h1 = 6 - (k + 1) * 1.1, ond = Math.sin(G.A * 9 + k) * (1.5 - forza); ctx.fillStyle = k % 2 ? '#f4f3f0' : '#ff5a47'; ctx.beginPath(); ctx.moveTo(x0, -h0 + cad * x0 / L + ond * k * .3); ctx.lineTo(x1, -h1 + cad * x1 / L + ond * (k + 1) * .3); ctx.lineTo(x1, h1 + cad * x1 / L + ond * (k + 1) * .3); ctx.lineTo(x0, h0 + cad * x0 / L + ond * k * .3); ctx.closePath(); ctx.fill(); }
+    ctx.restore();
+    // freccia: dove spingere il dito per restare fermo
+    const fx = cx + 30, fy = cy;
+    ctx.font = "700 8.5px 'Space Mono', monospace"; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = 'rgba(244,243,240,.75)';
+    if (forza > .08) {
+      ctx.fillText(prossimo ? 'ARRIVA!' : 'SPINGI', fx, cy - 22);
+      ctx.save(); ctx.translate(fx, fy + 4); ctx.rotate(a + Math.PI); ctx.fillStyle = prossimo ? GIALLO : '#39d27a';
+      ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(2, -9); ctx.lineTo(2, -4); ctx.lineTo(-12, -4); ctx.lineTo(-12, 4); ctx.lineTo(2, 4); ctx.lineTo(2, 9); ctx.closePath(); ctx.fill(); ctx.restore();
+    } else { ctx.fillText('VENTO', fx, cy - 6); ctx.fillText('CALMO', fx, cy + 6); }
+    ctx.textAlign = 'left';
   }
   function camera(dt) { const k = 1 - Math.pow(.004, dt), m = [lerp(S.drone.x, S.barca.x, .35), lerp(S.drone.y, S.barca.y + PADY, .35)]; S.cam.x = lerp(S.cam.x, m[0], k); S.cam.y = lerp(S.cam.y, m[1], k); }
   // ---- disegno del round 3 ----
@@ -633,8 +714,23 @@ function creaR3() {
       // mirino: il punto esatto sotto la camera, da mettere sulla H
       if (S.mode === 'volo') { ctx.strokeStyle = GIALLO; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(x - 6, y); ctx.lineTo(x + 6, y); ctx.moveTo(x, y - 6); ctx.lineTo(x, y + 6); ctx.stroke(); }
     }
-    if (S.fotoOra) { S.fotoOra = false; const p = padPos(); fotografa((p[0] - S.cam.x) * z + VW / 2, (p[1] - S.cam.y) * z + VH / 2, 130, 162, 'Atterraggio'); S.foto = true; }
+    if (S.fotoOra) {
+      S.fotoOra = false; S.foto = true; const p = padPos(), b = S.barca, v = velaPts();
+      const img = foto3d({
+        cam: [p[0] + 70, p[1] + 120, 62], target: [p[0], p[1] - 20, 6], lato: 640, sole: true, cielo: ['#20283a', '#f0a050'], fondo: '#0a2230', foschia: 'rgba(240,170,90,.75)', scritta: 'ATTERRAGGIO',
+        suolo: tc => { const vv = ctx; ctx = tc; try { tc.fillStyle = '#0c2533'; tc.fillRect(b.x - 500, b.y - 600, 1000, 1200); tc.strokeStyle = 'rgba(200,230,240,.13)'; tc.lineWidth = 1.2; for (let j = 0; j < 220; j++) { const x0 = b.x + Math.sin(j * 12.9) * 400, y0 = b.y + Math.cos(j * 4.3) * 500; tc.beginPath(); tc.moveTo(x0 - 8, y0); tc.quadraticCurveTo(x0, y0 - 3, x0 + 8, y0); tc.stroke(); } barca(); } finally { ctx = vv; } },
+        oggetti: [
+          { t: 'box', x: b.x - 24, y: b.y, w: 18, d: 120, h: 7, col: '#efe9dc', top: '#f6f1e6' }, { t: 'box', x: b.x + 24, y: b.y, w: 18, d: 120, h: 7, col: '#efe9dc', top: '#f6f1e6' },
+          { t: 'linea', a: [b.x, b.y + ALBERO, 7], b: [b.x, b.y + ALBERO, 78], col: '#d9d4c8', w: 1.2 },
+          { t: 'tri', x: b.x, y: b.y + ALBERO, pts: [[b.x, b.y + ALBERO, 76], [b.x, b.y + ALBERO, 12], [v[2][0], v[2][1], 12]], col: 'rgba(250,248,240,.95)', bordo: 'rgba(201,162,39,.6)' },
+          { t: 'persona', x: b.x - 11, y: b.y + 6, col: '#e2483d', cap: '#2a1d16' }, { t: 'persona', x: b.x + 11, y: b.y + 6, col: '#3f8fd1', cap: '#5a3a22' },
+          { t: 'drone', x: p[0], y: p[1], z: 9 },
+        ],
+      });
+      if (img) { G.foto.push({ src: img, titolo: 'Atterraggio' }); mostraScatto(img, 'Atterraggio', ''); } else fotografa((p[0] - S.cam.x) * z + VW / 2, (p[1] - S.cam.y) * z + VH / 2, 130, 162, 'Atterraggio');
+    }
     ctx.setTransform(k, 0, 0, k, 0, 0);
+    manica();
     // indicatore della H quando è fuori schermo
     const p = padPos(), ps = [(p[0] - S.cam.x) * z + VW / 2, (p[1] - S.cam.y) * z + VH / 2];
     if (S.mode === 'volo' && (ps[0] < 20 || ps[0] > VW - 20 || ps[1] < 90 || ps[1] > VH - 40)) { const px = cl(ps[0], 30, VW - 30), py = cl(ps[1], 110, VH - 70); dot(px, py, 15, GIALLO); ctx.fillStyle = '#111113'; ctx.font = "800 15px 'Syne', sans-serif"; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('H', px, py + 1); ctx.textAlign = 'left'; }
@@ -673,7 +769,7 @@ function creaR3() {
     nome: 'Il catamarano', comandi: 'leva', finito: false, tick, disegna,
     punti: () => S.esito ? P.puntiR3(Object.assign({ vela: 0 }, S.esito)).punti : (S.vela ? -P.R3.VELA : 0),
     risultato() {
-      if (!S.foto) G.foto.push({ src: null, titolo: 'Atterraggio' });
+      if (!S.foto) G.foto.push({ src: null, titolo: 'Atterraggio' });   // (la foto, se c'è, è già nel montaggio)
       G.d.r3 = S.esito ? Object.assign({ vela: 0 }, S.esito) : { atterrato: 0, precisione: 0, dolcezza: 0, tempo: 0, vela: S.vela };
       const r = P.puntiR3(G.d.r3);
       return { punti: r.punti, riga: S.esito ? (r.maestro ? 'Atterraggio da maestro ×2' : 'Atterrato · centro ' + Math.round(S.esito.precisione * 100) + '%') : (S.vela ? 'Schianto sulla vela' : 'Drone in mare') };
@@ -717,7 +813,7 @@ function nuovaSfida() {
 }
 // cartellone prima di ogni round, con il risultato di quello appena finito
 function presenta(n, prec) {
-  G.fase = 'intro'; G.n = n; G.round = null; tocco = null;
+  G.fase = 'intro'; G.n = n; G.round = null; tocco = null; nascondiScatto();
   const r = ROUND[n - 1];
   $('inum').textContent = 'Round ' + n + ' di 3'; $('inome').textContent = r.nome; $('iobi').textContent = r.obiettivo; $('icom').textContent = r.comando;
   $('icom').className = 'com ' + (n === 2 ? 'tieni' : 'leva');
@@ -767,7 +863,7 @@ function render() {
 // ---------- fine sfida: totale, round per round, video delle riprese, classifica ----------
 let inviato = null, video = null;
 function finale() {
-  G.fase = 'fine'; suono('musica', false);
+  G.fase = 'fine'; suono('musica', false); nascondiScatto();
   traccia('fine');
   const tot = P.calcolaSfida(G.d).totale; G.totale = tot;
   const prima = parseInt(leggi('qz_sfida_record') || '0', 10), nuovo = tot > prima;
@@ -785,7 +881,7 @@ function finale() {
 // il "video": le foto dei tre round che scorrono con un lento zoom, come un montaggio
 function avviaVideo() {
   const c = $('video'), x = c.getContext('2d'), foto = G.foto.filter(f => f.src);
-  const imgs = foto.map(f => { const im = new Image(); im.src = f.src; return { im, titolo: f.titolo }; });
+  const imgs = foto.map(f => { if (f.src instanceof HTMLCanvasElement) return { im: f.src, titolo: f.titolo, tela: true }; const im = new Image(); im.src = f.src; return { im, titolo: f.titolo }; });
   const t0 = performance.now(); if (video) cancelAnimationFrame(video);
   function giro(now) {
     if ($('fine').hidden) return;
@@ -794,7 +890,7 @@ function avviaVideo() {
     if (!n) { x.fillStyle = 'rgba(244,243,240,.5)'; x.font = "700 16px 'Space Mono', monospace"; x.textAlign = 'center'; x.fillText('nessuna', c.width / 2, c.height / 2 - 10); x.fillText('ripresa', c.width / 2, c.height / 2 + 14); x.textAlign = 'left'; }
     if (n) {
       const i = Math.floor(t / 1.6) % n, p = (t % 1.6) / 1.6, im = imgs[i].im, z = 1 + p * .12;
-      if (im.complete && im.naturalWidth) { x.save(); x.translate(c.width / 2, c.height / 2); x.scale(z, z); x.globalAlpha = Math.min(1, p * 5, (1 - p) * 5); x.drawImage(im, -c.width / 2, -c.height / 2, c.width, c.height); x.restore(); x.globalAlpha = 1; }
+      if (imgs[i].tela || (im.complete && im.naturalWidth)) { x.save(); x.translate(c.width / 2, c.height / 2); x.scale(z, z); x.globalAlpha = Math.min(1, p * 5, (1 - p) * 5); x.drawImage(im, -c.width / 2, -c.height / 2, c.width, c.height); x.restore(); x.globalAlpha = 1; }
       x.fillStyle = 'rgba(9,10,12,.65)'; x.fillRect(0, c.height - 30, c.width, 30);
       x.fillStyle = CREMA; x.font = "700 12px 'Space Mono', monospace"; x.textBaseline = 'middle'; x.fillText(imgs[i].titolo.toUpperCase(), 10, c.height - 15);
       if (Math.sin(t * 6) > 0) { x.fillStyle = '#ff4a3a'; x.beginPath(); x.arc(c.width - 16, 16, 5, 0, 6.2832); x.fill(); }

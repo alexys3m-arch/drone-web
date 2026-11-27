@@ -16,6 +16,13 @@
 <style>
   /* ---- solo per la sfida in tre round ---- */
   #hud.via{opacity:0}
+  /* anteprima dello scatto: la foto vista dal drone entra in basso a sinistra */
+  #scatto{position:absolute;z-index:4;left:14px;bottom:calc(max(18px,env(safe-area-inset-bottom)) + 62px);width:46%;max-width:190px;margin:0;padding:6px 6px 0;background:#f5eee0;border-radius:4px;box-shadow:0 0 0 3px #fff,0 14px 30px rgba(0,0,0,.6);transform:translate(-130%,0) rotate(-8deg);transition:transform .45s cubic-bezier(.2,1.4,.4,1);pointer-events:none}
+  #scatto.on{transform:translate(0,0) rotate(-4deg)}
+  #scatto[hidden]{display:none}
+  #scatto canvas{position:static;display:block;width:100%;height:auto;aspect-ratio:4/5;background:#111}
+  #scatto figcaption{font:700 11px 'Space Mono',monospace;letter-spacing:1px;text-transform:uppercase;color:#111113;padding:6px 2px 7px}
+  #scatto figcaption b{color:#8a6d10}
   #rnd{white-space:nowrap;font-size:10px}
   #fine:not([hidden])~.audio{display:none}
   #bat span{min-width:64px}
@@ -86,6 +93,7 @@
   <div id="toast"><i></i><span></span></div>
   <div id="pop"></div>
   <footer id="hint" class="off"></footer>
+  <figure id="scatto" hidden><canvas width="240" height="300" aria-label="Lo scatto visto dal drone"></canvas><figcaption></figcaption></figure>
 
   <section id="start" class="ov">
     <div class="tag">Quota Zero · minigioco</div>
@@ -171,6 +179,7 @@ window.QZMotore = {
 };
 </script>
 <script src="/gioco/scenari/matrimonio.js"></script>
+<script src="/gioco/sfida/vista3d.js"></script>
 <script src="/gioco/sfida/sfida.js"></script>
 <script>
 // Android: i link ai social provano ad aprire direttamente l'app

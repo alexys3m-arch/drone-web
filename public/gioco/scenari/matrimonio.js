@@ -57,17 +57,17 @@ const angolo = (c, d) => Math.atan2(d.y - c.y, d.x - c.x);
 const corsa = T => { const p = cl((T - 3) / 8, 0, 1); return .45 * p + .55 * ease(p); };
 
 const momenti = [
-  { n: "L'arrivo dell'auto", s: "L'auto", a: 3, b: 13.6, manovra: 'Inseguimento', dur: 3.4, anteprima: false, tolleranza: 56,
+  { n: "L'arrivo dell'auto", s: "L'auto", a: 3, b: 13.6, manovra: 'Inseguimento', soggetto: S => [S.sc.car.x, S.sc.car.y], dur: 3.4, anteprima: false, tolleranza: 56,
     // un punto che sta dietro l'auto e la segue lungo il viale
     guida: S => { const c = S.sc.car; return [c.x - Math.cos(c.a) * 30, c.y - Math.sin(c.a) * 30]; } },
-  { n: "L'uscita degli sposi", s: 'Gli sposi', a: 13, b: 21, manovra: 'Rivelazione', dur: 3.4, anteprima: true, scatto: .12,
+  { n: "L'uscita degli sposi", s: 'Gli sposi', a: 13, b: 21, manovra: 'Rivelazione', soggetto: S => sposi(S), dur: 3.4, anteprima: true, scatto: .12,
     // si parte sopra gli sposi e si arretra piano lungo la navata, per rivelare la scena
     guida: (S, t) => { const p = sposi(S); return [p[0], p[1] + 14 + 80 * ease(cl(t / 3.4, 0, 1))]; } },
-  { n: 'Il taglio della torta', s: 'La torta', a: 21.8, b: 30, manovra: 'Orbita', dur: 3.8, anteprima: true,
+  { n: 'Il taglio della torta', s: 'La torta', a: 21.8, b: 30, manovra: 'Orbita', soggetto: () => [CAKE.x, CAKE.y], dur: 3.8, anteprima: true,
     // un giro completo intorno al tavolo della torta, partendo dal lato da cui arrivi
     prepara: (S, d) => ({ a0: angolo(CAKE, d) }),
     guida: (S, t, st) => { const an = st.a0 + t / 3.8 * 6.2832; return [CAKE.x + Math.cos(an) * 42, CAKE.y + Math.sin(an) * 42]; } },
-  { n: 'Il primo ballo', s: 'Il ballo', a: 30.4, b: 39.8, manovra: 'Spirale', dur: 3.6, anteprima: true,
+  { n: 'Il primo ballo', s: 'Il ballo', a: 30.4, b: 39.8, manovra: 'Spirale', soggetto: () => [DANCE.x, DANCE.y], dur: 3.6, anteprima: true,
     // una spirale che stringe sulla pista fino a fermarsi sopra gli sposi
     prepara: (S, d) => ({ a0: angolo(DANCE, d) }),
     guida: (S, t, st) => { const p = cl(t / 3.6, 0, 1), an = st.a0 + p * 1.25 * 6.2832, r = 62 * (1 - ease(p)) + 3; return [DANCE.x + Math.cos(an) * r, DANCE.y + Math.sin(an) * r]; } },
@@ -147,6 +147,7 @@ function disegna(S, g) {
     dot(HOME.x, HOME.y, 15, 'rgba(9,10,12,.55)'); ctx.strokeStyle = ORO; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(HOME.x, HOME.y, 13, 0, 6.2832); ctx.stroke();
     ctx.fillStyle = ORO; ctx.font = "800 15px 'Syne', sans-serif"; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('H', HOME.x, HOME.y + 1); ctx.textAlign = 'left';
   }
+  if (!S.piatto) {
   // villa: base, facciata e tetto spostato in prospettiva
   const V = VILLA, vx = (V.x + V.w / 2 - cx) * .07, vy = (V.y + 50 - cy) * .07;
   ctx.fillStyle = 'rgba(0,0,0,.32)'; ctx.fillRect(V.x + 8, V.y + 10, V.w, V.h);
@@ -159,10 +160,12 @@ function disegna(S, g) {
   poly([[x0, y0], [xa, ym], [x0, y1]], '#8d5440'); poly([[x1, y0], [xb, ym], [x1, y1]], '#97593f');
   ctx.strokeStyle = 'rgba(244,243,240,.28)'; ctx.lineWidth = 1; ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
   ctx.beginPath(); ctx.moveTo(xa, ym); ctx.lineTo(xb, ym); ctx.stroke(); ctx.restore();
+  }
   // navata con i petali davanti alla cappella
   ctx.fillStyle = 'rgba(239,230,210,.16)'; ctx.fillRect(NAVATA.x, NAVATA.y, NAVATA.w, NAVATA.h);
   ctx.strokeStyle = 'rgba(201,162,39,.45)'; ctx.lineWidth = 1; ctx.strokeRect(NAVATA.x, NAVATA.y, NAVATA.w, NAVATA.h);
   PETALI.forEach(p => dot(p[0], p[1], 1.4, p[2]));
+  if (!S.piatto) {
   // cappella: muri chiari, tetto a due falde, croce d'oro
   const C = CAPPELLA, kx = (C.x + C.w / 2 - cx) * .07, ky = (C.y + C.h / 2 - cy) * .07;
   ctx.fillStyle = 'rgba(0,0,0,.32)'; ctx.fillRect(C.x + 8, C.y + 10, C.w, C.h);
@@ -174,6 +177,7 @@ function disegna(S, g) {
   ctx.strokeStyle = 'rgba(244,243,240,.3)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(C.x + C.w / 2, C.y - 3); ctx.lineTo(C.x + C.w / 2, C.y + C.h - 18); ctx.stroke();
   ctx.fillStyle = ORO; ctx.fillRect(C.x + C.w / 2 - 1.6, C.y + 8, 3.2, 18); ctx.fillRect(C.x + C.w / 2 - 6, C.y + 13, 12, 3.2);
   ctx.restore();
+  }
   // tavoli
   TABLES.forEach(t => {
     for (let k = 0; k < 8; k++) { const a = k * .785 + .39; ctx.fillStyle = '#e9dfc9'; rr(t[0] + Math.cos(a) * 15 - 2.2, t[1] + Math.sin(a) * 15 - 2.2, 4.4, 4.4, 1.4); ctx.fill(); }
@@ -195,6 +199,7 @@ function disegna(S, g) {
   dot(CAKE.x + 1.5, CAKE.y + 2, 7.5, 'rgba(0,0,0,.2)'); [[7, '#fffaf0'], [5.2, '#fff'], [3.4, '#fffaf0']].forEach(c => { dot(CAKE.x, CAKE.y, c[0], c[1]); ctx.strokeStyle = ORO; ctx.lineWidth = .8; ctx.stroke(); }); dot(CAKE.x - .8, CAKE.y - .8, 1.3, '#f0a3a3'); dot(CAKE.x + .9, CAKE.y - .3, 1.1, '#fbf8f2');
   // brindisi ai tavoli
   if (T > 20.4 && T < 29.4) TABLES.forEach((t, i) => { for (let k = 0; k < 3; k++) { const a = A * 3 + i * 2 + k * 2.1; ctx.globalAlpha = .5 + .5 * Math.sin(A * 9 + i + k * 2); dot(t[0] + Math.cos(a) * 7, t[1] + Math.sin(a) * 7, 1.3, GIALLO); } ctx.globalAlpha = 1; });
+  if (S.piatto) return;
   // auto
   ctx.save(); ctx.translate(sc.car.x, sc.car.y); ctx.rotate(sc.car.a + 1.5708);
   const corre = T > 3 && T < 11.2, sb = corre ? Math.sin(A * 22) : 0;
@@ -252,5 +257,23 @@ function disegna(S, g) {
   });
 }
 
-QZMotore.avvia({ id: 'matrimonio', nome: 'matrimonio', W, H, HOME, DUR: 40, sfondo: PRATO, soglie: { argento: 5000, oro: 7500 }, momenti, reset, mondo, disegna });
+function scena3d(S) {
+  const o = [], sc = S.sc;
+  TREES.forEach(t => o.push({ t: 'albero', x: t[0], y: t[1], r: t[2] }));
+  o.push({ t: 'box', x: VILLA.x + VILLA.w / 2, y: VILLA.y + VILLA.h / 2, w: VILLA.w, d: VILLA.h, h: 26, col: '#d6c9ad', top: '#a8664b', tetto: 14 });
+  o.push({ t: 'box', x: CAPPELLA.x + CAPPELLA.w / 2, y: CAPPELLA.y + CAPPELLA.h / 2, w: CAPPELLA.w, d: CAPPELLA.h, h: 30, col: '#e6ddca', top: '#97593f', tetto: 16, croce: true });
+  SIEPE.forEach(q => o.push({ t: 'siepe', x: q[0], y: q[1], r: q[2] }));
+  guests.forEach(g => o.push({ t: 'persona', x: g.x, y: g.y, col: g.c, cap: g.cap }));
+  if (S.T > 12.8) { o.push({ t: 'persona', x: sc.sposo.x, y: sc.sposo.y, col: '#1d2230', cap: '#2a1d16', alto: 1.1 }); o.push({ t: 'persona', x: sc.sposa.x, y: sc.sposa.y, col: '#fbf8f2', cap: '#6a4a30', sposa: true }); }
+  o.push({ t: 'box', x: sc.car.x, y: sc.car.y, w: 13, d: 26, h: 6, z0: 1.5, col: '#f3ecdc', top: '#e4dccb', ang: sc.car.a + 1.5708, cabina: true });
+  o.push({ t: 'box', x: CAKE.x, y: CAKE.y, w: 9, d: 9, h: 10, z0: 6, col: '#fffaf0', top: '#fff' });
+  TABLES.forEach(t => o.push({ t: 'box', x: t[0], y: t[1], w: 18, d: 18, h: 1.2, z0: 6, col: '#efe6d2', top: '#f6f1e6' }));
+  PALI.forEach(p => o.push({ t: 'linea', a: [p[0], p[1], 0], b: [p[0], p[1], 22], col: '#3a2a22', w: 1.4 }));
+  const luci = [];
+  FILI.forEach(([i, j]) => { const a = PALI[i], b = PALI[j]; for (let k = 0; k <= 10; k++) { const u = k / 10; luci.push([a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, 22 - Math.sin(u * Math.PI) * 6]); } });
+  o.push({ t: 'luci', pts: luci });
+  return o;
+}
+
+QZMotore.avvia({ id: 'matrimonio', nome: 'matrimonio', W, H, HOME, DUR: 40, sfondo: PRATO, soglie: { argento: 5000, oro: 7500 }, momenti, reset, mondo, disegna, scena3d });
 })();
