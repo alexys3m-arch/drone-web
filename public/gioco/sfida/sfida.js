@@ -100,13 +100,20 @@ function luce(caldo) {
   try { ctx.globalAlpha = .045; ctx.globalCompositeOperation = 'overlay'; ctx.translate((Math.random() * 96) | 0, (Math.random() * 96) | 0); ctx.fillStyle = trama(); ctx.fillRect(-96, -96, VW + 192, VH + 192); } catch (_) {}
   ctx.restore();
 }
+// le foto degli scatti, preparate in studio con i modelli 3D completi (una per giudizio)
+const SCATTI = '/gioco/sfida/scatti/';
+const nomeGiudizio = g => (P.nomeGiudizio ? P.nomeGiudizio(g) : g);
+const FOTO_ROUND = [[0, 1, 2, 3].flatMap(i => ['perfetta', 'buona', 'sfocata'].map(g => 'r1-' + i + '-' + g)), ['r2-arco-1', 'r2-arco-2'], ['r3-maestro', 'r3-atterrato']];
+function precarica(n) { (FOTO_ROUND[n - 1] || []).forEach(f => { const im = new Image(); im.decoding = 'async'; im.src = SCATTI + f + '.webp'; }); }
 let scattoTimer = 0;
 function nascondiScatto() { clearTimeout(scattoTimer); const el = $('scatto'); if (el) { el.classList.remove('on'); el.hidden = true; } }
-function mostraScatto(src, titolo, giudizio) {
+function mostraScatto(src, titolo, giudizio, riserva) {
   if (!src || G.fase !== 'round') return;
   const el = $('scatto'); if (!el) return;
   const tela = el.querySelector('canvas'), tx = tela.getContext('2d');
-  if (src instanceof HTMLCanvasElement) tx.drawImage(src, 0, 0, tela.width, tela.height); else { const im = new Image(); im.onload = () => tx.drawImage(im, 0, 0, tela.width, tela.height); im.src = src; }
+  tx.fillStyle = '#111'; tx.fillRect(0, 0, tela.width, tela.height);
+  if (src instanceof HTMLCanvasElement) tx.drawImage(src, 0, 0, tela.width, tela.height);
+  else { const im = new Image(); im.onload = () => tx.drawImage(im, 0, 0, tela.width, tela.height); im.onerror = () => { const c = riserva && riserva(); if (c) tx.drawImage(c, 0, 0, tela.width, tela.height); }; im.src = src; }
   el.querySelector('figcaption').innerHTML = titolo + (giudizio ? ' · <b>' + giudizio + '</b>' : '');
   el.hidden = false; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
   clearTimeout(scattoTimer); scattoTimer = setTimeout(() => { el.classList.remove('on'); setTimeout(() => { el.hidden = true; }, 350); }, 2300);
@@ -214,12 +221,12 @@ function creaR1() {
   }
   function capture(i) {
     if (!S.got[i]) scatta(i);
-    setTimeout(() => { if (G.round !== R) return; const f3 = scatta3d(i); if (f3) S.got[i] = f3; mostraScatto(S.got[i], SC.momenti[i].s, giudizi[i]); }, 60);
     S.flash = 1;
-    const r = parziale().riprese[i], titolo = { perfetta: 'Perfetta!', buona: 'Buona', mossa: S.man[i].mosso ? 'Mossa: troppi scatti' : 'Mossa' }[r.giudizio];
+    const r = parziale().riprese[i], titolo = { perfetta: 'Perfetta!', buona: 'Buona', mossa: S.man[i].mosso ? 'Sfocata: troppi scatti' : 'Sfocata' }[r.giudizio];
     pop(titolo, '+' + fmt(r.punti) + (r.molt > 1 ? '  combo ×' + String(r.molt).replace('.', ',') : ''), r.giudizio);
     vibra(r.giudizio === 'perfetta' ? [20, 40, 20] : 25); suono('esito', r.giudizio, combo());
-    giudizi[i] = r.giudizio;
+    const url = SCATTI + 'r1-' + i + '-' + (r.giudizio === 'mossa' ? 'sfocata' : r.giudizio) + '.webp'; S.got[i] = url;
+    mostraScatto(url, SC.momenti[i].s, nomeGiudizio(r.giudizio), () => { const f3 = scatta3d(i); if (f3) S.got[i] = f3; return f3; });
     if (r.giudizio === 'perfetta') { G.slow = .35; G.scossa = 2; }
   }
   // ---- disegno del round 1 ----
@@ -258,7 +265,7 @@ function creaR1() {
         const m = SC.momenti[S.cur], s = S.man[S.cur];
         if (Math.sin(S.A * 12) > -.3) dot(fx + 10, fy + 11, 3.5, '#ff4a3a');
         ctx.font = "700 9px 'Space Mono', monospace"; ctx.fillStyle = CREMA; ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillText('REC', fx + 17, fy + 11.5);
-        ctx.textAlign = 'right'; ctx.fillStyle = coloreLive(s.live); ctx.fillText((s.mosso ? 'SCATTI!' : P.giudizio(s.live)).toUpperCase(), fx + FW - 8, fy + 11.5); ctx.textAlign = 'left';
+        ctx.textAlign = 'right'; ctx.fillStyle = coloreLive(s.live); ctx.fillText((s.mosso ? 'SCATTI!' : nomeGiudizio(P.giudizio(s.live))).toUpperCase(), fx + FW - 8, fy + 11.5); ctx.textAlign = 'left';
         ctx.fillStyle = 'rgba(9,10,12,.7)'; ctx.fillRect(fx + 8, fy + FH - 13, FW - 16, 6); ctx.fillStyle = coloreLive(s.live); ctx.fillRect(fx + 8, fy + FH - 13, (FW - 16) * cl(s.t / m.dur, 0, 1), 6);
       }
       if (S.flash > 0) { ctx.fillStyle = 'rgba(255,255,255,' + (S.flash * .75) + ')'; ctx.fillRect(fx, fy, FW, FH); }
@@ -471,7 +478,9 @@ function creaR2() {
     if (S.mode === 'volo') { altimetro(h, H); avvisoArco(); }
     if (S.fotoOra) {
       S.fotoOra = false; S.foto = true;
-      const img = foto3d({
+      const url = SCATTI + 'r2-arco-' + (rnd() < .5 ? 1 : 2) + '.webp';
+      G.foto.push({ src: url, titolo: "Dentro l'arco" });
+      mostraScatto(url, "Dentro l'arco", '+2.500', () => foto3d({
         cam: [10, 78, 24], target: [0, -40, 16], lato: 600, sole: true, cielo: ['#2a1c18', '#f0a040'], fondo: '#0c2230', foschia: 'rgba(240,170,80,.8)', scritta: "DENTRO L'ARCO",
         suolo: tc => { tc.fillStyle = '#0d2534'; tc.fillRect(-400, -500, 800, 900); tc.fillStyle = 'rgba(255,200,90,.35)'; for (let j = 0; j < 90; j++) tc.fillRect(-14 + Math.sin(j * 7.1) * 14, -20 - j * 5, 8 + (j % 5) * 3, 1.4); tc.strokeStyle = 'rgba(200,230,240,.14)'; tc.lineWidth = 1; for (let j = 0; j < 160; j++) { const x0 = Math.sin(j * 12.9) * 300, y0 = Math.cos(j * 4.3) * 400; tc.beginPath(); tc.moveTo(x0 - 6, y0); tc.quadraticCurveTo(x0, y0 - 2, x0 + 6, y0); tc.stroke(); } },
         oggetti: [
@@ -480,8 +489,7 @@ function creaR2() {
           { t: 'box', x: -60, y: -120, w: 30, d: 30, h: 70, col: '#3a3128', top: '#4a3f33' }, { t: 'box', x: 70, y: -160, w: 26, d: 26, h: 48, col: '#3a3128', top: '#4a3f33' },
           { t: 'drone', x: 0, y: -12, z: 9 },
         ],
-      });
-      if (img) { G.foto.push({ src: img, titolo: "Dentro l'arco" }); mostraScatto(img, "Dentro l'arco", '+2.500'); } else fotografa(DX * f(), S.y * f(), 150, 188, "Dentro l'arco");
+      }));
     }
     luce(.16);
   }
@@ -643,7 +651,7 @@ function creaR3() {
       const prec = 1 - cl((d - 2) / (PAD - 2), 0, 1), dolc = 1 - cl((rel - 6) / (VREL - 6), 0, 1);
       S.esito = { atterrato: 1, precisione: prec, dolcezza: dolc, tempo: Math.max(0, DUR - S.T) };
       const r = P.puntiR3(Object.assign({ vela: 0 }, S.esito));
-      S.mode = 'fine'; S.fine = 0; suono('atterra', r.maestro); G.scossa = 1.5;
+      S.mode = 'fine'; S.fine = 0; S.maestro = r.maestro; suono('atterra', r.maestro); G.scossa = 1.5;
       if (r.maestro) { pop('Da maestro! ×2', '+' + fmt(r.punti)); G.slow = .6; suono('maestro'); } else pop(prec > .6 ? 'Atterrato!' : 'Atterrato storto', '+' + fmt(r.punti), prec > .6 ? '' : 'buona');
       S.fotoOra = true; return;
     }
@@ -716,7 +724,9 @@ function creaR3() {
     }
     if (S.fotoOra) {
       S.fotoOra = false; S.foto = true; const p = padPos(), b = S.barca, v = velaPts();
-      const img = foto3d({
+      const url = SCATTI + (S.maestro ? 'r3-maestro' : 'r3-atterrato') + '.webp';
+      G.foto.push({ src: url, titolo: 'Atterraggio' });
+      mostraScatto(url, S.maestro ? 'Atterraggio · <b>da maestro</b>' : 'Atterraggio', '', () => foto3d({
         cam: [p[0] + 70, p[1] + 120, 62], target: [p[0], p[1] - 20, 6], lato: 640, sole: true, cielo: ['#20283a', '#f0a050'], fondo: '#0a2230', foschia: 'rgba(240,170,90,.75)', scritta: 'ATTERRAGGIO',
         suolo: tc => { const vv = ctx; ctx = tc; try { tc.fillStyle = '#0c2533'; tc.fillRect(b.x - 500, b.y - 600, 1000, 1200); tc.strokeStyle = 'rgba(200,230,240,.13)'; tc.lineWidth = 1.2; for (let j = 0; j < 220; j++) { const x0 = b.x + Math.sin(j * 12.9) * 400, y0 = b.y + Math.cos(j * 4.3) * 500; tc.beginPath(); tc.moveTo(x0 - 8, y0); tc.quadraticCurveTo(x0, y0 - 3, x0 + 8, y0); tc.stroke(); } barca(); } finally { ctx = vv; } },
         oggetti: [
@@ -726,8 +736,7 @@ function creaR3() {
           { t: 'persona', x: b.x - 11, y: b.y + 6, col: '#e2483d', cap: '#2a1d16' }, { t: 'persona', x: b.x + 11, y: b.y + 6, col: '#3f8fd1', cap: '#5a3a22' },
           { t: 'drone', x: p[0], y: p[1], z: 9 },
         ],
-      });
-      if (img) { G.foto.push({ src: img, titolo: 'Atterraggio' }); mostraScatto(img, 'Atterraggio', ''); } else fotografa((p[0] - S.cam.x) * z + VW / 2, (p[1] - S.cam.y) * z + VH / 2, 130, 162, 'Atterraggio');
+      }));
     }
     ctx.setTransform(k, 0, 0, k, 0, 0);
     manica();
@@ -813,7 +822,7 @@ function nuovaSfida() {
 }
 // cartellone prima di ogni round, con il risultato di quello appena finito
 function presenta(n, prec) {
-  G.fase = 'intro'; G.n = n; G.round = null; tocco = null; nascondiScatto();
+  G.fase = 'intro'; G.n = n; G.round = null; tocco = null; nascondiScatto(); precarica(n);
   const r = ROUND[n - 1];
   $('inum').textContent = 'Round ' + n + ' di 3'; $('inome').textContent = r.nome; $('iobi').textContent = r.obiettivo; $('icom').textContent = r.comando;
   $('icom').className = 'com ' + (n === 2 ? 'tieni' : 'leva');

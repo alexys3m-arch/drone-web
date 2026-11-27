@@ -246,7 +246,7 @@ function drawDrone() {
       const m = SC.momenti[S.cur], s = S.man[S.cur];
       if (Math.sin(S.A * 12) > -.3) dot(fx + 10, fy + 11, 3.5, '#ff4a3a');
       ctx.font = "700 9px 'Space Mono', monospace"; ctx.fillStyle = CREMA; ctx.textBaseline = 'middle'; ctx.textAlign = 'left'; ctx.fillText('REC', fx + 17, fy + 11.5);
-      ctx.textAlign = 'right'; ctx.fillStyle = coloreLive(s.live); ctx.fillText(P.giudizio(s.live).toUpperCase(), fx + FW - 8, fy + 11.5); ctx.textAlign = 'left';
+      ctx.textAlign = 'right'; ctx.fillStyle = coloreLive(s.live); ctx.fillText(P.nomeGiudizio(P.giudizio(s.live)).toUpperCase(), fx + FW - 8, fy + 11.5); ctx.textAlign = 'left';
       ctx.fillStyle = 'rgba(9,10,12,.7)'; ctx.fillRect(fx + 8, fy + FH - 13, FW - 16, 6); ctx.fillStyle = coloreLive(s.live); ctx.fillRect(fx + 8, fy + FH - 13, (FW - 16) * cl(s.t / m.dur, 0, 1), 6);
     }
     if (S.flash > 0) { ctx.fillStyle = 'rgba(255,255,255,' + (S.flash * .75) + ')'; ctx.fillRect(fx, fy, FW, FH); }
@@ -285,7 +285,7 @@ function scatta(i) {
 function capture(i) {
   if (!S.got[i]) scatta(i);
   S.flash = 1;
-  const r = parziale().riprese[i], titolo = { perfetta: 'Perfetta!', buona: 'Buona', mossa: 'Mossa' }[r.giudizio];
+  const r = parziale().riprese[i], titolo = { perfetta: 'Perfetta!', buona: 'Buona', mossa: 'Sfocata' }[r.giudizio];
   pop(titolo, '+' + fmt(r.punti) + (r.molt > 1 ? '  combo ×' + String(r.molt).replace('.', ',') : ''), r.giudizio);
   vibra(r.giudizio === 'perfetta' ? [20, 40, 20] : 25);
   suono('esito', r.giudizio, comboAttuale());
@@ -437,7 +437,7 @@ function finish() {
   $('cards').innerHTML = SC.momenti.map((m, i) => {
     const x = r.riprese[i];
     return S.got[i]
-      ? '<figure class="card ' + x.giudizio + '"><div><img alt="' + m.n + '" src="' + S.got[i] + '"></div><figcaption><b>' + x.giudizio + '</b>' + m.s + '</figcaption></figure>'
+      ? '<figure class="card ' + x.giudizio + '"><div><img alt="' + m.n + '" src="' + S.got[i] + '"></div><figcaption><b>' + P.nomeGiudizio(x.giudizio) + '</b>' + m.s + '</figcaption></figure>'
       : '<figure class="card no"><div>persa</div><figcaption><b>&nbsp;</b>' + m.s + '</figcaption></figure>';
   }).join('');
   timbroNuovo = timbra(r.totale, n);
@@ -588,7 +588,7 @@ async function cartolina() {
     x.restore();
     const g = r.riprese[i].giudizio;
     x.textAlign = 'center'; x.fillStyle = g === 'perfetta' ? GIALLO : g === 'persa' ? 'rgba(244,243,240,.4)' : CREMA; x.font = "700 26px 'Space Mono'";
-    x.fillText(g.toUpperCase(), px + w4 / 2, py + h4 + 60);
+    x.fillText(P.nomeGiudizio(g).toUpperCase(), px + w4 / 2, py + h4 + 60);
     x.fillStyle = 'rgba(244,243,240,.75)'; x.font = "600 26px 'Manrope'"; x.fillText(m.s, px + w4 / 2, py + h4 + 98); x.textAlign = 'left';
   });
   x.fillStyle = CREMA; x.font = "800 92px 'Syne'"; x.fillText('Riesci a fare', 90, 1530); x.fillStyle = ORO; x.fillText('meglio?', 90, 1625);

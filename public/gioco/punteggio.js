@@ -108,5 +108,9 @@
     };
   }
 
-  return { SOGLIE, giudizio, calcola, valida, massimo, R2, R3, puntiR2, puntiR3, calcolaSfida, validaSfida };
+  // come si chiama il giudizio a schermo: "mossa" resta il nome interno, il giocatore legge "sfocata"
+  const NOMI = { perfetta: 'perfetta', buona: 'buona', mossa: 'sfocata', persa: 'persa' };
+  const nomeGiudizio = g => NOMI[g] || g;
+
+  return { SOGLIE, giudizio, nomeGiudizio, calcola, valida, massimo, R2, R3, puntiR2, puntiR3, calcolaSfida, validaSfida };
 });
