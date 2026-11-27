@@ -91,9 +91,11 @@ function disegna(S, g) {
   ctx.fillStyle = 'rgba(244,243,240,.2)';
   const pietre = (a, b, n) => { for (let k = 1; k < n; k++) { const t = k / n; ctx.beginPath(); ctx.ellipse(lerp(a[0], b[0], t) + Math.sin(k) * 3, lerp(a[1], b[1], t), 5, 3.4, .5, 0, 6.2832); ctx.fill(); } };
   pietre([PIAZZALE.x + 30, PIAZZALE.y + 40], [330, 560], 16); pietre([PORTA.x, NAVATA.y + NAVATA.h + 6], [430, 580], 9);
-  // punto di decollo
-  dot(HOME.x, HOME.y, 15, 'rgba(9,10,12,.55)'); ctx.strokeStyle = ORO; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(HOME.x, HOME.y, 13, 0, 6.2832); ctx.stroke();
-  ctx.fillStyle = ORO; ctx.font = "800 15px 'Syne', sans-serif"; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('H', HOME.x, HOME.y + 1); ctx.textAlign = 'left';
+  // punto di decollo (nella sfida in tre round non si atterra qui: niente H)
+  if (!S.senzaH) {
+    dot(HOME.x, HOME.y, 15, 'rgba(9,10,12,.55)'); ctx.strokeStyle = ORO; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(HOME.x, HOME.y, 13, 0, 6.2832); ctx.stroke();
+    ctx.fillStyle = ORO; ctx.font = "800 15px 'Syne', sans-serif"; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('H', HOME.x, HOME.y + 1); ctx.textAlign = 'left';
+  }
   // villa: base, facciata e tetto spostato in prospettiva
   const V = VILLA, vx = (V.x + V.w / 2 - cx) * .07, vy = (V.y + 50 - cy) * .07;
   ctx.fillStyle = 'rgba(0,0,0,.32)'; ctx.fillRect(V.x + 8, V.y + 10, V.w, V.h);

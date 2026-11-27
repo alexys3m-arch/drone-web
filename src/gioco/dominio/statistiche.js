@@ -14,6 +14,7 @@ const TIPI = Object.freeze([
   'passo2', 'passo3', 'passo4', // pop-up finali visti: prossimo minigioco, grado, riprese vere
   'missione',      // missione dell'evento compiuta
   'muto',          // suoni spenti
+  'round2', 'round3', // sfida: arrivati al secondo e al terzo round
 ]);
 // per le dirette serve sapere l'ora: questi tipi si contano anche ora per ora
 const ORARI = Object.freeze(['apertura', 'decollo', 'fine', 'classifica']);

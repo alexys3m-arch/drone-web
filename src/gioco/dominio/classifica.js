@@ -5,6 +5,8 @@ const P = require('../../../public/gioco/punteggio');
 // Un evento resta aperto finché esce il minigioco successivo. Per chiuderlo: aperta: false.
 const EVENTI = Object.freeze({
   matrimonio: Object.freeze({ momenti: 4, aperta: true }),
+  // la sfida in tre round: matrimonio (4 riprese), volo radente, atterraggio sul catamarano
+  sfida: Object.freeze({ momenti: 4, aperta: true, sfida: true }),
 });
 
 const IN_CLASSIFICA = 10;   // righe mostrate
@@ -31,6 +33,10 @@ function normalizzaIniziali(valore) {
 // Restituisce il dettaglio pulito e i punti ricalcolati, oppure null se la partita non è credibile.
 function valutaPartita(evento, dettaglio) {
   if (!eventoValido(evento)) return null;
+  if (EVENTI[evento].sfida) {
+    const s = P.validaSfida(dettaglio, EVENTI[evento].momenti);
+    return s ? { dettaglio: s, punti: P.calcolaSfida(s).totale } : null;
+  }
   const pulito = P.valida(dettaglio, EVENTI[evento].momenti);
   if (!pulito) return null;
   return { dettaglio: pulito, punti: P.calcola(pulito).totale };

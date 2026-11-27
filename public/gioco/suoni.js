@@ -4,7 +4,7 @@
 (function () {
 'use strict';
 const CHIAVE = 'qz_gioco_audio';
-let ac = null, master = null, rot = null;
+let ac = null, master = null, rot = null, mus = null, duck = false;
 let attivo = true;
 try { attivo = localStorage.getItem(CHIAVE) !== '0'; } catch (_) {}
 
@@ -38,28 +38,54 @@ function rumore(t, dur, { vol = .2, freq = 2000, q = .8, tipo = 'bandpass' } = {
 // ronzio dei rotori: due seghe leggermente stonate, filtrate, con un tremolio veloce
 function rotoriAvvia() {
   const a = contesto(); if (!a || rot) return;
-  const g = a.createGain(), f = a.createBiquadFilter(), o1 = a.createOscillator(), o2 = a.createOscillator(), lfo = a.createOscillator(), lg = a.createGain();
-  o1.type = 'sawtooth'; o2.type = 'sawtooth'; o1.frequency.value = 92; o2.frequency.value = 138.6;
-  f.type = 'lowpass'; f.frequency.value = 520; f.Q.value = 1.2;
-  lfo.frequency.value = 31; lg.gain.value = .018; lfo.connect(lg); lg.connect(g.gain);
-  g.gain.value = 0; o1.connect(f); o2.connect(f); f.connect(g); g.connect(master);
-  [o1, o2, lfo].forEach(o => o.start());
-  g.gain.setTargetAtTime(.05, a.currentTime, .4);
-  rot = { g, f, o1, o2, lfo };
+  // soffio delle eliche: rumore filtrato, appena pulsante
+  const n = Math.floor(a.sampleRate * 2), b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  const src = a.createBufferSource(); src.buffer = b; src.loop = true;
+  const f = a.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 420; f.Q.value = .9;
+  const g = a.createGain(); g.gain.value = 0;
+  const o1 = a.createOscillator(), o2 = a.createOscillator(), go = a.createGain(); o1.type = 'triangle'; o2.type = 'sine'; o1.frequency.value = 110; o2.frequency.value = 165; go.gain.value = .25;
+  const lfo = a.createOscillator(), lg = a.createGain(); lfo.frequency.value = 24; lg.gain.value = .004; lfo.connect(lg); lg.connect(g.gain);
+  src.connect(f); f.connect(g); o1.connect(go); o2.connect(go); go.connect(g); g.connect(master);
+  [src, o1, o2, lfo].forEach(o => o.start());
+  rot = { g, f, o1, o2, lfo, src };
 }
 function rotoriVel(v, alt) {
   if (!rot || !ac) return;
   const t = ac.currentTime, k = Math.min(1, v / 175), h = Math.min(1, alt / 30);
-  rot.o1.frequency.setTargetAtTime(80 + 40 * k + 14 * h, t, .12);
-  rot.o2.frequency.setTargetAtTime((80 + 40 * k + 14 * h) * 1.51, t, .12);
-  rot.f.frequency.setTargetAtTime(380 + 520 * k + 200 * h, t, .12);
-  rot.g.gain.setTargetAtTime((.028 + .03 * k) * h, t, .15);
+  rot.o1.frequency.setTargetAtTime(100 + 30 * k + 10 * h, t, .15);
+  rot.o2.frequency.setTargetAtTime((100 + 30 * k + 10 * h) * 1.5, t, .15);
+  rot.f.frequency.setTargetAtTime(340 + 480 * k, t, .15);
+  rot.g.gain.setTargetAtTime((.022 + .022 * k) * h * (duck ? .55 : 1), t, .2);
 }
 function rotoriFerma() {
   if (!rot || !ac) return;
   const r = rot; rot = null; r.g.gain.setTargetAtTime(0, ac.currentTime, .25);
-  setTimeout(() => [r.o1, r.o2, r.lfo].forEach(o => { try { o.stop(); } catch (_) {} }), 1200);
+  setTimeout(() => [r.o1, r.o2, r.lfo, r.src].forEach(o => { try { o.stop(); } catch (_) {} }), 1200);
 }
+
+const ACCORDI = [[220, 261.63, 329.63], [174.61, 220, 261.63], [261.63, 329.63, 392], [196, 246.94, 293.66]];
+function musicaAvvia() {
+  const a = contesto(); if (!a || mus) return;
+  const g = a.createGain(); g.gain.value = 0; g.connect(master); g.gain.setTargetAtTime(.5, a.currentTime, 1.2);
+  // un'eco semplice per dare aria
+  const eco = a.createDelay(); eco.delayTime.value = .33; const fb = a.createGain(); fb.gain.value = .28; const lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1800;
+  g.connect(eco); eco.connect(lp); lp.connect(fb); fb.connect(eco); lp.connect(master);
+  mus = { g, prossimo: a.currentTime + .1, passo: 0, timer: null };
+  const battuta = 60 / 92 / 2;   // ottavi
+  const suona = (f, t, dur, tipo, vol) => { const o = a.createOscillator(), v = a.createGain(); o.type = tipo; o.frequency.value = f; v.gain.setValueAtTime(0, t); v.gain.linearRampToValueAtTime(vol, t + .02); v.gain.exponentialRampToValueAtTime(.0006, t + dur); o.connect(v); v.connect(g); o.start(t); o.stop(t + dur + .05); };
+  mus.timer = setInterval(() => {
+    if (!mus) return;
+    while (mus.prossimo < a.currentTime + .4) {
+      const t = mus.prossimo, p = mus.passo, acc = ACCORDI[Math.floor(p / 16) % 4];
+      if (p % 16 === 0) acc.forEach(f => suona(f / 2, t, battuta * 15, 'sine', .045));             // tappeto
+      const arp = [0, 1, 2, 1, 2, 0, 1, 2][p % 8]; if (p % 2 === 0 || p % 16 > 11) suona(acc[arp] * 2, t, .35, 'triangle', .03);   // arpeggio
+      if (p % 4 === 0) { const o = a.createOscillator(), v = a.createGain(); o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(45, t + .18); v.gain.setValueAtTime(.09, t); v.gain.exponentialRampToValueAtTime(.0006, t + .22); o.connect(v); v.connect(g); o.start(t); o.stop(t + .25); }   // battito morbido
+      mus.prossimo += battuta; mus.passo++;
+    }
+  }, 120);
+}
+function musicaFerma() { if (!mus || !ac) return; const m = mus; mus = null; clearInterval(m.timer); m.g.gain.setTargetAtTime(0, ac.currentTime, .5); }
 
 const S = {
   get attivo() { return attivo; },
@@ -74,11 +100,21 @@ const S = {
   decollo() { rotoriAvvia(); nota(180, 0, 1.6, { tipo: 'sawtooth', vol: .03, f2: 420 }); rumore(0, 1.4, { vol: .05, freq: 900, q: .5 }); },
   rotori: rotoriVel,
   fermaRotori: rotoriFerma,
-  rec() { nota(1320, 0, .08, { vol: .14 }); nota(1320, .12, .08, { vol: .14 }); },
+  rec() { nota(1320, 0, .08, { vol: .12 }); nota(1320, .12, .08, { vol: .12 }); duck = true; if (mus && ac) mus.g.gain.setTargetAtTime(.22, ac.currentTime, .2); setTimeout(() => { duck = false; if (mus && ac) mus.g.gain.setTargetAtTime(.5, ac.currentTime, .5); }, 3800); },
+  musica(on) { if (on) musicaAvvia(); else musicaFerma(); },
+  avviso() { [880, 660, 880].forEach((f, i) => nota(f, i * .13, .12, { tipo: 'triangle', vol: .12 })); },
+  sfiora() { rumore(0, .25, { vol: .18, freq: 1400, q: .6 }); nota(1046.5, .05, .18, { tipo: 'sine', vol: .1 }); },
+  delfino() { [1318.5, 1568, 2093].forEach((f, i) => nota(f, i * .06, .22, { tipo: 'sine', vol: .1 })); },
+  arco() { rumore(0, .6, { vol: .25, freq: 700, q: .4 }); [523.25, 659.25, 783.99, 1046.5, 1318.5, 1568].forEach((f, i) => nota(f, .1 + i * .07, i === 5 ? .9 : .3, { tipo: 'triangle', vol: .17 })); },
+  splash() { rotoriFerma(); rumore(0, .7, { vol: .45, freq: 900, q: .5, tipo: 'lowpass' }); rumore(.05, .5, { vol: .25, freq: 3000, q: .7 }); nota(220, 0, .5, { tipo: 'sine', vol: .12, f2: 60 }); },
+  schianto() { rotoriFerma(); rumore(0, .3, { vol: .5, freq: 500, q: .6, tipo: 'lowpass' }); nota(160, 0, .4, { tipo: 'square', vol: .07, f2: 50 }); rumore(.25, .6, { vol: .3, freq: 900, q: .5, tipo: 'lowpass' }); },
+  vento(forza) { rumore(0, 1.4, { vol: .06 + .1 * (forza || .5), freq: 600, q: .4 }); },
+  maestro() { [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => { nota(f, .25 + i * .09, .5, { tipo: 'triangle', vol: .15 }); nota(f * 1.5, .25 + i * .09, .5, { tipo: 'sine', vol: .07 }); }); },
+  round() { nota(523.25, 0, .18, { tipo: 'triangle', vol: .12 }); nota(783.99, .12, .3, { tipo: 'triangle', vol: .12 }); },
   scatto() { rumore(0, .05, { vol: .35, freq: 3500, q: 1.5 }); rumore(.07, .04, { vol: .25, freq: 2500, q: 1.5 }); },
   esito(giudizio, combo) {
     const base = 523.25 * (1 + Math.min(combo || 0, 4) * .06);
-    if (giudizio === 'perfetta') [1, 1.26, 1.5, 2].forEach((m, i) => nota(base * m, i * .075, .32, { tipo: 'triangle', vol: .2 }));
+    if (giudizio === 'perfetta') [1, 1.26, 1.5, 2].forEach((m, i) => { nota(base * m, i * .075, .45, { tipo: 'sine', vol: .18 }); nota(base * m * 2, i * .075, .2, { tipo: 'triangle', vol: .04 }); });
     else if (giudizio === 'buona') [1, 1.26].forEach((m, i) => nota(base * m, i * .09, .25, { tipo: 'triangle', vol: .16 }));
     else nota(300, 0, .22, { tipo: 'square', vol: .06, f2: 220 });
   },

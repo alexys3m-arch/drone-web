@@ -65,6 +65,8 @@ td.z{color:rgba(244,243,240,.25)}
 </main>
 <script>
 (function () {
+  const EV = new URLSearchParams(location.search).get('evento') || 'matrimonio';
+  document.querySelector('h1 em').textContent = EV === 'sfida' ? 'sfida in 3 round' : EV;
   const fmt = n => Number(n || 0).toLocaleString('it-IT');
   const pc = (a, b) => b ? Math.round(a / b * 100) + '%' : '–';
   const COL = [['apertura', 'Aperture'], ['nuovo', 'Nuovi'], ['decollo', 'Partite'], ['fine', 'Finite'], ['classifica', 'Classif.'], ['instagram', 'IG'], ['tiktok', 'TikTok'], ['dm', 'DM'], ['condividi', 'Sfide']];
@@ -72,8 +74,8 @@ td.z{color:rgba(244,243,240,.25)}
     document.getElementById('err').textContent = '';
     try {
       const [s, c] = await Promise.all([
-        fetch('/api/statistiche?evento=matrimonio', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
-        fetch('/api/classifica?evento=matrimonio', { cache: 'no-store' }).then(r => r.json()).catch(() => null),
+        fetch('/api/statistiche?evento=' + EV, { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }),
+        fetch('/api/classifica?evento=' + EV, { cache: 'no-store' }).then(r => r.json()).catch(() => null),
       ]);
       const t = s.totale, oggi = s.giorni[0], ieri = s.giorni[1];
       const social = t.instagram + t.tiktok;
@@ -91,7 +93,7 @@ td.z{color:rgba(244,243,240,.25)}
       const fonti = [['Instagram', t.da_instagram], ['Storie (link ?da=storia)', t.da_storia], ['TikTok', t.da_tiktok], ['YouTube', t.da_youtube], ['Diretta (link ?da=live)', t.da_live], ['Link diretto o app di messaggi', t.da_diretto], ['Altri siti', t.da_altro]];
       const tf = fonti.reduce((a, f) => a + (f[1] || 0), 0);
       document.getElementById('fonti').innerHTML = fonti.map(f => '<div class="c"><b>' + fmt(f[1]) + '</b><span>' + f[0] + '</span><small>' + pc(f[1] || 0, tf) + ' delle aperture con provenienza</small></div>').join('');
-      const imb = [['Partite finite', t.fine, ''], ['Pop-up "prossimo minigioco"', t.passo2, pc(t.passo2, t.fine) + ' di chi finisce'], ['Pop-up "il tuo grado"', t.passo3, pc(t.passo3, t.fine) + ' di chi finisce'], ['Pop-up "riprese vere" (DM)', t.passo4, pc(t.passo4, t.fine) + ' di chi finisce'], ['Missioni compiute', t.missione, ''], ['Suoni spenti', t.muto, pc(t.muto, t.decollo) + ' delle partite']];
+      const imb = [['Partite finite', t.fine, ''], ['Pop-up "prossimo minigioco"', t.passo2, pc(t.passo2, t.fine) + ' di chi finisce'], ['Pop-up "il tuo grado"', t.passo3, pc(t.passo3, t.fine) + ' di chi finisce'], ['Pop-up "riprese vere" (DM)', t.passo4, pc(t.passo4, t.fine) + ' di chi finisce'], ['Sfida: arrivati al round 2', t.round2, pc(t.round2, t.decollo) + ' delle partite'], ['Sfida: arrivati al round 3', t.round3, pc(t.round3, t.decollo) + ' delle partite'], ['Missioni compiute', t.missione, ''], ['Suoni spenti', t.muto, pc(t.muto, t.decollo) + ' delle partite']];
       document.getElementById('imbuto').innerHTML = imb.map(k => '<div class="c"><b>' + fmt(k[1]) + '</b><span>' + k[0] + '</span>' + (k[2] ? '<small>' + k[2] + '</small>' : '') + '</div>').join('');
       const ore = s.ore || {}, hh = Object.keys(ore).sort();
       document.getElementById('ore').innerHTML = hh.length ? '<tr><th>Ora</th><th>Aperture</th><th>Partite</th><th>Finite</th><th>Classif.</th></tr>' + hh.reverse().map(x => '<tr><td>' + x + ':00</td>' + ['apertura', 'decollo', 'fine', 'classifica'].map(k => '<td' + (ore[x][k] ? '' : ' class="z"') + '>' + fmt(ore[x][k]) + '</td>').join('') + '</tr>').join('') : '<tr><td>Ancora niente oggi (si conta dal 27 novembre).</td></tr>';

@@ -231,3 +231,31 @@ test('API statistiche: POST conta, GET restituisce totale e ultimi giorni, nessu
   assert.equal((await inviaStat({ method: 'GET', query: {} })).stato, 400);
   assert.equal((await inviaStat({ method: 'PUT' })).stato, 405);
 });
+
+// ---------- sfida in tre round ----------
+const SFIDA_OK = {
+  r1: { riprese: [0.9, 0.9, 0.7, null], batteria: 0 },
+  r2: { zone: [5, 10, 8, 4], sfiorati: 2, barche: 1, delfini: 1, arco: 1, completato: 1, schianto: 0 },
+  r3: { atterrato: 1, precisione: 0.9, dolcezza: 0.9, tempo: 6, vela: 0 },
+};
+test('sfida: il server ricalcola i tre round e il maestro raddoppia il terzo', () => {
+  const v = valutaPartita('sfida', SFIDA_OK);
+  assert.ok(v);
+  const r = P.calcolaSfida(v.dettaglio);
+  assert.equal(r.r2.volo, Math.round((5 * 1 + 10 * 2 + 8 * 3 + 4 * 5) * 35));
+  assert.equal(r.r2.punti, r.r2.volo + 2 * P.R2.SFIORATO + P.R2.BARCA + P.R2.DELFINO + P.R2.ARCO + P.R2.COMPLETATO);
+  assert.equal(r.r3.maestro, true);
+  assert.equal(r.r3.punti, Math.round((2000 * 0.9 + 1500 * 0.9 + 60 * 6) * 2));
+  assert.equal(v.punti, r.r1.totale + r.r2.punti + r.r3.punti);
+});
+test('sfida: penalità per schianto e vela, mai sotto zero; dati impossibili rifiutati', () => {
+  const male = { r1: { riprese: [null, null, null, null], batteria: 0 }, r2: { zone: [1, 0, 0, 0], sfiorati: 0, barche: 0, delfini: 0, arco: 0, completato: 0, schianto: 1 }, r3: { atterrato: 0, precisione: 0, dolcezza: 0, tempo: 0, vela: 1 } };
+  assert.equal(valutaPartita('sfida', male).punti, 0);
+  const troppo = JSON.parse(JSON.stringify(SFIDA_OK)); troppo.r2.zone = [10, 10, 10, 10];
+  assert.equal(valutaPartita('sfida', troppo), null);
+  const doppio = JSON.parse(JSON.stringify(SFIDA_OK)); doppio.r2.schianto = 1;
+  assert.equal(valutaPartita('sfida', doppio), null);
+  const vela = JSON.parse(JSON.stringify(SFIDA_OK)); vela.r3.vela = 1;
+  assert.equal(valutaPartita('sfida', vela), null);
+  assert.equal(valutaPartita('sfida', { riprese: [1, 1, 1, 1] }), null);
+});
