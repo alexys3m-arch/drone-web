@@ -66,14 +66,16 @@
   }
 
   // ---------- Sfida in tre round: riprese del matrimonio, volo radente sul mare, atterraggio sul catamarano ----------
-  const R2 = { DURATA: 30, PER_SECONDO: 35, MOLT: [1, 2, 3, 5], SFIORATO: 150, BARCA: 300, DELFINO: 200, ARCO: 2500, COMPLETATO: 500, SCHIANTO: 800 };
+  // il round 2 dura finché c'è batteria (26 s, +25% per ogni ricarica, al massimo 100 s); tre stelle nei passaggi rischiosi
+  const R2 = { DURATA: 100, BASE: 26, PER_RICARICA: 6.5, PER_SECONDO: 24, MOLT: [1, 2, 3, 5], SFIORATO: 150, BARCA: 300, DELFINO: 200, ARCO: 2500, COMPLETATO: 500, SCHIANTO: 800, STELLA: 400, TRE_STELLE: 1500 };
   const R3 = { PRECISIONE: 2000, DOLCEZZA: 1500, PER_SECONDO: 60, TEMPO_MAX: 15, VELA: 1500, MAESTRO: 0.85 };
 
   // round 2: secondi passati in ogni fascia di quota (×1, ×2, ×3, ×5) più i bonus; uno schianto toglie punti
   function puntiR2(d) {
     if (!d) return { punti: 0, volo: 0, bonus: 0 };
     const volo = Math.round(R2.MOLT.reduce((a, m, i) => a + (d.zone[i] || 0) * m * R2.PER_SECONDO, 0));
-    const bonus = d.sfiorati * R2.SFIORATO + d.barche * R2.BARCA + d.delfini * R2.DELFINO + (d.arco ? R2.ARCO : 0) + (d.completato ? R2.COMPLETATO : 0);
+    const stelle = d.stelle || 0;
+    const bonus = d.sfiorati * R2.SFIORATO + d.barche * R2.BARCA + d.delfini * R2.DELFINO + (d.arco ? R2.ARCO : 0) + (d.completato ? R2.COMPLETATO : 0) + stelle * R2.STELLA + (stelle === 3 ? R2.TRE_STELLE : 0);
     return { punti: Math.max(0, volo + bonus - (d.schianto ? R2.SCHIANTO : 0)), volo, bonus };
   }
   // round 3: precisione sul centro della piazzola, dolcezza del contatto, secondi avanzati; "maestro" raddoppia
@@ -95,15 +97,19 @@
     if (!r1) return null;
     const a = d.r2, b = d.r3;
     if (!a || !Array.isArray(a.zone) || a.zone.length !== 4 || !a.zone.every(z => n(z) && z >= 0)) return null;
-    if (a.zone.reduce((x, y) => x + y, 0) > R2.DURATA + 1) return null;
-    if (!intero(a.sfiorati, 12) || !intero(a.barche, 6) || !intero(a.delfini, 5) || !si(a.arco) || !si(a.completato) || !si(a.schianto) || (a.completato && a.schianto)) return null;
+    const stelle = a.stelle == null ? 0 : a.stelle, batterie = a.batterie == null ? 0 : a.batterie, scudi = a.scudi == null ? 0 : a.scudi;
+    if (!intero(stelle, 3) || !intero(batterie, 12) || !intero(scudi, 6)) return null;
+    // il tempo in volo non può superare quello che la batteria permette
+    const volato = a.zone.reduce((x, y) => x + y, 0);
+    if (volato > R2.DURATA + 1 || volato > R2.BASE + batterie * R2.PER_RICARICA + 2) return null;
+    if (!intero(a.sfiorati, 16) || !intero(a.barche, 8) || !intero(a.delfini, 5) || !si(a.arco) || !si(a.completato) || !si(a.schianto) || (a.completato && a.schianto)) return null;
     if (!b || !si(b.atterrato) || !si(b.vela) || !n(b.precisione) || !n(b.dolcezza) || !n(b.tempo)) return null;
     if (b.precisione < 0 || b.precisione > 1 || b.dolcezza < 0 || b.dolcezza > 1 || b.tempo < 0 || b.tempo > 30) return null;
     if (b.atterrato && b.vela) return null;
     const t = v => Math.round(v * 10) / 10, m = v => Math.round(v * 1000) / 1000;
     return {
       r1: { riprese: r1.riprese, batteria: r1.batteria },
-      r2: { zone: a.zone.map(t), sfiorati: a.sfiorati, barche: a.barche, delfini: a.delfini, arco: a.arco, completato: a.completato, schianto: a.schianto },
+      r2: { zone: a.zone.map(t), sfiorati: a.sfiorati, barche: a.barche, delfini: a.delfini, arco: a.arco, completato: a.completato, schianto: a.schianto, stelle, batterie, scudi },
       r3: { atterrato: b.atterrato, precisione: m(b.precisione), dolcezza: m(b.dolcezza), tempo: t(b.tempo), vela: b.vela },
     };
   }
