@@ -67,10 +67,10 @@ const momenti = [
     // un giro completo intorno al tavolo della torta, partendo dal lato da cui arrivi
     prepara: (S, d) => ({ a0: angolo(CAKE, d) }),
     guida: (S, t, st) => { const an = st.a0 + t / 3.8 * 6.2832; return [CAKE.x + Math.cos(an) * 42, CAKE.y + Math.sin(an) * 42]; } },
-  { n: 'Il primo ballo', s: 'Il ballo', a: 30.4, b: 39.8, manovra: 'Spirale', soggetto: () => [DANCE.x, DANCE.y], dur: 3.6, anteprima: true,
+  { n: 'Il primo ballo', s: 'Il ballo', a: 30.4, b: 39.8, manovra: 'Spirale', soggetto: () => [DANCE.x, DANCE.y], dur: 4.6, anteprima: true, tolleranza: 46,
     // una spirale che stringe sulla pista fino a fermarsi sopra gli sposi
     prepara: (S, d) => ({ a0: angolo(DANCE, d) }),
-    guida: (S, t, st) => { const p = cl(t / 3.6, 0, 1), an = st.a0 + p * 1.25 * 6.2832, r = 62 * (1 - ease(p)) + 3; return [DANCE.x + Math.cos(an) * r, DANCE.y + Math.sin(an) * r]; } },
+    guida: (S, t, st) => { const p = cl(t / 4.6, 0, 1), an = st.a0 + p * .9 * 6.2832, r = 52 * (1 - ease(p)) + 4; return [DANCE.x + Math.cos(an) * r, DANCE.y + Math.sin(an) * r]; } },
 ];
 
 function reset(S) {

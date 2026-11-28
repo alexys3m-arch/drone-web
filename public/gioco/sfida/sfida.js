@@ -341,6 +341,17 @@ function creaR2() {
     zone: [0, 0, 0, 0], sfiorati: 0, barche: 0, delfini: 0, arco: 0, bonus: 0, schianto: 0, completato: 0, arcoFatto: false, foto: false,
     bat: 100, scudo: false, invuln: 0, stelle: 0, batterie: 0, scudi: 0, presa: 3.5, stella2: false, stella3: false, visti: {}, avvisoBat: false };
   const prog = () => cl(S.T / 60, 0, 1);
+  // ambientazione: 0 tramonto d'oro, 1 ora rosa (dai 28 s), 2 notte con la luna e il faro (dai 52 s); passaggio morbido di 5 s
+  const AMB = [
+    { cielo: ['#090a0c', '#1a1510', '#5a3d12', '#b8861c'], sole: [255, 210, 31], raggi: [255, 190, 60], mare: ['#2b2a24', '#10161a', '#05080a'], riflesso: [255, 210, 31], lontano: ['#2a1f14', '#16110c'], uccelli: 'rgba(20,15,10,.7)', stelle: 0 },
+    { cielo: ['#120d1e', '#2d1636', '#7a2e4a', '#e0705a'], sole: [255, 120, 80], raggi: [255, 110, 120], mare: ['#3a2232', '#160f1e', '#07050b'], riflesso: [255, 140, 120], lontano: ['#2c1626', '#1a0c18'], uccelli: 'rgba(25,10,20,.75)', stelle: .4 },
+    { cielo: ['#03050c', '#07102a', '#0f1f44', '#22406a'], sole: [236, 236, 220], raggi: [180, 200, 255], mare: ['#0d1a2c', '#060c16', '#020408'], riflesso: [210, 225, 255], lontano: ['#0a1322', '#060b15'], uccelli: 'rgba(0,0,0,0)', stelle: 1 },
+  ];
+  const fase = () => S.T < 28 ? cl(S.T - 23, 0, 5) / 5 * 0 : S.T < 52 ? cl((S.T - 28) / 5, 0, 1) : 1 + cl((S.T - 52) / 5, 0, 1);
+  const mix = (a, b, t) => { const h = c => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)]; const x = h(a), y = h(b); return 'rgb(' + x.map((v, i) => Math.round(v + (y[i] - v) * t)).join(',') + ')'; };
+  const mixN = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+  const amb = () => { const fz = fase(), i = Math.min(1, Math.floor(fz)), t = fz - i, A0 = AMB[i], A1 = AMB[i + 1];
+    return { cielo: A0.cielo.map((c, k) => mix(c, A1.cielo[k], t)), sole: mixN(A0.sole, A1.sole, t), raggi: mixN(A0.raggi, A1.raggi, t), mare: A0.mare.map((c, k) => mix(c, A1.mare[k], t)), riflesso: mixN(A0.riflesso, A1.riflesso, t), lontano: A0.lontano.map((c, k) => mix(c, A1.lontano[k], t)), uccelli: t < .5 ? A0.uccelli : A1.uccelli, stelle: A0.stelle + (A1.stelle - A0.stelle) * t, notte: fz > 1 ? fz - 1 : 0 }; };
   const onda = wx => {
     let a = lerp(5, 15, prog());
     S.ost.forEach(o => { if (o.tipo === 'arco') a *= cl(Math.abs(wx - o.x) / 260, .15, 1); });   // acqua calma sotto l'arco
@@ -405,7 +416,7 @@ function creaR2() {
     o.preso = true;
     if (o.cosa === 'batteria') { S.bat = Math.min(100, S.bat + RICARICA); S.batterie = Math.min(12, S.batterie + 1); pop('Batteria', '+' + RICARICA + '%'); suono('delfino'); }
     else if (o.cosa === 'scudo') { S.scudo = true; S.scudi = Math.min(6, S.scudi + 1); pop('Scudo', 'un urto non ti ferma'); suono('rec'); }
-    else { S.stelle = Math.min(3, S.stelle + 1); S.bonus += P.R2.STELLA; G.slow = .4; G.scossa = 1.5; suono('arco');
+    else { S.stelle = Math.min(3, S.stelle + 1); S.bonus += P.R2.STELLA; G.flash = .35; suono('arco');
       if (S.stelle === 3) { S.bonus += P.R2.TRE_STELLE; pop('3 stelle!', 'Pilota esperto +' + fmt(P.R2.STELLA + P.R2.TRE_STELLE)); suono('maestro'); }
       else pop('Stella ' + S.stelle + '/3', '+' + fmt(P.R2.STELLA)); }
     vibra(20);
@@ -448,14 +459,16 @@ function creaR2() {
       S.ost = S.ost.filter(o => o.x < x - 380); S.ost.push({ tipo: 'arco', x }, { tipo: 'presa', cosa: 'stella', x, y: SEA - ARCO.luce * .45 }); S.prossimo = x + ARCO.w / 2 + 320;
       toast("Arco in vista: la stella è sotto, +2.500"); suono('avviso');
     }
+    if (!S.oraRosa && S.T >= 28) { S.oraRosa = true; toast('Cala il sole: ora rosa'); }
+    if (!S.notte && S.T >= 52) { S.notte = true; toast('Si fa notte: segui il faro'); }
     if (!S.stella2 && S.T >= 30) {
       S.stella2 = true; const x = S.cam + W2 + 320;
-      S.ost = S.ost.filter(o => o.x < x - 360); S.ost.push(scoglio(x, 72, 58), scoglio(x + 175, 72, 62), { tipo: 'presa', cosa: 'stella', x: x + 88, y: SEA - 12 }); S.prossimo = x + 175 + 320;
+      S.ost = S.ost.filter(o => o.x < x - 360); S.ost.push(scoglio(x, 64, 52), scoglio(x + 230, 64, 56), { tipo: 'presa', cosa: 'stella', x: x + 115, y: SEA - 24 }); S.prossimo = x + 230 + 320;
       toast('Stella tra gli scogli: a pelo d\'acqua'); suono('avviso');
     }
-    if (!S.stella3 && S.T >= 46) {
+    if (!S.stella3 && S.T >= 44) {
       S.stella3 = true; const x = S.cam + W2 + 320;
-      S.ost = S.ost.filter(o => o.x < x - 360); S.ost.push({ tipo: 'barca', x, alb: 104, col: CREMA }, { tipo: 'presa', cosa: 'stella', x: x + 72, y: SEA - 16 }); S.prossimo = x + 380;
+      S.ost = S.ost.filter(o => o.x < x - 360); S.ost.push({ tipo: 'barca', x, alb: 92, col: CREMA }, { tipo: 'presa', cosa: 'stella', x: x + 125, y: SEA - 34 }); S.prossimo = x + 420;
       toast("Stella dietro la barca: tuffati dopo l'albero"); suono('avviso');
     }
     if (S.cam + W2 + 60 > S.prossimo) { S.ost.push(nuovo(S.prossimo)); S.prossimo += lerp(420, 260, p) + rnd() * 160; }
@@ -464,13 +477,13 @@ function creaR2() {
     const xs = pb.map(q => S.cam + DX + q[0]);
     if (pb.some((q, i) => onda(xs[i]) < S.y + q[1] - 1) && urto("Hai toccato l'acqua")) return;
     for (const o of S.ost) {
-      if (o.tipo === 'presa') { if (!o.preso && Math.hypot(o.x - S.cam - DX, o.y - S.y) < (o.cosa === 'stella' ? 20 : 18)) prendi(o); continue; }
+      if (o.tipo === 'presa') { if (!o.preso && Math.hypot(o.x - S.cam - DX, o.y - S.y) < (o.cosa === 'stella' ? 30 : 20)) prendi(o); continue; }
       if (o.tipo === 'arco') {
         // dentro la roccia = urto; sotto la volta = dentro l'arco
         const punti = pb.concat(pa).map(q => [S.cam + DX + q[0], S.y + q[1]]);
         for (const q of punti) { if (Math.abs(q[0] - o.x) >= ARCO.w / 2) continue; if (q[1] > arcoTop(o, q[0]) && q[1] < arcoVolta(o, q[0])) { if (urto("Hai preso l'arco")) return; break; } }
         if (Math.abs(S.cam + DX - o.x) < ARCO.w / 2 && S.y > arcoVolta(o, S.cam + DX)) o.dentro = true;
-        if (!o.fatto && o.x + ARCO.w / 2 < S.cam + DX - 16) { o.fatto = true; if (o.dentro) { S.arco = 1; bonus(P.R2.ARCO, "Dentro l'arco!"); G.slow = .5; G.scossa = 2; suono('arco'); S.fotoOra = true; } else toast("Sopra l'arco: niente bonus"); }
+        if (!o.fatto && o.x + ARCO.w / 2 < S.cam + DX - 16) { o.fatto = true; if (o.dentro) { S.arco = 1; bonus(P.R2.ARCO, "Dentro l'arco!"); G.flash = .35; suono('arco'); S.fotoOra = true; } else toast("Sopra l'arco: niente bonus"); }
         continue;
       }
       if (xs.some((wx, i) => { const y = tetto(o, wx); return y != null && y < S.y + pb[i][1] - 1; }) && urto(o.tipo === 'barca' ? 'Hai preso la barca' : 'Hai preso lo scoglio')) return;
@@ -498,25 +511,31 @@ function creaR2() {
   function disegna() {
     const k = scale * dpr * f(), H = H2(); SEA = Math.round(H * .66);
     ctx.setTransform(k, 0, 0, k, 0, 0);
+    const E = amb(), rgba = (c, a) => 'rgba(' + c.join(',') + ',' + a + ')';
     let g = ctx.createLinearGradient(0, 0, 0, SEA);
-    g.addColorStop(0, NERO); g.addColorStop(.45, '#1a1510'); g.addColorStop(.8, '#5a3d12'); g.addColorStop(1, '#b8861c');
+    g.addColorStop(0, E.cielo[0]); g.addColorStop(.45, E.cielo[1]); g.addColorStop(.8, E.cielo[2]); g.addColorStop(1, E.cielo[3]);
     ctx.fillStyle = g; ctx.fillRect(0, 0, W2, SEA + 30);
-    STELLE.forEach(s => { ctx.globalAlpha = cl(.55 - s[1] / 500 + .25 * Math.sin(S.A * 1.5 + s[2]), 0, 1); ctx.fillStyle = CREMA; ctx.fillRect(s[0], s[1], 1.3, 1.3); }); ctx.globalAlpha = 1;
-    const sx = 205, sy = SEA - 24;
-    g = ctx.createRadialGradient(sx, sy, 10, sx, sy, 150); g.addColorStop(0, 'rgba(255,210,31,.5)'); g.addColorStop(1, 'rgba(255,210,31,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W2, SEA);
-    ctx.save(); ctx.translate(sx, sy); ctx.rotate(S.A * .03); ctx.globalCompositeOperation = 'lighter';
-    for (let j = 0; j < 12; j++) { const a = j * .5236, l = 260 + (j % 3) * 60; ctx.fillStyle = 'rgba(255,190,60,' + (.035 + .02 * Math.sin(S.A + j)) + ')'; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a - .05) * l, Math.sin(a - .05) * l); ctx.lineTo(Math.cos(a + .05) * l, Math.sin(a + .05) * l); ctx.fill(); }
-    ctx.restore();
-    ctx.fillStyle = GIALLO; ctx.beginPath(); ctx.arc(sx, sy, 44, 0, 6.2832); ctx.fill();
-    ctx.fillStyle = 'rgba(255,245,200,.5)'; ctx.beginPath(); ctx.arc(sx - 8, sy - 8, 30, 0, 6.2832); ctx.fill();
-    for (let j = 0; j < 5; j++) { const bx = ((140 + j * 18 - S.A * 12) % 360 + 360) % 360 - 30, by = SEA - 190 + j * 7 + Math.sin(S.A * 2 + j) * 3, ap = Math.sin(S.A * 7 + j) * 2.5; ctx.strokeStyle = 'rgba(20,15,10,.7)'; ctx.lineWidth = 1.1; ctx.beginPath(); ctx.moveTo(bx - 4, by - ap); ctx.lineTo(bx, by); ctx.lineTo(bx + 4, by - ap); ctx.stroke(); }
+    STELLE.forEach(s => { ctx.globalAlpha = cl(.55 - s[1] / 500 + .25 * Math.sin(S.A * 1.5 + s[2]) + E.stelle * .45, 0, 1); ctx.fillStyle = CREMA; ctx.fillRect(s[0], s[1], 1.3 + E.stelle * .4, 1.3 + E.stelle * .4); }); ctx.globalAlpha = 1;
+    // il sole scende e diventa luna: la notte è più in alto nel cielo
+    const sx = 205, sy = SEA - 24 - E.notte * 150, rs = 44 - E.notte * 22;
+    g = ctx.createRadialGradient(sx, sy, 10, sx, sy, 150); g.addColorStop(0, rgba(E.sole, .5 - E.notte * .3)); g.addColorStop(1, rgba(E.sole, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, W2, SEA);
+    if (E.notte < .9) { ctx.save(); ctx.translate(sx, sy); ctx.rotate(S.A * .03); ctx.globalCompositeOperation = 'lighter';
+      for (let j = 0; j < 12; j++) { const a = j * .5236, l = 260 + (j % 3) * 60; ctx.fillStyle = rgba(E.raggi, (.035 + .02 * Math.sin(S.A + j)) * (1 - E.notte)); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a - .05) * l, Math.sin(a - .05) * l); ctx.lineTo(Math.cos(a + .05) * l, Math.sin(a + .05) * l); ctx.fill(); }
+      ctx.restore(); }
+    ctx.fillStyle = rgba(E.sole, 1); ctx.beginPath(); ctx.arc(sx, sy, rs, 0, 6.2832); ctx.fill();
+    if (E.notte > .5) { ctx.fillStyle = 'rgba(200,205,215,.5)'; [[-6, -4, 4], [5, 3, 3], [-2, 7, 2.4]].forEach(c => { ctx.beginPath(); ctx.arc(sx + c[0], sy + c[1], c[2], 0, 6.2832); ctx.fill(); }); }   // crateri della luna
+    else { ctx.fillStyle = 'rgba(255,245,200,.5)'; ctx.beginPath(); ctx.arc(sx - 8, sy - 8, rs * .68, 0, 6.2832); ctx.fill(); }
+    for (let j = 0; j < 5; j++) { const bx = ((140 + j * 18 - S.A * 12) % 360 + 360) % 360 - 30, by = SEA - 190 + j * 7 + Math.sin(S.A * 2 + j) * 3, ap = Math.sin(S.A * 7 + j) * 2.5; ctx.strokeStyle = E.uccelli; ctx.lineWidth = 1.1; ctx.beginPath(); ctx.moveTo(bx - 4, by - ap); ctx.lineTo(bx, by); ctx.lineTo(bx + 4, by - ap); ctx.stroke(); }
     const far = (vel, col, forme) => { ctx.fillStyle = col; forme.forEach(fm => { const per = 1100, x = ((fm[0] - S.cam * vel) % per + per) % per - 150; ctx.beginPath(); ctx.moveTo(x, SEA + 2); fm[1].forEach(pt => ctx.lineTo(x + pt[0], SEA - pt[1])); ctx.lineTo(x + fm[1][fm[1].length - 1][0], SEA + 2); ctx.fill(); }); };
-    far(.05, '#2a1f14', [[100, [[0, 10], [40, 40], [90, 52], [160, 46], [240, 30], [330, 12], [380, 0]]], [650, [[0, 6], [60, 26], [140, 20], [200, 0]]]]);
-    far(.12, '#16110c', [[300, [[0, 0], [6, 48], [18, 58], [30, 50], [36, 0], [52, 0], [56, 36], [66, 42], [74, 30], [78, 0]]], [900, [[0, 0], [10, 38], [22, 44], [30, 0]]]]);
+    far(.05, E.lontano[0], [[100, [[0, 10], [40, 40], [90, 52], [160, 46], [240, 30], [330, 12], [380, 0]]], [650, [[0, 6], [60, 26], [140, 20], [200, 0]]]]);
+    far(.12, E.lontano[1], [[300, [[0, 0], [6, 48], [18, 58], [30, 50], [36, 0], [52, 0], [56, 36], [66, 42], [74, 30], [78, 0]]], [900, [[0, 0], [10, 38], [22, 44], [30, 0]]]]);
     const sup = []; for (let x = -6; x <= W2 + 6; x += 6) sup.push([x, onda(S.cam + x)]);
-    g = ctx.createLinearGradient(0, SEA - 20, 0, H); g.addColorStop(0, '#2b2a24'); g.addColorStop(.25, '#10161a'); g.addColorStop(1, '#05080a');
+    // di notte: il faro sulla costa lontana, con il fascio che gira
+    if (E.notte > 0) { const fx = ((520 - S.cam * .12) % 1100 + 1100) % 1100 - 150, fy = SEA - 30; ctx.globalAlpha = E.notte; ctx.fillStyle = '#d9d4c8'; ctx.fillRect(fx - 2, fy, 4, 28); ctx.fillStyle = '#e2483d'; ctx.fillRect(fx - 2, fy + 8, 4, 4); dot(fx, fy - 1, 3, '#fff4c2');
+      const a = S.A * 1.6; ctx.globalCompositeOperation = 'lighter'; const gf = ctx.createRadialGradient(fx, fy, 2, fx, fy, 170); gf.addColorStop(0, 'rgba(255,240,190,.45)'); gf.addColorStop(1, 'rgba(255,240,190,0)'); ctx.fillStyle = gf; ctx.beginPath(); ctx.moveTo(fx, fy); ctx.arc(fx, fy, 170, a - .12, a + .12); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.moveTo(fx, fy); ctx.arc(fx, fy, 170, a + Math.PI - .12, a + Math.PI + .12); ctx.closePath(); ctx.fill(); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; }
+    g = ctx.createLinearGradient(0, SEA - 20, 0, H); g.addColorStop(0, E.mare[0]); g.addColorStop(.25, E.mare[1]); g.addColorStop(1, E.mare[2]);
     ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-6, H); sup.forEach(p => ctx.lineTo(p[0], p[1])); ctx.lineTo(W2 + 6, H); ctx.fill();
-    for (let r = 0; r < 26; r++) { const y = SEA + 10 + r * r * .55, w = (30 - r * .6) * (.6 + .4 * Math.sin(S.A * 3 + r * 1.7)); if (y > H) break; ctx.fillStyle = 'rgba(255,210,31,' + (.45 - r * .015) + ')'; ctx.fillRect(sx - w / 2 + Math.sin(S.A * 2 + r) * 6, y, w, 2); }
+    for (let r = 0; r < 26; r++) { const y = SEA + 10 + r * r * .55, w = (30 - r * .6) * (.6 + .4 * Math.sin(S.A * 3 + r * 1.7)); if (y > H) break; ctx.fillStyle = rgba(E.riflesso, .45 - r * .015); ctx.fillRect(sx - w / 2 + Math.sin(S.A * 2 + r) * 6, y, w * (1 - E.notte * .4), 2); }
     S.ost.forEach(o => { if (o.tipo !== 'presa') ostacolo(o); });
     ctx.strokeStyle = 'rgba(244,243,240,.55)'; ctx.lineWidth = 1.5; ctx.beginPath(); sup.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.stroke();
     for (let i = 1; i < sup.length - 1; i++) if (sup[i][1] < sup[i - 1][1] && sup[i][1] <= sup[i + 1][1] && sup[i][1] < SEA - 3) for (let j = 0; j < 4; j++) { ctx.fillStyle = 'rgba(244,243,240,' + (.5 - j * .1) + ')'; ctx.fillRect(sup[i][0] - 6 + j * 4 + Math.sin(S.A * 5 + j + i) * 1.5, sup[i][1] - 1 + (j % 2), 2.2, 1.4); }
